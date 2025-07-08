@@ -28,7 +28,7 @@ function Frontpage() {
   const frontPage = true //makeshift fix for frontPage profile fetch errors without token xD
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('Authorization');
     setAuthToken(token);
   }, []);
 
