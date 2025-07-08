@@ -16,22 +16,23 @@
 
 - **User Profiles**
 
-  - Biographical data (min. 5 fields) & “About Me” section
-  - Interests, preferences, and what the user is looking for
+  - Biographical data (with 7 fields) & “About Me” section
+  - Interests, Personality traits, Nationality, Age, Location, and what is the user's purpose when using this platform
   - Profile picture upload (with default picture provided on registration)
   - Editable at any time
 
 - **Location Awareness**
 
-  - Uses browser GPS for accurate proximity
+  - Uses browser GPS for accurate proximity or a predetermined Location within Estonia
   - Users set a max connection radius
   - Distance-based filtering for recommendations
-  - Users can also choose from a list of predetermined locations
 
 - **Smart Recommendations**
+
   - Ranked, data-driven matching algorithm
   - Max 9 high-quality recommendations at once
   - Users can connect and/or dismiss (no re-recommendation)
+
 - **Connections**
 
   - Send/receive connection requests
@@ -42,8 +43,8 @@
 
   - One chat per connection
   - Instant messaging with real-time updates (WebSocket)
-  - Unread message indicators
-  - Typing indicators 💬
+  - Unread message indicator
+  - Typing indicator 💬
   - Message timestamps
   - Paginated chat history
   - Chat list ordered by recent activity
@@ -73,22 +74,13 @@
 
 ## 🧪 Data Seeding
 
-- Load 100+ mock users with diverse bios and interests
+- 100+ mock users with diverse biographical data are provided within the init.sql for Docker, or generated on start-up (assuming database is ready).
 
 ---
 
 ## 📱 Responsive Design
 
 Fully responsive layout. Works on mobile, tablet, and desktop.
-
----
-
-## 🧭 Bonus Features
-
-- Real-time typing indicators in chat 💬
-- Online/offline presence indicators
-- Proximity matching using GPS + radius filtering
-- Optional: PostGIS spatial indexing for performance at scale
 
 ---
 
@@ -110,7 +102,7 @@ match-me-web/
 ├── docker/
 │   └── postgres/         # SQL schema for Docker
 ├── frontend/             # React frontend
-├── media/                # Stores profile images
+├── media/                # Stores profile images - this includes the default picture inside the public folder
 ├── docker-compose.yml    # For starting Docker
 └── README.md
 
@@ -122,10 +114,10 @@ match-me-web/
 
 - Using Docker
 
-  To run the project on docker, first activate Docker and once it is ready, write `docker info` and verify.
-  Once docker is running, `docker-compose up` will activate docker to use our compose file to successfully start the project.
+- To run the project on docker, first activate Docker and once it is ready, write `docker info` and verify.
+- Once docker is running, `docker-compose up` will activate docker to use our premade compose file to successfully start the project.
 
-  Or alternatively you can install a docker extension for your IDE that can do the command for you. Make sure you enable that extension in your workspace.
+- Or alternatively you can install a docker extension for your IDE that can do the command for you. Make sure you enable that extension in your workspace.
 
 ---
 
@@ -182,7 +174,7 @@ docker --version
 
 ---
 
-## 🧪 Test Docker with Hello World
+## 🧪 Test Docker
 
 Once installed, you can test Docker with:
 
@@ -192,32 +184,28 @@ docker run hello-world
 
 You should see a message confirming that Docker is working correctly.
 
----
-
-## 📦 Additional Setup for Docker (Optional)
-
-- To run Docker without `sudo` on Linux:
-
-```bash
-sudo usermod -aG docker $USER
-newgrp docker
-```
-
----
-
 ## 🔗 Resources
 
 - [Official Docker Install Docs](https://docs.docker.com/get-docker/)
 
 ## ⚙️ Dev Setup for manual activation (without Docker)
 
-- PostgreSQL DB (locally or hosted)
+- PostgreSQL DB (locally or hosted) - the activation methods for postgresql can vary,
+  so find the one that activates the server on your machine. (On Ubuntu `sudo systemctl start postgresql` or `sudo service postgresql start` worked for us)
+
+- If you are going to activate it manually, you need to first prepare the database for user generation. Proceed to the EXTRA section to see how to setup postgreSQL then return here.
+  After installing dependencies with `mvn clean install` inside backend, run `mvn spring-boot:run -Dspring-boot.run.profiles=dev -Dspring-boot.run.arguments="--mockUsers.skip=true`
+  This command skips user generation, allowing you to use our postman to generate each entity's data and after all 6 are filled, you can proceed with the normal launch using
+  `mvn spring-boot:run -Dspring-boot.run.profiles=dev` and a seeder should create 100 users with your created data fields.
+
+  At the moment both dev profile and production profile run identically - that is they both create 100 users on start-up provided their respective databases are ready, which is
+  why you need to have a special argument to skip user-generation in dev mode to allow the backend to build the data for postgre before launching.
 
 ```bash
 # Backend (Java + Spring Boot)
 cd backend
 mvn clean install
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
+mvn spring-boot:run
 
 # Frontend (React)
 cd frontend
@@ -234,22 +222,18 @@ Inside backend/testing - we have provided for anyone interested in testing endpo
 1. Install PostgreSQL with Postgis Extension and remember the username and password you chose
 2. Enter in psql with your postgre user via terminal - default user is postgres
 
-< psql -U <yourPostgreSQLusernamehere> -h localhost -p 5432> --> this will prompt your postgre user password, enter it
+` psql -U <yourPostgreSQLusernamehere> -h localhost -p 5432` --> this will prompt your postgre user password, enter it.
+(This command starts postgreSQL interactive terminal with your postgreSQL username, connects to localhost(your machine) under default port 5432)
 
-3. When you are succesfully logged in, check what databases are available to you already by using the command < \l >
-4. If no <match-me> exists, proceed to create it by writing <CREATE DATABASE "match-me";> it will return <CREATE DATABASE> if successful
-5. Now that you have created the database, connect to it by writing <\c match-me>, this will connect you to the database directly enabling data manipulation
-6. Once inside match-me database, write <CREATE EXTENSION postgis;> and if successful, this will return <CREATE EXTENSION>
+3. When you are succesfully logged in, check what databases are available to you already by using the command `\l `
+4. If no `match-me` exists, proceed to create it by writing `CREATE DATABASE "match-me";` it will return `CREATE DATABASE` if successful
+5. Now that you have created the database, connect to it by writing `\c match-me`, this will connect you to the database directly enabling data manipulation
+6. Once inside match-me database, write `CREATE EXTENSION postgis;` and if successful, this will return `CREATE EXTENSION`, this enables our postgreSQL database to use geospatial data.
 
-That is it, your database is now prepared for backend.
-
-Before running backend make sure your database server is running by either using linux command <sudo servuce postgresql start> or <sudo systemctl start postgresql>.
-Once that is done you can start backend in skip users mode with <mvn spring-boot:run -Dspring-boot.run.profiles=dev -Dspring-boot.run.arguments="--mockUsers.skip=true">,
-this will allow you to create the necessary entities via Postman and after the database is prepared - run <mvn spring-boot:run -Dspring-boot.run.profiles=dev> and it will
-generate users until it has 100 in the repository.
+That is it, your database is now ready to receive entities, after using postman to fill the required entities data (6 of them), you can launch as normal and it will generate 100 mock users.
 
 If you need to wipe the database clean, first ensure backend is not running, and if you are already connected to match-me database, write <\c postgres> to connect to your user outside
-of the database and proceed with the following instructions. If you were not connected, then log into your postgre user manually.
-After entering as postgres user, instead of <CREATE DATABASE>, write <DROP DATABASE "match-me";> -- this will return <DROP DATABASE>
+of the database and proceed with the following instructions. If you were not connected, then log into your postgre user again manually.
+After entering as postgres user, instead of `CREATE DATABASE`, write `DROP DATABASE "match-me";` -- this will return `DROP DATABASE`
 which means it has been successfully deleted.
-After this proceed as normal with <CREATE DATABASE "match-me";> and inside it <CREATE EXTENSION postgis;> and prepare it again.
+After this proceed as normal with `CREATE DATABASE "match-me";` and inside it `CREATE EXTENSION postgis;`and prepare it again.
