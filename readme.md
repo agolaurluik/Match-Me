@@ -114,10 +114,20 @@ match-me-web/
 
 - Using Docker
 
-- To run the project on docker, first activate Docker and once it is ready, write `docker info` and verify.
+- To run the project on docker, first activate Docker and once it is ready, write
+
+```bash
+docker run hello-world
+```
+
+You should see a message confirming that Docker is working correctly.
+
 - Once docker is running, `docker-compose up` will activate docker to use our premade compose file to successfully start the project.
 
 - Or alternatively you can install a docker extension for your IDE that can do the command for you. Make sure you enable that extension in your workspace.
+
+⚠️ **Important:** Every time you restart the project inside docker, it wipes the data clean so please keep it in mind when testing, it always reverts to the original init.sql
+database file we have inside docker/postgres. There is probably a way to have it save, but for now only launching manually saves data across uses.
 
 ---
 
@@ -171,18 +181,6 @@ docker --version
 ```powershell
 docker --version
 ```
-
----
-
-## 🧪 Test Docker
-
-Once installed, you can test Docker with:
-
-```bash
-docker run hello-world
-```
-
-You should see a message confirming that Docker is working correctly.
 
 ## 🔗 Resources
 
