@@ -229,14 +229,18 @@ docker --version
 
   This command skips user generation, allowing you to use our postman to generate each entity's data and after all 6 are filled, you can proceed with the normal launch using
 
-  ````bash
+  ```bash
   mvn spring-boot:run -Dspring-boot.run.profiles=dev
   ```
+
   and a seeder should create 100 users with your created data fields.
 
   At the moment both dev profile and production profile run identically - that is they both create 100 users on start-up provided their respective databases are ready, which is
   why you need to have a special argument to skip user-generation in dev mode to allow the backend to build the data for postgre before launching.
-  ````
+
+  ```
+
+  ```
 
 ```bash
 # Backend (Java + Spring Boot)
