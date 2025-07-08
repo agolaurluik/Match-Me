@@ -238,11 +238,10 @@ docker --version
   At the moment both dev profile and production profile run identically - that is they both create 100 users on start-up provided their respective databases are ready, which is
   why you need to have a special argument to skip user-generation in dev mode to allow the backend to build the data for postgre before launching.
 
-  ```
-
-  ```
+- Once your database is prepared and filled with biographical data, you can proceed normally and launch via terminal.
 
 ```bash
+
 # Backend (Java + Spring Boot)
 cd backend
 mvn clean install
