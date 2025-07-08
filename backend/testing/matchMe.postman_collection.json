@@ -1,0 +1,1565 @@
+{
+	"info": {
+		"_postman_id": "8ba8e935-989f-476c-ada7-f445ae8fe0aa",
+		"name": "matchMe",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38836863",
+		"_collection_link": "https://api000-4581.postman.co/workspace/match-me~e8747676-ca56-4015-8366-cc1e74949069/collection/38836863-8ba8e935-989f-476c-ada7-f445ae8fe0aa?action=share&source=collection_link&creator=38836863"
+	},
+	"item": [
+		{
+			"name": "Database preparation",
+			"item": [
+				{
+					"name": "Create Interest entities",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  { \"name\": \"Politics\" },\r\n  { \"name\": \"Campaigns\" },\r\n  { \"name\": \"Elections\" },\r\n  { \"name\": \"Economy\" },\r\n  { \"name\": \"Finance\" },\r\n  { \"name\": \"Investing\" },\r\n  { \"name\": \"Hunting\" },\r\n  { \"name\": \"Board Games\" },\r\n  { \"name\": \"Video Games\" },\r\n  { \"name\": \"Sports\" },\r\n  { \"name\": \"Basketball\" },\r\n  { \"name\": \"Football\" },\r\n  { \"name\": \"Billiards\" },\r\n  { \"name\": \"Drink\" },\r\n  { \"name\": \"Food\" },\r\n  { \"name\": \"Restaurant\" },\r\n  { \"name\": \"Tourism\" },\r\n  { \"name\": \"Travel\" },\r\n  { \"name\": \"Museum\" }\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/test/createInterests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"test",
+								"createInterests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Personality entities",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  { \"name\": \"Organized\" },\r\n  { \"name\": \"Creative\" },\r\n  { \"name\": \"Analytical\" },\r\n  { \"name\": \"Independent\" },\r\n  { \"name\": \"Tolerant\" },\r\n\r\n  { \"name\": \"Quiet\" },\r\n  { \"name\": \"Kind\" },\r\n  { \"name\": \"Idealistic\" },\r\n\r\n  { \"name\": \"Curious\" },\r\n  { \"name\": \"Flexible\" },\r\n  { \"name\": \"Theoretical\" },\r\n\r\n  { \"name\": \"Spontaneous\" },\r\n  { \"name\": \"Outgoing\" },\r\n  { \"name\": \"Exuberant\" },\r\n\r\n  { \"name\": \"Confident\" },\r\n  { \"name\": \"Sharp\" },\r\n  { \"name\": \"Decisive\" },\r\n\r\n  { \"name\": \"Compassionate\" },\r\n  { \"name\": \"Emotional\" },\r\n  { \"name\": \"Humble\" },\r\n  { \"name\": \"Honest\" },\r\n  { \"name\": \"Ambitious\" },\r\n  { \"name\": \"Conscientious\" },\r\n\r\n  { \"name\": \"Courageous\" },\r\n  { \"name\": \"Persistent\" },\r\n  { \"name\": \"Resilient\" },\r\n\r\n  { \"name\": \"Disciplined\" },\r\n  { \"name\": \"Patient\" },\r\n  { \"name\": \"Honorable\" },\r\n\r\n  { \"name\": \"Loyal\" },\r\n  { \"name\": \"Observant\" },\r\n  { \"name\": \"Thoughtful\" }\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/test/createPersonalities",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"test",
+								"createPersonalities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Purpose entities",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  { \"name\": \"Study\" },\r\n  { \"name\": \"Companionship\" },\r\n  { \"name\": \"Professional\" },\r\n  { \"name\": \"Interacting\" },\r\n  { \"name\": \"Gaming\" }\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/test/createPurposes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"test",
+								"createPurposes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Gender entities",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  { \"name\": \"Male\" },\r\n  { \"name\": \"Female\" },\r\n  { \"name\": \"Non-Binary\" },\r\n  { \"name\": \"Unspecified\" }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/test/createGenders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"test",
+								"createGenders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Nationality entities",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  { \"name\": \"Albanian\" },\r\n  { \"name\": \"Andorran\" },\r\n  { \"name\": \"Austrian\" },\r\n  { \"name\": \"Belarusian\" },\r\n  { \"name\": \"Belgian\" },\r\n  { \"name\": \"Bosnian\" },\r\n  { \"name\": \"Bulgarian\" },\r\n  { \"name\": \"Croatian\" },\r\n  { \"name\": \"Cypriot\" },\r\n  { \"name\": \"Czech\" },\r\n  { \"name\": \"Danish\" },\r\n  { \"name\": \"Dutch\" },\r\n  { \"name\": \"Estonian\" },\r\n  { \"name\": \"Finnish\" },\r\n  { \"name\": \"French\" },\r\n  { \"name\": \"German\" },\r\n  { \"name\": \"Greek\" },\r\n  { \"name\": \"Hungarian\" },\r\n  { \"name\": \"Icelandic\" },\r\n  { \"name\": \"Irish\" },\r\n  { \"name\": \"Italian\" },\r\n  { \"name\": \"Kosovar\" },\r\n  { \"name\": \"Latvian\" },\r\n  { \"name\": \"Liechtensteiner\" },\r\n  { \"name\": \"Lithuanian\" },\r\n  { \"name\": \"Luxembourgish\" },\r\n  { \"name\": \"Maltese\" },\r\n  { \"name\": \"Moldovan\" },\r\n  { \"name\": \"Monégasque\" },\r\n  { \"name\": \"Montenegrin\" },\r\n  { \"name\": \"North Macedonian\" },\r\n  { \"name\": \"Norwegian\" },\r\n  { \"name\": \"Polish\" },\r\n  { \"name\": \"Portuguese\" },\r\n  { \"name\": \"Romanian\" },\r\n  { \"name\": \"Russian\" },\r\n  { \"name\": \"San Marinese\" },\r\n  { \"name\": \"Serbian\" },\r\n  { \"name\": \"Slovak\" },\r\n  { \"name\": \"Slovenian\" },\r\n  { \"name\": \"Spanish\" },\r\n  { \"name\": \"Swedish\" },\r\n  { \"name\": \"Swiss\" },\r\n  { \"name\": \"Turkish\" },\r\n  { \"name\": \"Ukrainian\" },\r\n  { \"name\": \"Vatican\" }\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/test/createNationalities",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"test",
+								"createNationalities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Default NamedLocation entities",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  {\r\n    \"name\": \"Tallinn\",\r\n    \"point\": { \"longitude\": 24.7536, \"latitude\": 59.4370 },\r\n    \"accuracy\": 12.5\r\n  },\r\n  {\r\n    \"name\": \"Tartu\",\r\n    \"point\": { \"longitude\": 26.7221, \"latitude\": 58.3776 },\r\n    \"accuracy\": 15.0\r\n  },\r\n  {\r\n    \"name\": \"Võru\",\r\n    \"point\": { \"longitude\": 27.2733, \"latitude\": 57.7839 },\r\n    \"accuracy\": 10.0\r\n  },\r\n  {\r\n    \"name\": \"Maardu\",\r\n    \"point\": { \"longitude\": 24.8318, \"latitude\": 59.3961 },\r\n    \"accuracy\": 9.7\r\n  },\r\n  {\r\n    \"name\": \"Rapla\",\r\n    \"point\": { \"longitude\": 24.4822, \"latitude\": 58.9489 },\r\n    \"accuracy\": 14.2\r\n  },\r\n  {\r\n    \"name\": \"Pärnu\",\r\n    \"point\": { \"longitude\": 25.5994, \"latitude\": 58.2630 },\r\n    \"accuracy\": 11.1\r\n  },\r\n  {\r\n    \"name\": \"Narva\",\r\n    \"point\": { \"longitude\": 26.9375, \"latitude\": 59.0667 },\r\n    \"accuracy\": 13.3\r\n  },\r\n  {\r\n    \"name\": \"Viljandi\",\r\n    \"point\": { \"longitude\": 26.0375, \"latitude\": 58.7528 },\r\n    \"accuracy\": 8.9\r\n  },\r\n  {\r\n    \"name\": \"Jõhvi\",\r\n    \"point\": { \"longitude\": 27.0266, \"latitude\": 58.4108 },\r\n    \"accuracy\": 12.0\r\n  },\r\n  {\r\n    \"name\": \"Keila\",\r\n    \"point\": { \"longitude\": 24.3500, \"latitude\": 59.4000 },\r\n    \"accuracy\": 16.5\r\n  }\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/test/createNamedLocations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"test",
+								"createNamedLocations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "/register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"teet@reet.net\",\r\n  \"username\": \"tiit\",\r\n  \"password\": \"reet\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"teet@reet.net\",\r\n  \"password\": \"reet\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Chat",
+			"item": [
+				{
+					"name": "Get Chat History for id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/chat/history?connectionId=1&size=20&page=0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"chat",
+								"history"
+							],
+							"query": [
+								{
+									"key": "connectionId",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark as read for id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/chat/read?connectionId=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"chat",
+								"read"
+							],
+							"query": [
+								{
+									"key": "connectionId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Image",
+			"item": [
+				{
+					"name": "Upload image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"description": "Profile picture",
+									"type": "file",
+									"src": "/C:/Users/rando/Downloads/generic orange dude.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/image/upload",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"image",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get private image",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/image/private/default-user.jpg",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"image",
+								"private",
+								"default-user.jpg"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get public image",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/image/public/default-user.jpg",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"image",
+								"public",
+								"default-user.jpg"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update image",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/rando/Pictures/Screenshots/Screenshot 2025-06-21 024748.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/image/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"image",
+								"update"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset image to default",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/image/reset",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"image",
+								"reset"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete image",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/image/delete?imageName=<insertImagehere>",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"image",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "imageName",
+									"value": "<insertImagehere>"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Matching",
+			"item": [
+				{
+					"name": "Get recommendations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/matching/recommendations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"matching",
+								"recommendations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Match info by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/matching/getMatchInfoByID/101",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"matching",
+								"getMatchInfoByID",
+								"101"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get MatchingFilter <me>",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/matching/filter",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"matching",
+								"filter"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update MatchingFilter <me>",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"match_limit\": 20,\r\n    \"genderPreference\": \"lookingforall\",\r\n    \"nationalityScore\": 1,\r\n    \"interestScore\": 5,\r\n    \"personalityScore\": 1,\r\n    \"purposeScore\": 1,\r\n    \"highestAge\":70,\r\n    \"lowestAge\":18,\r\n    \"radius\": 20000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/matching/updateMatchingFilter",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"matching",
+								"updateMatchingFilter"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Personalities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/matching/getAllPersonalities",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"matching",
+								"getAllPersonalities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Interests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/matching/getAllInterests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"matching",
+								"getAllInterests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Purposes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/matching/getAllPurposes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"matching",
+								"getAllPurposes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Nationalities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/matching/getAllNationalities",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"matching",
+								"getAllNationalities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Genders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/matching/getAllGenders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"matching",
+								"getAllGenders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All NamedLocations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/matching/getAllNamedLocations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"matching",
+								"getAllNamedLocations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get Location by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/users/getLocation/100",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"getLocation",
+								"100"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/users/101",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"101"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Bio  by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/users/101/bio",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"101",
+								"bio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Profile by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/users/102/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"102",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Me",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/users/me",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Me Bio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/users/me/bio",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"me",
+								"bio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Me Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/users/me/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"me",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Me Location",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"point\": {\r\n        \"longitude\": -15.126242805925173,\r\n        \"latitude\": 65.77107673437854\r\n    },\r\n    \"accuracy\": 75.10934459713218,\r\n    \"timestamp\": \"2000-06-13T22:50:48.387468Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/users/me/profile/createUserLocation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"me",
+								"profile",
+								"createUserLocation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Me Location",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"point\": {\r\n        \"longitude\": -35.126242805925173,\r\n        \"latitude\": 55.77107673437854\r\n    },\r\n    \"accuracy\": 75.10934459713218,\r\n    \"timestamp\": \"2000-06-13T22:50:48.387468Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/users/me/profile/updateUserLocation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"me",
+								"profile",
+								"updateUserLocation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Me Profile",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userDescription\": \"New TEST about me section\",\r\n    \"username\": \"pardi riho\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/users/me/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"me",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Connections",
+			"item": [
+				{
+					"name": "Create Connection <me>",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/connections/create/106",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"create",
+								"106"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Connections",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/connections/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Connections",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/connections",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Connection by userid",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/connections/102",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"102"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Friend Liszt",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/connections/friend-liszt",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"friend-liszt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Accepted",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/connections/accepted",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"accepted"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Pending",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/connections/pending",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"pending"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Blocked",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/connections/pending",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"pending"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Rejected",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/connections/rejected",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"rejected"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Incoming",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/connections/incoming",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"incoming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Outgoing",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/connections/outgoing",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"outgoing"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept Request from id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/connections/105/accept",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"105",
+								"accept"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Block Request from id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/connections/7/block",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"7",
+								"block"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unblock Request from id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/connections/105/unblock",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"105",
+								"unblock"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Request from id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/connections/103/reject",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"103",
+								"reject"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Connection by id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/connections/3/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"3",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Force Delete by id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/connections/102/force",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"connections",
+								"102",
+								"force"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ5ZWV0QHJlZXQubmV0IiwiaWQiOjEwMiwiaWF0IjoxNzUxOTg3MDM0LCJleHAiOjE3NTIwMjMwMzR9.DaEdYmC-Wz_pbnQxJ6ce3etQCZvmU0N6Gd99F-Q_93mY5M7-vudw0qh9XHY5tv4p",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

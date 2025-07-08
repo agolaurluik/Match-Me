@@ -1,0 +1,175 @@
+.grid-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  box-sizing: border-box;
+  margin-top: 90px;
+  
+}
+
+.grid-container-wrapper {
+  width: 100%;
+  max-width: 1400px;
+  min-height: 570px;
+  box-sizing: border-box;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  background: rgb(0, 0, 0, 0.3);
+  margin-top: 5rem;
+  border: 2px solid orange;
+  border-radius: 20px;
+}
+
+
+.profile-grid {
+  display: grid;
+  min-height: 65vh;
+  height: 65vh;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(8, 1fr) ;
+  gap: 2em;
+
+  grid-template-areas: 
+  "pic pic abo abo abo"
+  "pic pic abo abo abo"
+  "pic pic abo abo abo"
+  "pic pic abo abo abo"
+  "pic pic gen int edb"
+  "pic pic age int edb"
+  "pic pic nat per edb"
+  "pic pic pou per edb"; 
+  width: 100%;
+  padding: 40px;
+  border-radius: 16px;
+  
+  max-width: 100%; 
+}
+.pic {
+  grid-area: pic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    
+  
+}
+.abo {
+  grid-area: abo;
+  padding-top: 1.8em;
+}
+.gen {
+  grid-area: gen;
+  padding-top: 1.8em;
+}
+.age {
+  grid-area: age;
+  padding-top: 1.8em;
+}
+.nat {
+  grid-area: nat;
+  padding-top: 1.8em;
+}
+.pou {
+  grid-area: pou;
+  padding-top: 1.8em;
+}
+.int {
+  grid-area: int;
+  padding-top: 1.8em;
+  padding-right: 1em;
+}
+.per {
+  grid-area: per;
+  padding-top: 1.8em;
+  padding-right: 1em;
+}
+.edb {
+  grid-area: edb;
+  margin-top: auto;
+}
+
+.profile-section {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.3);
+  padding-left: 1rem;
+  border-radius: 12px;
+  border: 1px solid orange;
+  display: flex;
+  flex-direction: column;
+}
+.pic.profile-section {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+
+ justify-content: center;  /*  ugly */
+
+    border: 2px solid orange;
+  background: rgba(255, 255, 255, 0.3);
+  
+  border-radius: 12px;
+  border: 1px solid orange;
+}
+
+.profile-data-block-header {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+@media screen and (max-width: 1354px) {
+  .grid-container {
+    padding: 20px;
+    margin-top: 60px;
+  }
+
+  .grid-container-wrapper {
+    margin-top: 1rem;
+  }
+
+  .profile-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+    padding: 20px;
+    height: auto;
+  }
+
+  .pic,
+  .abo,
+  .gen,
+  .age,
+  .nat,
+  .pou,
+  .int,
+  .per,
+  .edb {
+    width: 100%;
+    padding: 1em;
+    margin: 0 auto;
+  }
+
+  .profile-section {
+    width: 100%;
+    padding: 1em;
+  }
+
+  .int,
+  .per {
+    padding-right: 0;
+  }
+
+  .edb {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .profile-edit-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+

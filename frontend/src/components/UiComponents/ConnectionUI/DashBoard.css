@@ -1,0 +1,11 @@
+.dashboard-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-top: 106px; 
+}
+
+.dashboard-body {
+  flex: 1;
+  overflow: hidden;
+}

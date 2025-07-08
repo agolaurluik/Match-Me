@@ -1,0 +1,80 @@
+/* Nav links window */
+.nav-links-window {
+  position: fixed;   
+  top: 56px; /* Adjust depending on your header height */
+  right: 0;
+
+  height: 100vh;
+  width: 250px;
+
+  background: linear-gradient(170deg, rgba(255, 107, 107, 0.5), #FFD93D);
+  backdrop-filter: blur(10px);
+  border: 2px solid #ccc;
+  padding: 10px;
+  z-index: 1000;
+  box-shadow: -10px 0 10px rgba(0, 0, 0, 0.1);
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+
+.nav-link {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 5px;
+  box-sizing: border-box;
+
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-decoration: none;
+  color: black;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  color: #003670;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.nav-links-window {
+  z-index: 9999 !important;
+}
+
+.nav-links-window ul {
+  width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-links-window li {
+  height: 50px;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.nav-links-window a {
+  height: 100%;
+  padding: 0, 30px;
+
+  display: flex;
+  align-items: center;
+  padding-left: 5px;
+  
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-decoration: none;
+  color: black;
+}
+
+.nav-links-window a:hover {
+  color: #003670;
+  background-color: rgba(0, 0, 0, 0.1);
+}

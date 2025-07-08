@@ -1,0 +1,38 @@
+.profile-pic-data-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1rem; /* space above entire block */
+}
+
+.profile-username-wrapper {
+  margin-bottom: 1.5rem; /* space between name and picture */
+}
+
+.profile-username {
+  font-size: 2.25rem;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+}
+
+.profile-image-wrapper {
+  padding-top: 0.5rem;
+}
+
+.profile-picture {
+  border-radius: 0;
+  object-fit: cover;
+  border: 1px solid orange;
+}
+
+.profile-picture-placeholder {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 100px;
+  background: #eee;
+  border-radius: 50%;
+  font-size: 2rem;
+}

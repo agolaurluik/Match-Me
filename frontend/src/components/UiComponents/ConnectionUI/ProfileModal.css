@@ -1,0 +1,116 @@
+.connections-tab-profile-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.connections-tab-profile-modal-content {
+  background: radial-gradient(circle, #dcdcdc 0%, #a58686 80%);
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  font-family: Arial, sans-serif;
+}
+
+.connections-tab-profile-modal-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap; /* for responsiveness */
+}
+
+.connections-tab-profile-about-me {
+  flex: 1;
+  min-width: 200px;
+  max-width: 400px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.connections-tab-profile-modal-image {
+  width: 100%;
+  max-height: 300px;
+  max-width: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  border-radius: 50%;
+}
+
+.connections-tab-profile-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.connections-tab-profile-modal-actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.connections-tab-match-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+}
+
+.connections-tab-match-button:hover {
+  background-color: #388e3c;
+}
+
+.connections-tab-reject-button {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+}
+
+.connections-tab-reject-button:hover {
+  background-color: #d32f2f;
+}
+
+.connections-tab-delete-button {
+  background-color: #b71c1c; /* dark red */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+  margin-left: 10px;
+}
+
+.connections-tab-delete-button:hover {
+  background-color: #7f0000;
+}

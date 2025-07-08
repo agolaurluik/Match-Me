@@ -1,0 +1,45 @@
+.info-box {
+    display: flex;
+    align-items: center;           
+    height: 100vh;                 
+    width: 100%;
+    padding: 2rem;
+    box-sizing: border-box;
+    
+  }
+  
+
+.info-box.left{
+    justify-content: flex-start;
+}
+
+.info-box.right{
+    justify-content: flex-end;
+}
+
+.info-content {
+    background-color: rgb(51, 47, 44);
+    opacity: 0.85;
+    color: white;
+    font-size: x-large;
+    padding: 1.5rem;
+    border-radius: 8px;
+    max-width: 650px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border: 20px dashed orange;
+
+}
+.register-button{
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    border-radius: 0.375rem; 
+    background: linear-gradient(170deg, #d8cdcd, #8d835c);
+    color: #1f2937; 
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.infobox-title{
+    padding-bottom: 25px;
+}

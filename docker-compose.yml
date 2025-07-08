@@ -1,0 +1,71 @@
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: match-me
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    user: root
+    build: ./backend
+    container_name: springboot-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/match-me
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+      MEDIA_STORAGE_LOCATION: /media
+      KOOD_APP_JWTSECRET: verylongpasswordrequiredbecauseHS256needstobeatleast256bitsinsizeotherwisbigerror
+      KOOD_APP_JWTEXPIRATIONMS: 36000000
+      SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: 5MB
+      SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE: 5MB
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+    logging:
+     driver: "json-file"
+     options:
+      max-size: "10m"
+      max-file: "3"
+
+    volumes:
+    - ./media:/media:rw
+
+  frontend:
+    build: ./frontend
+    container_name: vite-app
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_BASE_URL: "VITE_API_BASE_URL=http://127.0.0.1:8080" # Or "http://backend:8080" for internal communication
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    # Optional: If you want to map frontend files for live development (use with caution in production)
+    # volumes:
+    #   - ./frontend:/app
+    #   - /app/node_modules
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db_data:
