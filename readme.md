@@ -92,22 +92,6 @@ Fully responsive layout. Works on mobile, tablet, and desktop.
 
 ---
 
-## ⚙️ Dev Setup
-
-```bash
-# Backend (Java + Spring Boot)
-cd backend
-mvn clean install
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
-
-# Frontend (React)
-cd frontend
-npm install
-npm run dev
-```
-
----
-
 ## 🔐 Security & Privacy
 
 - Email is private and visible only to the authenticated user
@@ -136,15 +120,16 @@ match-me-web/
 
 ## 📦 Deployment
 
-- PostgreSQL DB (locally or hosted)
 - Using Docker
 
   To run the project on docker, first activate Docker and once it is ready, write `docker info` and verify.
   Once docker is running, `docker-compose up` will activate docker to use our compose file to successfully start the project.
 
+  Or alternatively you can install a docker extension for your IDE that can do the command for you. Make sure you enable that extension in your workspace.
+
 ---
 
-# EXTRA - Installing Docker
+# Installing Docker
 
 Follow the steps below to install Docker on your system.
 
@@ -209,7 +194,7 @@ You should see a message confirming that Docker is working correctly.
 
 ---
 
-## 📦 Additional Setup (Optional)
+## 📦 Additional Setup for Docker (Optional)
 
 - To run Docker without `sudo` on Linux:
 
@@ -224,9 +209,25 @@ newgrp docker
 
 - [Official Docker Install Docs](https://docs.docker.com/get-docker/)
 
-# EXTRA - Postman colletion for endpoint testing
+## ⚙️ Dev Setup for manual activation (without Docker)
 
-Inside backendfolder/testing - we have provided for anyone interested in testing endpoints a postman collection JSON that contains all the endpoints we used for testing internally.
+- PostgreSQL DB (locally or hosted)
+
+```bash
+# Backend (Java + Spring Boot)
+cd backend
+mvn clean install
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+
+# Frontend (React)
+cd frontend
+npm install
+npm run dev
+```
+
+# EXTRA - Postman collection for endpoint testing
+
+Inside backend/testing - we have provided for anyone interested in testing endpoints a postman collection JSON that contains all the endpoints we used for testing internally.
 
 # EXTRA - How to setup PostgreSQL Database for Backend manually in case you decide not to use Docker
 
