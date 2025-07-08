@@ -122,7 +122,23 @@ docker run hello-world
 
 You should see a message confirming that Docker is working correctly.
 
-- Once docker is running, `docker-compose up` will activate docker to use our premade compose file to successfully start the project.
+- To start the project using Docker, run:
+
+```bash
+docker-compose up
+```
+
+- To stop the containers, run:
+
+```bash
+docker-compose down
+```
+
+- To restart the containers, run:
+
+```bash
+docker-compose restart
+```
 
 - Or alternatively you can install a docker extension for your IDE that can do the command for you. Make sure you enable that extension in your workspace.
 
@@ -189,15 +205,38 @@ docker --version
 ## ⚙️ Dev Setup for manual activation (without Docker)
 
 - PostgreSQL DB (locally or hosted) - the activation methods for postgresql can vary,
-  so find the one that activates the server on your machine. (On Ubuntu `sudo systemctl start postgresql` or `sudo service postgresql start` worked for us)
+  so find the one that activates the server on your machine.
+  (On Ubuntu
+
+  ```bash
+   sudo systemctl start postgresql
+  ```
+
+  or
+
+  ```bash
+  sudo service postgresql start
+  ```
+
+  worked for us)
 
 - If you are going to activate it manually, you need to first prepare the database for user generation. Proceed to the EXTRA section to see how to setup postgreSQL then return here.
-  After installing dependencies with `mvn clean install` inside backend, run `mvn spring-boot:run -Dspring-boot.run.profiles=dev -Dspring-boot.run.arguments="--mockUsers.skip=true`
+  After installing dependencies with `mvn clean install` inside backend, run
+
+  ```bash mvn
+  spring-boot:run -Dspring-boot.run.profiles=dev -Dspring-boot.run.arguments="--mockUsers.skip=true"
+  ```
+
   This command skips user generation, allowing you to use our postman to generate each entity's data and after all 6 are filled, you can proceed with the normal launch using
-  `mvn spring-boot:run -Dspring-boot.run.profiles=dev` and a seeder should create 100 users with your created data fields.
+
+  ````bash
+  mvn spring-boot:run -Dspring-boot.run.profiles=dev
+  ```
+  and a seeder should create 100 users with your created data fields.
 
   At the moment both dev profile and production profile run identically - that is they both create 100 users on start-up provided their respective databases are ready, which is
   why you need to have a special argument to skip user-generation in dev mode to allow the backend to build the data for postgre before launching.
+  ````
 
 ```bash
 # Backend (Java + Spring Boot)
