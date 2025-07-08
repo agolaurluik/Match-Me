@@ -241,7 +241,6 @@ docker --version
 - Once your database is prepared and filled with biographical data, you can proceed normally and launch via terminal.
 
 ```bash
-
 # Backend (Java + Spring Boot)
 cd backend
 mvn clean install
