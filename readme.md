@@ -114,7 +114,7 @@ match-me-web/
 
 - Using Docker
 
-- To run the project on docker, first activate Docker and once it is ready, write
+- To run the project on docker, first activate Docker and once it is ready, test it by writing
 
 ```bash
 docker run hello-world
@@ -122,10 +122,18 @@ docker run hello-world
 
 You should see a message confirming that Docker is working correctly.
 
+By default this project's frontend runs on port 5173, backend on port 8080 and database on port 5432.
+
 - To start the project using Docker, run:
 
 ```bash
 docker-compose up
+```
+
+And using a browser of your choice go to frontend at:
+
+```bash
+http://localhost:5173/
 ```
 
 - To stop the containers, run:
@@ -145,7 +153,16 @@ docker-compose restart
 ⚠️ **Important:** Every time you restart the project inside docker, it wipes the data clean so please keep it in mind when testing, it always reverts to the original init.sql
 database file we have inside docker/postgres. There is probably a way to have it save, but for now only launching manually saves data across uses.
 
----
+## Empty database for testing
+
+- You can also run the project in docker with an empty database (no users) by using docker-compose-empty instead of docker-compose.
+  This means, that in order to run the container with no users, you use the command
+
+```bash
+docker-compose-empty up
+```
+
+## and the same goes for all the other corresponding commands.
 
 # Installing Docker
 
