@@ -46,7 +46,7 @@
   - Location
 
   Inside the filter you can assign different values to each datapoint, allowing you to modify the algorithm results based on your needs and wants.
-  Currently, personality traits, interests, purpose and nationality can be assigned a value from [Not Important, Normal, Important] which translates to [0, 1, 2] respectively.
+  Currently, personality traits, interests, purpose and nationality can be assigned a value from [Not Important, Normal, Very Important] which translates to [0, 1, 2] respectively.
   For each matching biographical datapoint that has a numerical value, the algorithm assigns a score to the user and a match is made if the total score is 3 or above.
 
 - **Connections**
