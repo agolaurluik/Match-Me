@@ -33,6 +33,22 @@
   - Max 9 high-quality recommendations at once
   - Users can connect and/or dismiss (no re-recommendation)
 
+  The recommendation system takes 7 biographical data points and matches you to other users in the database based on your own preferences that you set in the Matching Filter. This then returns a list of people that fit the criteria within a certain radius (chosen in the filter). You can also filter results by gender.
+
+  Currently available biographical data points are as follows:
+
+  - Age
+  - Gender
+  - Personality traits
+  - Interests
+  - Purpose of use
+  - Nationality
+  - Location
+
+  Inside the filter you can assign different values to each datapoint, allowing you to modify the algorithm results based on your needs and wants.
+  Currently, personality traits, interests, purpose and nationality can be assigned a value from [Not Important, Normal, Important] which translates to [0, 1, 2] respectively.
+  For each matching biographical datapoint that has a numerical value, the algorithm assigns a score to the user and a match is made if the total score is 3 or above.
+
 - **Connections**
 
   - Send/receive connection requests
