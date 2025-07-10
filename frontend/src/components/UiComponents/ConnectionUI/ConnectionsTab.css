@@ -138,3 +138,9 @@
     padding: 20px 20px 140px 20px; 
   }
 }
+
+.connections-tab-profile-card.removing {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
