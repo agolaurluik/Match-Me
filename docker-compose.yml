@@ -53,15 +53,11 @@ services:
     ports:
       - "5173:5173"
     environment:
-      VITE_API_BASE_URL: "VITE_API_BASE_URL=http://127.0.0.1:8080" # Or "http://backend:8080" for internal communication
+      VITE_API_BASE_URL: "VITE_API_BASE_URL=http://127.0.0.1:8080"
     depends_on:
       - backend
     networks:
       - app-network
-    # Optional: If you want to map frontend files for live development (use with caution in production)
-    # volumes:
-    #   - ./frontend:/app
-    #   - /app/node_modules
 
 networks:
   app-network:
