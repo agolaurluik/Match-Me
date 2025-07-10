@@ -6,7 +6,7 @@ const SubHeader = ({activeTab, onTabChange}) => {
     const tabs = [
         { label: 'Chat', key: 'chat'},
         { label: 'Search Filter', key: 'filter'},
-        { label: 'Reccommendations', key: 'connections'},
+        { label: 'Recommendations', key: 'connections'},
         { label: 'Outgoing Connections', key: 'pending'},
         { label: 'Incoming Connections', key: 'incoming'},
     ];

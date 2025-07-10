@@ -3,32 +3,43 @@ import "./ConnectionsTab.css";
 import UserGrid from "./UsersGrid";
 import {useUserProfiles} from '../../../hooks/useUserProfiles';
 
-
+const REFRESH_THRESHOLD = 3 // if 3 users are removed, refresh should happen.
 
 const ConnectionsTab = () => {
 
     const [refreshTrigger, setRefreshTrigger] = useState(0);
-     const { users, loading, error } = useUserProfiles({ refreshKey: refreshTrigger });
+    const [removalCount, setRemovalCount] = useState(0);
+    const [RecommendedUsers, setRecommendedUsers] = useState([]);
 
-     
-    // const { users: fetchedUsers, loading, error } = useUserProfiles({ refreshKey: refreshTrigger });
-    // const [users, setUsers] = useState([]); //not used for removing anymore
-    
-    // useEffect(() => {
-    //   setUsers(fetchedUsers);
-    // }, [fetchedUsers]);
+    const { users, loading, error } = useUserProfiles({ refreshKey: refreshTrigger });
 
-    const removeUserFromList = (userId) => {
-      // setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
-      setRefreshTrigger(prev => prev + 1); //originally was removing users from list of 9 one by one but now full refreshing when accepted of declined user.
-    };
+    useEffect(() => {
+      if (users) {
+        setRecommendedUsers(users);
+      }
+    }, [users]);
+
+  const handleUserRemoved = (userId) => {
+    setRecommendedUsers(prev => prev.filter(user => user.id !== userId));
+
+    setRemovalCount(prev => {
+      const newCount = prev + 1;
+
+      if (newCount >= REFRESH_THRESHOLD) {
+        setRefreshTrigger(prevKey => prevKey + 1);
+        return 0;
+      }
+
+      return newCount;
+    });
+  };
 
  
 
     if (loading) return <div className='connections-tab-container-message'><h2>Loading recommendations...</h2></div>;
     if (error) return <div className='connections-tab-container-message'><h2>Failed to load recommendations</h2></div>;
 
-        if (!users || users.length === 0) {
+        if (!RecommendedUsers || RecommendedUsers.length === 0) {
       return (
         <div className='connections-tab-container-message'>
           <h2>No incoming connections</h2>
@@ -37,9 +48,9 @@ const ConnectionsTab = () => {
     }
 
   return (
-    <UserGrid users={users}
+    <UserGrid users={RecommendedUsers}
     classPrefix="connections-tab"
-    onUserRemoved={removeUserFromList} />
+    onUserRemoved={handleUserRemoved} />
   );
 };
 

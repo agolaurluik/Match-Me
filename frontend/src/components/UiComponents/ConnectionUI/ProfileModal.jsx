@@ -76,7 +76,9 @@ const ProfileModal = ({user, onClose, classPrefix, onUserRemoved, updateConnecti
                     //  console.log("Created reccommended user ", user.username);
                     await api.rejectConnection(user.id);
                     // console.log("Blocked reccommended user ", user.username);
+                    onUserRemoved?.(user.friendId ?? user.id);
                 }
+                
             } catch (error) {
                 console.error("Error rejecting(blocking) connection:", error.message);
             } finally {
