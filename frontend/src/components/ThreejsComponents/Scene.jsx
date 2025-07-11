@@ -11,20 +11,37 @@ import Text from './Text';
 import EarthMesh from './EarthMesh'; 
 import ConnectTextMesh from './ConnectText';
 import OrbitingGroup from './OrbitingGroup';
-import useIsMobile from '../../hooks/useIsMobile';
+// import useIsMobile from '../../hooks/useIsMobile';
 
 
 const Background = () => {
-  const { scene } = useThree();
-  const texture = useLoader(THREE.TextureLoader, '/textures/image.jpg');
-  const isMobile = useIsMobile();
+  const texture = useLoader(THREE.TextureLoader, '/textures/pencil-background.jpg');
+  const { viewport, camera } = useThree();
+  const meshRef = useRef();
 
   useEffect(() => {
-    scene.background = texture;
-  }, [texture, scene]);
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+  }, [texture]);
 
-  return null;
+  // Scale mesh to cover screen (like background-size: cover)
+  const aspect = texture.image ? texture.image.width / texture.image.height : 1;
+  const screenAspect = viewport.width / viewport.height;
+
+  const scale = aspect > screenAspect
+    ? [viewport.height * aspect, viewport.height, 1] // wider image, height fits
+    : [viewport.width, viewport.width / aspect, 1];  // taller image, width fits
+
+  return (
+    <mesh ref={meshRef} position={[0, 0, -5]} scale={scale}>
+      <planeGeometry args={[2, 2]} />
+      <meshBasicMaterial map={texture} />
+    </mesh>
+  );
 };
+
 
 
 const CameraController = () => {
@@ -38,9 +55,9 @@ const CameraController = () => {
   return null;
 };
 
-const Scene = ({ earthVisible, heartVisible, orbitGroupVisible, textVisible, connectTextVisible }) => {
+const Scene = ({ earthVisible, heartVisible, orbitGroupVisible, textVisible, connectTextVisible, isMobile, isTablet, isDesktop, meshPosition }) => {
 
-   const isMobile = useIsMobile(); 
+  //  const isMobile = useIsMobile(); 
   
 
   return (
@@ -54,14 +71,14 @@ const Scene = ({ earthVisible, heartVisible, orbitGroupVisible, textVisible, con
     }}>
       <Canvas>
         <ambientLight intensity={2} />
-        <directionalLight position={[-200, 20, 200]} intensity={1.0}  />
+        <directionalLight position={[-200, 20, 200]} intensity={0.7}  />
         <Suspense fallback={null}>
-          <Heart visible={heartVisible} isMobile={isMobile}/>
-          <OrbitingGroup visible={orbitGroupVisible} isMobile={isMobile} />
-          <Text visible={textVisible} isMobile={isMobile} />
-          <ConnectTextMesh visible={connectTextVisible} isMobile={isMobile}/>
+          <Heart visible={heartVisible} isMobile={isMobile} isTablet={isTablet} isDesktop={isDesktop}  meshPosition={meshPosition}/>
+          <OrbitingGroup visible={orbitGroupVisible} isMobile={isMobile} isTablet={isTablet} isDesktop={isDesktop} meshPosition={meshPosition} />
+          <Text visible={textVisible} isMobile={isMobile} isTablet={isTablet} isDesktop={isDesktop} meshPosition={meshPosition}/>
+          <ConnectTextMesh visible={connectTextVisible} isMobile={isMobile} isTablet={isTablet} isDesktop={isDesktop} meshPosition={meshPosition}/>
 
-          <EarthMesh visible={earthVisible} isMobile={isMobile} />
+          <EarthMesh visible={earthVisible} isMobile={isMobile} isTablet={isTablet} isDesktop={isDesktop} meshPosition={meshPosition}/>
 
           <Background />
           <CameraController />

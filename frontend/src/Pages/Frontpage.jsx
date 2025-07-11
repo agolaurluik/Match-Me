@@ -13,6 +13,7 @@ import NavLinksWindow from '../components/UiComponents/HeaderUI/NavLinksWindow';
 import useProfile from '../hooks/useProfile';
 import Header from '../components/UiComponents/HeaderUI/Header';
 import { useSecureImage } from '../hooks/useSecureImage';
+import useScreenSize from '../hooks/useScreenSize';
 
 const TOTAL_SECTIONS = 5;
 
@@ -24,8 +25,36 @@ function Frontpage() {
   const [showLogin, setShowLogin] = useState(false);
   const [showNavLinks, setShowNavLinks] = useState(false);
   const [authToken, setAuthToken] = useState(null);
+  const screenSize = useScreenSize();
 
   const frontPage = true //makeshift fix for frontPage profile fetch errors without token xD
+
+  const isMobile = screenSize === 'mobile';
+  const isTablet = screenSize === 'tablet';
+  const isDesktop = screenSize === 'desktop'
+
+  const textStyle = {
+    fontSize: isMobile ? '1.2rem' : '2rem',
+    padding: isMobile ? '20px' : '40px',
+  };
+
+  const meshPosition = isMobile ? [0, 0, 2] : [0, 0, 5];
+
+  useEffect(() => {
+    const handleResize = () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'instant', 
+      });
+      setCurrentPage(0); 
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('Authorization');
@@ -44,15 +73,12 @@ function Frontpage() {
 
   useEffect(() => {
     const handleWheel = (e) => {
-      e.preventDefault(); // stop default scroll
-
+      e.preventDefault();
       if (isAnimating) return;
 
       const direction = e.deltaY > 0 ? 1 : -1;
       let nextPage = currentPage + direction;
-
       nextPage = Math.max(0, Math.min(TOTAL_SECTIONS - 1, nextPage));
-
       if (nextPage === currentPage) return;
 
       setCurrentPage(nextPage);
@@ -65,13 +91,54 @@ function Frontpage() {
 
       setTimeout(() => {
         setIsAnimating(false);
-      }, 500); // match smooth scroll time
+      }, 500);
+    };
+
+    let touchStartY = 0;
+    let touchEndY = 0;
+
+    const handleTouchStart = (e) => {
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e) => {
+      touchEndY = e.touches[0].clientY;
+    };
+
+    const handleTouchEnd = () => {
+      if (isAnimating) return;
+
+      const swipeDistance = touchStartY - touchEndY;
+      if (Math.abs(swipeDistance) < 50) return; // ignore small swipes
+
+      const direction = swipeDistance > 0 ? 1 : -1;
+      let nextPage = currentPage + direction;
+      nextPage = Math.max(0, Math.min(TOTAL_SECTIONS - 1, nextPage));
+      if (nextPage === currentPage) return;
+
+      setCurrentPage(nextPage);
+      setIsAnimating(true);
+
+      window.scrollTo({
+        top: nextPage * window.innerHeight,
+        behavior: 'smooth',
+      });
+
+      setTimeout(() => {
+        setIsAnimating(false);
+      }, 500);
     };
 
     window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('touchstart', handleTouchStart, { passive: false });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd);
 
     return () => {
       window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
     };
   }, [currentPage, isAnimating]);
 
@@ -95,7 +162,12 @@ function Frontpage() {
     />
   {showNavLinks && ( <NavLinksWindow/> )}
       
-<Scene    earthVisible={currentPage === 3}
+<Scene    meshPosition={meshPosition}
+          isMobile={isMobile}
+          isTablet={isTablet}
+          isDesktop={isDesktop}
+
+          earthVisible={currentPage === 3}
           heartVisible={currentPage === 0}
           orbitGroupVisible={currentPage === 1}
           textVisible={currentPage === 2}

@@ -17,15 +17,15 @@ const OrbitingGroup = ({ visible = true, isMobile = false }) => {
 
   useFrame(() => {
     if (innerGroupRef.current) {
-      innerGroupRef.current.rotation.y += 0.01;
+      innerGroupRef.current.rotation.y += 0.00;
     }
   });
 
   return (
     <a.group position={position} scale={scale} >
       <group ref={innerGroupRef}>
-        <Pencils visible={visible} position={[1, 0, 0]} />
-        <Ball visible={visible} position={[-1, 0, 0]} />
+        <Pencils visible={visible} position={[1.35, 0, 0]} />
+        <Ball visible={visible} position={[-0.65, 0, 0]} />
       </group>
     </a.group>
   );

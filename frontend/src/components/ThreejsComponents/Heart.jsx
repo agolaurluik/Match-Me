@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { a, useSpring } from '@react-spring/three';
 
-const Heart = ({ visible = true, isMobile = false, ...props }) => {
+const Heart = ({ visible = true, isMobile = false, isTablet=false, isDesktop = true, ...props }) => {
   const { scene } = useGLTF('/meshes/heart3.glb');
   const heartRef = useRef();
   const clockRef = useRef(new THREE.Clock());
@@ -24,7 +24,7 @@ const Heart = ({ visible = true, isMobile = false, ...props }) => {
 
 useEffect(() => {
   if (heartRef.current) {
-    heartRef.current.rotation.y = isMobile ? 3 : 2.3;
+    heartRef.current.rotation.y = isMobile ? 3. : 2.3;
   }
 
     scene.traverse((child) => {
@@ -41,7 +41,7 @@ useEffect(() => {
         child.receiveShadow = true;
       }
     });
-  }, [scene]);
+  }, [scene, isMobile, isTablet, isDesktop]);
 
   useFrame(() => {
     const time = clockRef.current.getElapsedTime();

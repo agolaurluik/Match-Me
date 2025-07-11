@@ -43,3 +43,69 @@
 .infobox-title{
     padding-bottom: 25px;
 }
+
+
+@media (max-width: 1424px) {
+  .info-box {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .info-content {
+    margin-top: 6.5rem;
+    font-size: 2.25rem;
+    max-width: 850%;
+    padding: 2rem;
+    border-width: 10px;
+    text-align: center;
+  }
+
+  .register-button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .infobox-title {
+    padding-bottom: 3rem;
+    font-size: 4.25rem;
+    text-align: center;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .info-box {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .info-content {
+    margin-top: 3.5rem;
+        font-size: 0.75rem;
+    max-width: 90%;
+    padding: 1rem;
+    border-width: 10px;
+    text-align: center;
+  }
+
+  .register-button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .infobox-title {
+    padding-bottom: 3rem;
+    font-size: 1.25rem;
+    text-align: center;
+  }
+}
