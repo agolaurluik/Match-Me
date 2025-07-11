@@ -71,83 +71,80 @@ function Frontpage() {
   } : null;
 
 
-  useEffect(() => {
-    const handleWheel = (e) => {
-      e.preventDefault();
-      if (isAnimating) return;
+useEffect(() => {
+  const handleWheel = (e) => {
+    if (showRegister || showLogin || isAnimating) return;
 
-      const direction = e.deltaY > 0 ? 1 : -1;
-      let nextPage = currentPage + direction;
-      nextPage = Math.max(0, Math.min(TOTAL_SECTIONS - 1, nextPage));
-      if (nextPage === currentPage) return;
+    e.preventDefault();
 
-      setCurrentPage(nextPage);
-      setIsAnimating(true);
+    const direction = e.deltaY > 0 ? 1 : -1;
+    let nextPage = currentPage + direction;
+    nextPage = Math.max(0, Math.min(TOTAL_SECTIONS - 1, nextPage));
+    if (nextPage === currentPage) return;
 
-      window.scrollTo({
-        top: nextPage * window.innerHeight,
-        behavior: 'smooth',
-      });
+    setCurrentPage(nextPage);
+    setIsAnimating(true);
 
-      setTimeout(() => {
-        setIsAnimating(false);
-      }, 500);
-    };
+    window.scrollTo({
+      top: nextPage * window.innerHeight,
+      behavior: 'smooth',
+    });
 
-    let touchStartY = 0;
-    let touchEndY = 0;
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 500);
+  };
 
-    const handleTouchStart = (e) => {
-      touchStartY = e.touches[0].clientY;
-    };
+  let touchStartY = 0;
+  let touchEndY = 0;
 
-    const handleTouchMove = (e) => {
-      touchEndY = e.touches[0].clientY;
-    };
+  const handleTouchStart = (e) => {
+    if (showRegister || showLogin) return;
+    touchStartY = e.touches[0].clientY;
+  };
 
-    const handleTouchEnd = () => {
-      if (isAnimating) return;
+  const handleTouchMove = (e) => {
+    if (showRegister || showLogin) return;
+    e.preventDefault(); 
+    touchEndY = e.touches[0].clientY;
+  };
 
-      const swipeDistance = touchStartY - touchEndY;
-      if (Math.abs(swipeDistance) < 50) return; // ignore small swipes
+  const handleTouchEnd = () => {
+    if (showRegister || showLogin || isAnimating) return;
 
-      const direction = swipeDistance > 0 ? 1 : -1;
-      let nextPage = currentPage + direction;
-      nextPage = Math.max(0, Math.min(TOTAL_SECTIONS - 1, nextPage));
-      if (nextPage === currentPage) return;
+    const swipeDistance = touchStartY - touchEndY;
+    if (Math.abs(swipeDistance) < 50) return; 
 
-      setCurrentPage(nextPage);
-      setIsAnimating(true);
+    const direction = swipeDistance > 0 ? 1 : -1;
+    let nextPage = currentPage + direction;
+    nextPage = Math.max(0, Math.min(TOTAL_SECTIONS - 1, nextPage));
+    if (nextPage === currentPage) return;
 
-      window.scrollTo({
-        top: nextPage * window.innerHeight,
-        behavior: 'smooth',
-      });
+    setCurrentPage(nextPage);
+    setIsAnimating(true);
 
-      setTimeout(() => {
-        setIsAnimating(false);
-      }, 500);
-    };
+    window.scrollTo({
+      top: nextPage * window.innerHeight,
+      behavior: 'smooth',
+    });
 
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    window.addEventListener('touchstart', handleTouchStart, { passive: false });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
-    window.addEventListener('touchend', handleTouchEnd);
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 500);
+  };
 
-    return () => {
-      window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, [currentPage, isAnimating]);
+  window.addEventListener('wheel', handleWheel, { passive: false });
+  window.addEventListener('touchstart', handleTouchStart, { passive: false });
+  window.addEventListener('touchmove', handleTouchMove, { passive: false });
+  window.addEventListener('touchend', handleTouchEnd);
 
-  useEffect(() => {
-    document.body.classList.add('front-mode');
-    return () => {
-      document.body.classList.remove('front-mode');
-    };
-  }, []);
+  return () => {
+    window.removeEventListener('wheel', handleWheel);
+    window.removeEventListener('touchstart', handleTouchStart);
+    window.removeEventListener('touchmove', handleTouchMove);
+    window.removeEventListener('touchend', handleTouchEnd);
+  };
+}, [currentPage, isAnimating, showRegister, showLogin]);
   
   return (
     <>

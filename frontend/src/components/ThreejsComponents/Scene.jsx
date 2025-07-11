@@ -82,7 +82,10 @@ const Scene = ({ earthVisible, heartVisible, orbitGroupVisible, textVisible, con
 
           <Background />
           <CameraController />
-          <OrbitControls />
+          <OrbitControls
+            enableZoom={false}
+            enableRotate={false}
+            enablePan={false} />
         </Suspense>
       </Canvas>
     </div>

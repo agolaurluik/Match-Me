@@ -15,12 +15,22 @@ body {
 
   background: radial-gradient(circle, #dcdcdc 0%, #a58686 80%);
   background-size: 100% 100%;
+
+    touch-action: none;
+  overscroll-behavior: none;
 }
 
 
 body.front-mode {
   padding-top: 0;
   background: transparent;
+}
+
+body.front-mode {
+  overflow: hidden;
+  height: 100vh;
+  overscroll-behavior: none;
+  touch-action: none; 
 }
 
 #root {

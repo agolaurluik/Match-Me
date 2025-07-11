@@ -10,6 +10,9 @@
   align-items: center;
   z-index: 1000;
   animation: fadeIn 0.3s ease-in-out;
+
+  touch-action: none;
+  overscroll-behavior: none;
 }
 
 .modal-content {
