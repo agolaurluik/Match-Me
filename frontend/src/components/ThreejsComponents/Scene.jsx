@@ -16,26 +16,35 @@ import OrbitingGroup from './OrbitingGroup';
 
 const Background = () => {
   const texture = useLoader(THREE.TextureLoader, '/textures/pencil-background.jpg');
-  const { viewport, camera } = useThree();
+  const { viewport } = useThree();
   const meshRef = useRef();
+  const [loaded, setLoaded] = useState(false);
+
 
   useEffect(() => {
+    if (texture.image) {
+      setLoaded(true);
+    } else {
+      texture.once('update', () => setLoaded(true)); // fallback if needed
+    }
+
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.wrapS = THREE.ClampToEdgeWrapping;
     texture.wrapT = THREE.ClampToEdgeWrapping;
   }, [texture]);
 
-  // Scale mesh to cover screen (like background-size: cover)
+  if (!loaded) return null; // don't render until image is ready
+  
   const aspect = texture.image ? texture.image.width / texture.image.height : 1;
   const screenAspect = viewport.width / viewport.height;
 
   const scale = aspect > screenAspect
-    ? [viewport.height * aspect, viewport.height, 1] // wider image, height fits
-    : [viewport.width, viewport.width / aspect, 1];  // taller image, width fits
+    ? [viewport.height * aspect, viewport.height, 1] 
+    : [viewport.width, viewport.width / aspect, 1];  
 
   return (
-    <mesh ref={meshRef} position={[0, 0, -5]} scale={scale}>
+    <mesh ref={meshRef} position={[0, 0, -4]} scale={scale}>
       <planeGeometry args={[2, 2]} />
       <meshBasicMaterial map={texture} />
     </mesh>
