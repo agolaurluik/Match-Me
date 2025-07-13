@@ -15,6 +15,7 @@ import Header from '../components/UiComponents/HeaderUI/Header';
 import { useSecureImage } from '../hooks/useSecureImage';
 import useScreenSize from '../hooks/useScreenSize';
 
+
 const TOTAL_SECTIONS = 5;
 
 function Frontpage() {
@@ -33,10 +34,10 @@ function Frontpage() {
   const isTablet = screenSize === 'tablet';
   const isDesktop = screenSize === 'desktop'
 
-  const textStyle = {
-    fontSize: isMobile ? '1.2rem' : '2rem',
-    padding: isMobile ? '20px' : '40px',
-  };
+  // const textStyle = {
+  //   fontSize: isMobile ? '1.2rem' : '2rem',
+  //   padding: isMobile ? '20px' : '40px',
+  // };
 
   const meshPosition = isMobile ? [0, 0, 2] : [0, 0, 5];
 

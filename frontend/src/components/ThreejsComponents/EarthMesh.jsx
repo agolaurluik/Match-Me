@@ -3,16 +3,24 @@ import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { a, useSpring } from '@react-spring/three';
 
-const EarthMesh = ({visible, isMobile = false ,...props}) => {
-    const earthmesh = useGLTF('/meshes/earthmesh.glb')
-    const earthRef = useRef();
+const EarthMesh = ({ visible, isMobile = false, isTablet = false, isDesktop = true, ...props }) => {
+  const earthmesh = useGLTF('/meshes/earthmesh.glb');
+  const earthRef = useRef();
 
-    const { position, opacity, scale } = useSpring({
-    position: visible ? (isMobile ? [0, -1.7, 0] : [4, 0, 0]) : [25, -10, 0],
-    opacity: visible ? 1 : 0,
-    scale: visible ? (isMobile ? [1, 1, 1] : [1.2, 1.2, 1.2]) : [0, 0, 0],
-    config: { mass: 1, tension: 200, friction: 30 },
-  });
+  const { position, opacity, scale } = useSpring({
+        position: visible
+        ? isMobile
+            ? [0, -2.1, 0]
+            : (isTablet || isDesktop ? [4, 0, 0] : [4, 0, 0]) // tablet treated same as desktop
+        : [25, -10, 0],
+        opacity: visible ? 1 : 0,
+        scale: visible
+        ? isMobile
+            ? [1, 1, 1]
+            : (isTablet || isDesktop ? [1.2, 1.2, 1.2] : [1.2, 1.2, 1.2]) // tablet same as desktop
+        : [0, 0, 0],
+        config: { mass: 1, tension: 200, friction: 30 },
+    });
 
     useFrame(() => {
         if(earthRef.current) {

@@ -4,13 +4,17 @@ import { a, useSpring } from '@react-spring/three';
 import Pencils from './Pencils';
 import Ball from './Ball';
 
-const OrbitingGroup = ({ visible = true, isMobile = false }) => {
+const OrbitingGroup = ({ visible = true, isMobile = false, isTablet= false, isDesktop=true }) => {
   const innerGroupRef = useRef();
 
 
   const { position, scale } = useSpring({
-    position: visible ? (isMobile ? [0, -2, 0] : [4, 0, 0]) : [25, -10, 0],
-        scale: visible ? (isMobile ? [0.7, 0.7, 0.7] : [1.0, 1.0, 1.0]) : [0, 0, 0],
+    position: visible
+      ? (isMobile ? [0, -2, 0] : (isTablet || isDesktop ? [4, 0, 0] : [4, 0, 0]))
+      : [25, -10, 0],
+    scale: visible
+      ? (isMobile ? [0.7, 0.7, 0.7] : (isTablet || isDesktop ? [1.0, 1.0, 1.0] : [1, 1, 1]))
+      : [0, 0, 0],
     config: { mass: 1, tension: 200, friction: 30 },
   });
 

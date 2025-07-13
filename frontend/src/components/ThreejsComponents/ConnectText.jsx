@@ -2,13 +2,21 @@ import React, { useRef, useEffect } from 'react';
 import { useGLTF } from '@react-three/drei';
 import { a, useSpring } from '@react-spring/three';
 
-const ConnectTextMesh = ({ visible = true,isMobile = false , ...props }) => {
+const ConnectTextMesh = ({ visible = true, isMobile = false, isTablet = false, isDesktop = true, ...props }) => {
   const connectText = useGLTF('/meshes/connect3.glb');
   const connectRef = useRef();
 
   const { position, opacity, scale } = useSpring({
-     position: visible ? (isMobile ? [-0.45, -3, 0] : [-4, -3, 0]) : [25, -10, -0],
-     scale: visible ? (isMobile ? [0.8, 0.8, 0.8] : [1.2, 1.2, 1.2]) : [0, 0, 0],
+    position: visible
+      ? (isMobile
+          ? [-0.45, -3, 0]
+          : (isTablet || isDesktop ? [-4, -3.5, 0] : [-4, -3, 0]))
+      : [25, -10, 0],
+    scale: visible
+      ? (isMobile
+          ? [0.8, 0.8, 0.8]
+          : (isTablet || isDesktop ? [1.2, 1.2, 1.2] : [1.2, 1.2, 1.2]))
+      : [0, 0, 0],
     opacity: visible ? 1 : 0,
     config: { mass: 1, tension: 200, friction: 30 },
   });

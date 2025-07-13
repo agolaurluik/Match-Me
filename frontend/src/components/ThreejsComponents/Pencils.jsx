@@ -14,7 +14,6 @@ const Pencils = ({ visible = true, ...props }) => {
     config: { mass: 1, tension: 200, friction: 30 },
   });
 
-  
   // useFrame(() => {
   //   if (pencilsRef.current) {
   //     pencilsRef.current.rotation.y += 0.002; 

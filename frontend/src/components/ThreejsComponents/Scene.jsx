@@ -25,7 +25,7 @@ const Background = () => {
     if (texture.image) {
       setLoaded(true);
     } else {
-      texture.once('update', () => setLoaded(true)); // fallback if needed
+      texture.once('update', () => setLoaded(true));
     }
 
     texture.minFilter = THREE.LinearFilter;
@@ -34,7 +34,7 @@ const Background = () => {
     texture.wrapT = THREE.ClampToEdgeWrapping;
   }, [texture]);
 
-  if (!loaded) return null; // don't render until image is ready
+  if (!loaded) return null; // renders when ready
   
   const aspect = texture.image ? texture.image.width / texture.image.height : 1;
   const screenAspect = viewport.width / viewport.height;
@@ -92,7 +92,7 @@ const Scene = ({ earthVisible, heartVisible, orbitGroupVisible, textVisible, con
           <Background />
           <CameraController />
           <OrbitControls
-            enableZoom={false}
+            enableZoom={false}//disables for mobile apparently
             enableRotate={false}
             enablePan={false} />
         </Suspense>
