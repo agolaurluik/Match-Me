@@ -21,6 +21,8 @@ body {
 }
 
 
+
+
 body.front-mode {
   padding-top: 0;
   background: transparent;
@@ -122,9 +124,7 @@ body {
   100% { opacity: 0; transform: translateY(-10px); }
 }
 
-  
-
-
+/*  */
 
 
 
