@@ -105,6 +105,10 @@
     transition: background-color 0.2s;
 }
 
+.register-button:hover{
+  background: linear-gradient(170deg, #FF6B6B, #FFD93D);
+}
+
 @media (max-width: 768px) {
   .info-section {
     flex-direction: column;

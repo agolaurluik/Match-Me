@@ -51,6 +51,7 @@ function Frontpage() {
   const { profile, loading, error } = useProfile(authToken, frontPage);
   const secureImageUrl = useSecureImage(profile?.profileImageName);
 
+  
   const user = profile
     ? {
         username: profile.username,
