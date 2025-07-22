@@ -2,10 +2,18 @@ import React from 'react';
 import { Text } from '@react-three/drei';
 import { a, useSpring } from '@react-spring/three';
 
-const SceneText = ({ visible = true, isMobile= false }) => {
+const SceneText = ({ visible = true, isMobile = false, isTablet = false, isDesktop = true }) => {
   const { position, opacity, scale } = useSpring({
-    position: visible ? (isMobile ? [-1, -1.4, 0] : [1, 0, 0]) : [25, -10, 0],
-    scale: visible ? (isMobile ? [0.7, 0.7, 0.7] : [1.2, 1.2, 1.2]) : [0, 0, 0],
+    position: visible
+      ? (isMobile
+          ? [-1, -2, 0]
+          : (isTablet || isDesktop ? [1.5, -0.5, 0] : [1, 0, 0]))
+      : [25, -10, 0],
+    scale: visible
+      ? (isMobile
+          ? [0.7, 0.7, 0.7]
+          : (isTablet || isDesktop ? [1.2, 1.2, 1.2] : [1.2, 1.2, 1.2]))
+      : [0, 0, 0],
     opacity: visible ? 1 : 0,
     config: { mass: 1, tension: 200, friction: 30 },
   });
@@ -24,13 +32,13 @@ const SceneText = ({ visible = true, isMobile= false }) => {
         { text: 'Organized?', pos: [1.5, -2.2, 0], size: 0.24 },
       ]
     : [
-        { text: 'Energetic?', pos: [0, 2.5, 0], size: 0.36 },
+        { text: 'Energetic?', pos: [3.5, 2.5, 0], size: 0.36 },
         { text: 'Creative?', pos: [1.5, 2.2, 0], size: 0.32 },
-        { text: 'Diplomatic?', pos: [3.5, 2.0, 0], size: 0.34 },
+        { text: 'Diplomatic?', pos: [3.5, 1.8, 0], size: 0.34 },
         { text: 'Honest?', pos: [1.2, 1.0, 0], size: 0.30 },
         { text: 'Charismatic?', pos: [3.8, 0.5, 0], size: 0.35 },
         { text: 'Original?', pos: [2.5, 0.0, 0], size: 0.33 },
-        { text: 'Generous?', pos: [4.5, -0.8, 0], size: 0.31 },
+        { text: 'Generous?', pos: [3.5, -0.8, 0], size: 0.31 },
         { text: 'Adventurous?', pos: [1.0, -1.4, 0], size: 0.29 },
         { text: 'Humoristic?', pos: [3.0, -2.0, 0], size: 0.30 },
         { text: 'Organized?', pos: [2.5, -2.8, 0], size: 0.28 },

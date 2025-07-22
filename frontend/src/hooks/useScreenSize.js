@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 export default function useScreenSize() {
   const getSize = () => {
     const width = window.innerWidth;
-    if (width < 1424) return 'mobile';
-    // if (width < 1024) return 'tablet';
-    return 'desktop';
+    if (width < 740) return 'mobile';       // mobile < 768
+    if (width < 1024) return 'tablet';      // tablet 768 <= width < 1024
+    return 'desktop';                        // desktop >= 1024
   };
 
   const [screenSize, setScreenSize] = useState(getSize());

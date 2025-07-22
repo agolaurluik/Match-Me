@@ -17,7 +17,9 @@ const Heart = ({ visible = true, isMobile = false, isTablet=false, isDesktop = t
       : [0, 0, 0];
 
   const { position, scale: springScale } = useSpring({
-    position: visible ? (isMobile ? [0, -2, 0] : [4, 0, 0]) : [25, -10, 0],
+    position: visible
+    ? (isMobile ? [0, -2, 0] : (isTablet || isDesktop ? [4, 0, 0] : [4, 0, 0]))
+    : [25, -10, 0],
     scale: baseScale,
     config: { mass: 1, tension: 200, friction: 30 },
   });
@@ -42,6 +44,10 @@ useEffect(() => {
       }
     });
   }, [scene, isMobile, isTablet, isDesktop]);
+
+  useEffect(() => {
+    console.log('Device:', { isMobile, isTablet, isDesktop });
+  }, [isMobile, isTablet, isDesktop]);
 
   useFrame(() => {
     const time = clockRef.current.getElapsedTime();

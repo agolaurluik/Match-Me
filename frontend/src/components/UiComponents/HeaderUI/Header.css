@@ -153,8 +153,8 @@
     background-image: conic-gradient(
       from var(--angle),
       transparent 1%,
-      rgb(0, 255, 47),
-      rgb(25, 2, 155),
+      rgb(248, 161, 0),
+      rgb(132, 155, 2),
       rgb(253, 253, 253)
     );
     -webkit-mask: 
@@ -187,7 +187,8 @@
   
   .header-btn:hover{
     background-color: white;
-    box-shadow: 0 0 15px rgba(0, 255, 47, 1),
+    color: #000;
+    box-shadow: 0 0 15px rgb(240, 184, 0),
     0 0 30px rgba(25, 2, 155, 1),
     0 0 45px rgba(15, 149, 202, 1);
   }

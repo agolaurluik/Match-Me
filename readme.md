@@ -256,8 +256,8 @@ docker --version
 - If you are going to activate it manually, you need to first prepare the database for user generation. Proceed to the EXTRA section to see how to setup postgreSQL then return here.
   After installing dependencies with `mvn clean install` inside backend, run
 
-  ```bash mvn
-  spring-boot:run -Dspring-boot.run.profiles=dev -Dspring-boot.run.arguments="--mockUsers.skip=true"
+  ```bash 
+  mvn spring-boot:run -Dspring-boot.run.profiles=dev -Dspring-boot.run.arguments="--mockUsers.skip=true"
   ```
 
   This command skips user generation, allowing you to use our postman to generate each entity's data and after all 6 are filled, you can proceed with the normal launch using
