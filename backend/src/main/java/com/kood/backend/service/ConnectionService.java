@@ -39,4 +39,6 @@ public interface ConnectionService {
     public Connection getExistingAcceptedConnection(Long senderId, Long receiverId);
 
     Connection getConnectionById(Long connectionId);
+
+    boolean canView(Long requesterId, Long viewingId);
 }

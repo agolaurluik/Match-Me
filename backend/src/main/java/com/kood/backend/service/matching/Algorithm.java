@@ -9,7 +9,6 @@ import com.kood.backend.mapper.UserMatchingFilterMapperImpl;
 import com.kood.backend.dto.algorithmDTOs.UserMatchDetailDTO;
 import com.kood.backend.dto.algorithmDTOs.UserMatchingFilterDTO;
 import com.kood.backend.repository.UserRepository;
-import com.kood.backend.service.ConnectionService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,7 +31,6 @@ import java.util.stream.Collectors;
 public class Algorithm {
 
         private final UserRepository userRepository;
-        private final ConnectionService connectionService;
         private final LocationRepository locationRepository;
         private final UserMatchingFilterMapperImpl userMatchingFilterMapperImpl;
 
@@ -85,11 +83,6 @@ public class Algorithm {
                 return (distanceInMeters / 1000.0) <= radius;
         }
 
-        private List<Long> getConnectedUserIds(User viewer) {
-                List<Long> viewerConnections = connectionService.getAllConnections(viewer.getId());
-                return viewerConnections;
-        }
-
         public List<Long> getTopMatchingUsersIDs(
                         User viewer,
                         Integer match_limit,
@@ -100,9 +93,8 @@ public class Algorithm {
                         Integer purposeScore,
                         Integer highestAge,
                         Integer lowestAge,
-                        Integer radius) {
-
-                List<Long> connectedUserIds = getConnectedUserIds(viewer);
+                        Integer radius,
+                        List<Long> connectedUserIds) {
 
                 return userRepository.findAll().stream()
                                 .filter(candidate -> !candidate.getId().equals(viewer.getId()))
@@ -255,9 +247,8 @@ public class Algorithm {
                         Integer purposeScore,
                         Integer highestAge,
                         Integer lowestAge,
-                        Integer radius) {
-
-                List<Long> connectedUserIds = getConnectedUserIds(viewer);
+                        Integer radius,
+                        List<Long> connectedUserIds) {
 
                 return userRepository.findAll().stream()
                                 .filter(candidate -> !candidate.getId().equals(viewer.getId()))

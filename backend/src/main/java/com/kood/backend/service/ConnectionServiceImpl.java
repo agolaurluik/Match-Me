@@ -2,8 +2,11 @@ package com.kood.backend.service;
 
 import com.kood.backend.entity.ConnectionEntities.Connection;
 import com.kood.backend.entity.ConnectionEntities.ConnectionStatus;
+import com.kood.backend.entity.UserEntities.MatchingFilter;
+import com.kood.backend.entity.UserEntities.User;
 import com.kood.backend.repository.ChatMessageRepository;
 import com.kood.backend.repository.ConnectionRepository;
+import com.kood.backend.service.matching.Algorithm;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -25,6 +28,9 @@ public class ConnectionServiceImpl implements ConnectionService {
 
     private final ConnectionRepository connectionRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final UserService userService;
+
+    private final Algorithm algorithm;
 
     // CREATE
 
@@ -288,5 +294,61 @@ public class ConnectionServiceImpl implements ConnectionService {
     private boolean isUserInConnection(Long userId, Connection connection) {
         return connection.getReceiver().equals(userId) ||
                 connection.getSender().equals(userId);
+    }
+
+    @Override
+    public boolean canView(Long requesterId, Long viewingId) {
+
+        if (requesterId == null || viewingId == null) {
+            return false;
+        }
+
+        if (requesterId.equals(viewingId)) {
+            return true;
+        }
+
+        List<Connection> acceptedConnections = getConnectionsByStatus(requesterId, ConnectionStatus.ACCEPTED,
+                true);
+        List<Connection> pendingConnections = getConnectionsByStatus(requesterId, ConnectionStatus.PENDING,
+                true);
+
+        Set<Long> validConnectionIds = new HashSet<>();
+
+        for (Connection item : acceptedConnections) {
+            validConnectionIds.add(item.getId());
+        }
+
+        for (Connection item : pendingConnections) {
+            validConnectionIds.add(item.getId());
+        }
+
+        User currentUser = userService.getUserById(requesterId);
+
+        List<Long> userConnections = getAllConnections(requesterId);
+
+        MatchingFilter filter = currentUser.getMatchingFilter();
+        if (filter == null) {
+            throw new Error("Filter is null, cannot invoke algorithm");
+        }
+        List<Long> recommendations = algorithm.getTopMatchingUsersIDs(
+                currentUser,
+                filter.getMatch_limit(),
+                filter.getGenderPreference(),
+                filter.getNationalityScore(),
+                filter.getInterestScore(),
+                filter.getPersonalityScore(),
+                filter.getPurposeScore(),
+                filter.getHighestAge(),
+                filter.getLowestAge(),
+                filter.getRadius(),
+                userConnections);
+
+        for (Long userId : recommendations) {
+            if (!validConnectionIds.contains(userId)) {
+                validConnectionIds.add(userId);
+            }
+        }
+
+        return validConnectionIds.contains(viewingId);
     }
 }

@@ -21,6 +21,7 @@ import com.kood.backend.entity.UserEntities.User;
 import com.kood.backend.mapper.LocationMapper;
 import com.kood.backend.mapper.UserMapper;
 import com.kood.backend.security.UserDetailsImpl;
+import com.kood.backend.service.ConnectionService;
 import com.kood.backend.service.LocationService;
 import com.kood.backend.service.UserService;
 
@@ -31,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/users")
 public class UserController {
 
+        private final ConnectionService connectionService;
         private final LocationService locationService;
         private final UserService userService;
 
@@ -102,10 +104,17 @@ public class UserController {
         public ResponseEntity<Map<String, Object>> getUserProfileById(
                         @AuthenticationPrincipal UserDetailsImpl userDetails,
                         @PathVariable Long id) {
-                UserProfileDTO retrievedUser = userMapper.toProfileDTO(userService.getUserById(id));
+                User user = userService.getUserById(id);
+                // Checks if the requesting user is allowed to view the requested id profile
+                if (user == null || !connectionService.canView(userDetails.getId(), id)) {
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                        .body(Map.of("message", "Not found"));
+                }
+
+                UserProfileDTO retrievedUser = userMapper.toProfileDTO(user);
                 Map<String, Object> response = new HashMap<>();
                 if (retrievedUser == null) {
-                        response.put("message", "User not found");
+                        response.put("message", "Not found");
                         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
                 }
                 response.put("profile", retrievedUser);

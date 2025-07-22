@@ -13,6 +13,7 @@ import com.kood.backend.entity.UserEntities.User;
 import com.kood.backend.entity.UserEntities.UserLocation;
 import com.kood.backend.security.UserDetailsImpl;
 import com.kood.backend.security.jwtconfig.JwtUtils;
+import com.kood.backend.service.ConnectionService;
 import com.kood.backend.service.GenderService;
 import com.kood.backend.service.InterestService;
 import com.kood.backend.service.NamedLocationService;
@@ -49,6 +50,7 @@ public class MatchingController {
         private final NationalityService nationalityService;
         private final GenderService genderService;
         private final NamedLocationService namedLocationService;
+        private final ConnectionService connectionService;
 
         @Autowired
         AuthenticationManager authenticationManager;// What is this for? Imported and all but not used anywhere here
@@ -72,6 +74,8 @@ public class MatchingController {
                         return ResponseEntity.status(HttpStatus.OK)
                                         .body(response);
                 }
+                List<Long> userConnections = connectionService.getAllConnections(currentUser.getId());
+
                 List<Long> topIds = algorithm.getTopMatchingUsersIDs(
                                 currentUser,
                                 filter.getMatch_limit(),
@@ -82,7 +86,8 @@ public class MatchingController {
                                 filter.getPurposeScore(),
                                 filter.getHighestAge(),
                                 filter.getLowestAge(),
-                                filter.getRadius());
+                                filter.getRadius(),
+                                userConnections);
 
                 response.put("recommendations", topIds);
                 return ResponseEntity.status(HttpStatus.OK)
