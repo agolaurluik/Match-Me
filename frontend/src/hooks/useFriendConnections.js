@@ -86,7 +86,7 @@ const useFriendConnections = (viewerId) => {
                 api.fetchConnectionDataByUserId(friendId),
                 api.fetchUserById(friendId),
                 api.fetchUserBioById(friendId),
-                api.fetchUserProfileById(friendId),
+                api.fetchUserProfileById(friendId).catch(() => null),
                 api.fetchUsersMatchingInfoById(friendId),
               ]);
 
@@ -109,7 +109,7 @@ const useFriendConnections = (viewerId) => {
                 ...userData.user,
                 friendId,
                 profilePicture: userData.user.profileImageName,
-                aboutMe: userProfile.profile.userDescription,
+                aboutMe: userProfile?.profile?.userDescription || '',
                 bio: {
                   gender: getGenderName(bio.genderId),
                   age: calculateAge(bio.birthDate),
