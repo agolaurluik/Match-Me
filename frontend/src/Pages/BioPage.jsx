@@ -3,8 +3,6 @@ import './PagesCSS/BioPage.css'
 
 import { useEffect, useState, useMemo } from 'react';
 import Selector from '../components/UiComponents/EditProfilePageUI/Selector';
-import Header from '../components/UiComponents/HeaderUI/Header';
-import NavLinksWindow from '../components/UiComponents/HeaderUI/NavLinksWindow';
 import Button from '../components/UiComponents/GeneralUI/Button';
 
 import useProfile from '../hooks/useProfile';
@@ -20,106 +18,106 @@ function BioPage() {
 
 
 
-    const [nationality, setNationality] = useState();
-    const [purpose, setPurpose] = useState();
-    const [showNavLinks, setShowNavLinks] = useState(false);
-    const [dob, setDob] = useState();
-    const [gender, setGender] = useState();
-    const [idName, setIdName] = useState();
-    const [location, setLocation] = useState({});
-    const [profilePic, setProfilePic] = useState(null)
-    const [namedLocationId, setNamedLocationId] = useState(null)
-    const [locationId, setLocationId] = useState(null)
-    const [aboutMeText, setAboutMeText] = useState()
-    const navigate = useNavigate();
+  const [nationality, setNationality] = useState();
+  const [purpose, setPurpose] = useState();
+  const [dob, setDob] = useState();
+  const [gender, setGender] = useState();
+  const [idName, setIdName] = useState();
+  const [location, setLocation] = useState({});
+  const [profilePic, setProfilePic] = useState(null)
+  const [namedLocationId, setNamedLocationId] = useState(null)
+  const [locationId, setLocationId] = useState(null)
+  const [aboutMeText, setAboutMeText] = useState()
+  const navigate = useNavigate();
 
-    //hooks
-   
-    const { profile: originalData, loading: profileLoading } = useProfile(); //loading screen?
-    const { personalities: allPersonalities,
-            interests: allInterests,
-            nationalities: allNationalities,
-            purposes: allPurposes,
-            genders: allGenders,
-            locations: allLocations 
-          } = useOptions();
+  const { profile, loading, error } = useProfile();
 
-    const { profile, loading, error } = useProfile();
-    const secureImageUrl = useSecureImage(profile?.profileImageName);
+  const originalData = profile;
+  //hooks
 
-    const handleResetProfilePicture = async () => {
-      try {
-        await api.resetProfilePicture();
-        setProfilePic("default-user.jpg"); 
-      } catch (error) {
-        alert('Failed to reset profile picture: ', error);
-        console.error(error);
-      }
-    };
-    
+  const { personalities: allPersonalities,
+    interests: allInterests,
+    nationalities: allNationalities,
+    purposes: allPurposes,
+    genders: allGenders,
+    locations: allLocations
+  } = useOptions();
 
-    const sortedInterests = useMemo(() => {
-      return [...allInterests].sort((a, b) => a.name.localeCompare(b.name));
-    }, [allInterests]);
+  const secureImageUrl = useSecureImage(profile?.profileImageName);
 
-    const sortedPersonalities = useMemo(() => {
-      return [...allPersonalities].sort((a, b) => a.name.localeCompare(b.name));
-    }, [allPersonalities]);
+  const handleResetProfilePicture = async () => {
+    try {
+      await api.resetProfilePicture();
+      setProfilePic("default-user.jpg");
+    } catch (error) {
+      alert('Failed to reset profile picture: ', error);
+      console.error(error);
+    }
+  };
 
-    const sortedNationalities = useMemo(() => {
-      return [...allNationalities].sort((a, b) => a.name.localeCompare(b.name));
-    }, [allNationalities]);
 
-    const sortedPurposes = useMemo(() => {
-      return [...allPurposes].sort((a, b) => a.name.localeCompare(b.name));
-    }, [allPurposes]);
+  const sortedInterests = useMemo(() => {
+    return [...allInterests].sort((a, b) => a.name.localeCompare(b.name));
+  }, [allInterests]);
 
-        const sortedLocations = useMemo(() => {
-      return [...allLocations].sort((a, b) => a.name.localeCompare(b.name));
-    }, [allLocations]);
+  const sortedPersonalities = useMemo(() => {
+    return [...allPersonalities].sort((a, b) => a.name.localeCompare(b.name));
+  }, [allPersonalities]);
 
-    const [interests, setInterests] = useState([]);
-    const [personalities, setPersonalities] = useState([]);
+  const sortedNationalities = useMemo(() => {
+    return [...allNationalities].sort((a, b) => a.name.localeCompare(b.name));
+  }, [allNationalities]);
 
-useEffect(() => {
-  if (profile && secureImageUrl && !profilePic) {
-    setProfilePic(secureImageUrl);
-  }
-}, [profile, secureImageUrl, profilePic]);
+  const sortedPurposes = useMemo(() => {
+    return [...allPurposes].sort((a, b) => a.name.localeCompare(b.name));
+  }, [allPurposes]);
 
-useEffect(() => {
-  if (profile) {
-    setIdName(profile.username || '');
+  const sortedLocations = useMemo(() => {
+    return [...allLocations].sort((a, b) => a.name.localeCompare(b.name));
+  }, [allLocations]);
 
-    setDob(profile.birthDate || '');
+  const [interests, setInterests] = useState([]);
+  const [personalities, setPersonalities] = useState([]);
 
-    setGender(allGenders.find(g => g.id === profile.genderId) || null);
+  useEffect(() => {
+    if (profile && secureImageUrl && !profilePic) {
+      setProfilePic(secureImageUrl);
+    }
+  }, [profile, secureImageUrl, profilePic]);
 
-    setNationality(allNationalities.find(n => n.id === profile.nationalityId) || null);
+  useEffect(() => {
+    if (profile) {
+      setIdName(profile.username || '');
 
-    setPurpose(allPurposes.find(p => p.id === profile.purposeId) || null);
+      setDob(profile.birthDate || '');
 
-    setAboutMeText(profile.aboutMeText || "")
+      setGender(allGenders.find(g => g.id === profile.genderId) || null);
 
-    setLocation({}); 
-    setNamedLocationId(profile.namedLocationId)
-    setLocationId(profile.locationId)
-  
-    setInterests(
-      (profile.interestIds || [])
-        .map(id => allInterests.find(i => i.id === id))
-        .filter(Boolean)
-    );
+      setNationality(allNationalities.find(n => n.id === profile.nationalityId) || null);
 
-    setPersonalities(
-      (profile.personalityIds || [])
-        .map(id => allPersonalities.find(p => p.id === id))
-        .filter(Boolean)
-    );
+      setPurpose(allPurposes.find(p => p.id === profile.purposeId) || null);
 
-    setProfilePic(secureImageUrl); 
-  }
-}, [profile, allGenders, allNationalities, allPurposes, allInterests, allPersonalities, allLocations]);
+      setAboutMeText(profile.aboutMeText || "")
+
+      setLocation({});
+      setNamedLocationId(profile.namedLocationId)
+      setLocationId(profile.locationId)
+
+      setInterests(
+        (profile.interestIds || [])
+          .map(id => allInterests.find(i => i.id === id))
+          .filter(Boolean)
+      );
+
+      setPersonalities(
+        (profile.personalityIds || [])
+          .map(id => allPersonalities.find(p => p.id === id))
+          .filter(Boolean)
+      );
+
+      setProfilePic(secureImageUrl);
+    }
+  }, [profile, allGenders, allNationalities, allPurposes, allInterests, allPersonalities, secureImageUrl]);
 
   if (
     loading ||
@@ -132,34 +130,29 @@ useEffect(() => {
   ) {
     return <div className="loading-screen">Loading profile...</div>;
   }
-  if (error){<div className="loading-screen">Error Loading profile...</div>;}
-    
-    return (
-      <>
-        <Header user={{
-          name: profile?.username,
-          imageUrl: secureImageUrl,
-        }}
-        onToggleNavLinks={() => setShowNavLinks(prev => !prev)} />
-        {showNavLinks && (<NavLinksWindow/>)}
-  
+  if (error) {
+    return <div className="loading-screen">Error loading profile...</div>;
+  }
+
+  return (
+    <>
       <div className="biopage-scale-wrapper">
         <div className='biopage-grid'>
           <div className='selector-name'>
             <Selector
-            type='name'
-            header='Set Name'
-            selectedValues={idName}
-            onChange={setIdName}
+              type='name'
+              header='Set Name'
+              selectedValues={idName}
+              onChange={setIdName}
             />
           </div>
           <div className='selector-profile-picture'>
             <Selector
-            type='profilePicture'
-            header='Set Profile Picture'
-            selectedValues={profilePic}
-            onChange={(file) => setProfilePic(file)}
-            onResetPicture={handleResetProfilePicture}
+              type='profilePicture'
+              header='Set Profile Picture'
+              selectedValues={profilePic}
+              onChange={(file) => setProfilePic(file)}
+              onResetPicture={handleResetProfilePicture}
             />
           </div>
           <div className="selector-aboutme">
@@ -175,14 +168,14 @@ useEffect(() => {
             <Selector
               type="dob"
               header="Select Your Date of Birth"
-              selectedValues={dob}               
-              onChange={(val) => setDob(val)}    
+              selectedValues={dob}
+              onChange={(val) => setDob(val)}
             />
           </div>
 
           <div className="pair-purposes-nationalities">
             <div className='selector-purposes'>
-              <Selector 
+              <Selector
                 type="optionsSelector"
                 header="Select Purpose of Use"
                 options={sortedPurposes}
@@ -192,7 +185,7 @@ useEffect(() => {
               />
             </div>
             <div className='selector-nationality'>
-              <Selector 
+              <Selector
                 type="optionsSelector"
                 header='Select Nationality'
                 options={sortedNationalities}
@@ -205,7 +198,7 @@ useEffect(() => {
 
           <div className="pair-personalities-interests">
             <div className='selector-interests'>
-              <Selector 
+              <Selector
                 type="optionsSelector"
                 header="Select Interests"
                 options={sortedInterests}
@@ -215,7 +208,7 @@ useEffect(() => {
               />
             </div>
             <div className='selector-personalities'>
-              <Selector 
+              <Selector
                 type="optionsSelector"
                 header='Select Personality Traits'
                 options={sortedPersonalities}
@@ -226,7 +219,7 @@ useEffect(() => {
             </div>
           </div>
 
-                    <div className='selector-gender'>
+          <div className='selector-gender'>
             <Selector
               type="gender"
               header="Select Gender"
@@ -245,30 +238,30 @@ useEffect(() => {
               onChange={setLocation}
             />
           </div>
-        <Button   onClick={() =>
-                handleProfileSubmit({
-                  originalData,
-                  idName,
-                  gender,
-                  dob,
-                  nationality,
-                  purpose,
-                  interests,
-                  personalities,
-                  location,
-                  profilePic,
-                  namedLocationId,
-                  locationId,
-                  aboutMeText,
-                  navigate
-                })
-              }
-              text={'SUBMIT'} 
-              className="selector-submit"/>
+          <Button onClick={() =>
+            handleProfileSubmit({
+              originalData,
+              idName,
+              gender,
+              dob,
+              nationality,
+              purpose,
+              interests,
+              personalities,
+              location,
+              profilePic,
+              namedLocationId,
+              locationId,
+              aboutMeText,
+              navigate
+            })
+          }
+            text={'SUBMIT'}
+            className="selector-submit" />
         </div>
       </div>
-      </>
-    );
-  }
+    </>
+  );
+}
 
 export default BioPage;
