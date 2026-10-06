@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import api from '../api/api';
-import useOptions from './useOptions'; 
+import useOptions from './useOptions';
 import { useStomp } from '../components/UiComponents/ConnectionUI/StompProvider';
 
 const findNameById = (list, id) => list?.find(item => item.id === id)?.name || 'Unknown';
@@ -10,9 +10,9 @@ const useFriendConnections = (viewerId) => {
   const [unreadCounts, setUnreadCounts] = useState({});
   const [loading, setLoading] = useState(true);
 
-  
+
   const { setRefreshConnectionStatusFn } = useStomp();
-  
+
 
   const {
     purposes,
@@ -29,42 +29,42 @@ const useFriendConnections = (viewerId) => {
   const getInterestNames = (ids) => ids?.map(id => findNameById(interests, id)) || [];
   const getPersonalityNames = (ids) => ids?.map(id => findNameById(personalities, id)) || [];
 
-    const removeChatConnection = (userId) => {
-         console.log("[Hook] removeChatConnection called with userId:", userId);
-        setConnections((prev) => prev.filter((conn) => conn.friendId !== userId));
-        setUnreadCounts((prev) => {
-            const updated = { ...prev };
-            delete updated[userId];
-            return updated;
-        });
-    };
-
-const updateConnectionStatus = useCallback((userId, updatedFields) => { //Call back to avoid infinite loops, used when truly necessary.. (profile modal block)
-  // console.log("updating id : ", userId, updatedFields);
-  setConnections(prev =>
-    prev.map(conn =>
-      conn.friendId === userId ? { ...conn, ...updatedFields } : conn
-    )
-  );
-}, [setConnections]);
-
-  
-  const refreshConnectionStatus = useCallback(async (friendId) => { //(socket)
-  // console.log("pump!:", friendId);
-  try {
-    const updatedConnectionData = await api.fetchConnectionDataByUserId(friendId);
-
-    updateConnectionStatus(friendId, {
-      senderStatus: updatedConnectionData.senderStatus,
-      receiverStatus: updatedConnectionData.receiverStatus,
+  const removeChatConnection = (userId) => {
+    console.log("[Hook] removeChatConnection called with userId:", userId);
+    setConnections((prev) => prev.filter((conn) => conn.friendId !== userId));
+    setUnreadCounts((prev) => {
+      const updated = { ...prev };
+      delete updated[userId];
+      return updated;
     });
-  } catch (err) {
-    console.error("Failed to refresh connection status:", err);
-  }
-}, [updateConnectionStatus]);
+  };
+
+  const updateConnectionStatus = useCallback((userId, updatedFields) => { //Call back to avoid infinite loops, used when truly necessary.. (profile modal block)
+    // console.log("updating id : ", userId, updatedFields);
+    setConnections(prev =>
+      prev.map(conn =>
+        conn.friendId === userId ? { ...conn, ...updatedFields } : conn
+      )
+    );
+  }, [setConnections]);
+
+
+  const refreshConnectionStatus = useCallback(async (friendId) => { //(socket)
+    // console.log("pump!:", friendId);
+    try {
+      const updatedConnectionData = await api.fetchConnectionDataByUserId(friendId);
+
+      updateConnectionStatus(friendId, {
+        senderStatus: updatedConnectionData.senderStatus,
+        receiverStatus: updatedConnectionData.receiverStatus,
+      });
+    } catch (err) {
+      console.error("Failed to refresh connection status:", err);
+    }
+  }, [updateConnectionStatus]);
 
   useEffect(() => {
-  setRefreshConnectionStatusFn(() => refreshConnectionStatus);
+    setRefreshConnectionStatusFn(() => refreshConnectionStatus);
   }, [refreshConnectionStatus]);
 
 
@@ -105,9 +105,9 @@ const updateConnectionStatus = useCallback((userId, updatedFields) => { //Call b
               }
 
               return {
-                ...conn,
                 ...userConnData,
                 ...userData.user,
+                friendId,
                 profilePicture: userData.user.profileImageName,
                 aboutMe: userProfile.profile.userDescription,
                 bio: {
@@ -126,7 +126,7 @@ const updateConnectionStatus = useCallback((userId, updatedFields) => { //Call b
             } catch (err) {
               console.error(`Failed to fetch full data for ID ${friendId}`, err);
               return {
-                ...conn,
+                friendId,
                 profilePicture: null,
                 bio: null,
                 aboutMe: '',

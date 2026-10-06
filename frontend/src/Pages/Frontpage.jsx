@@ -6,10 +6,7 @@ import InfoBox from '../components/UiComponents/FrontPageUI/InfoBox'
 import { useEffect, useState } from 'react';
 import RegisterModal from '../components/Modals/RegisterModal';
 import LoginModal from '../components/Modals/LoginModal';
-import NavLinksWindow from '../components/UiComponents/HeaderUI/NavLinksWindow';
-import useProfile from '../hooks/useProfile';
-import Header from '../components/UiComponents/HeaderUI/Header';
-import { useSecureImage } from '../hooks/useSecureImage';
+
 import useScreenSize from '../hooks/useScreenSize';
 
 
@@ -20,9 +17,9 @@ function Frontpage() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-  const [showNavLinks, setShowNavLinks] = useState(false);
-  const [authToken, setAuthToken] = useState(null);
   const screenSize = useScreenSize();
+
+  
 
   const frontPage = true;
 
@@ -43,21 +40,6 @@ function Frontpage() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem('Authorization');
-    setAuthToken(token);
-  }, []);
-
-  const { profile, loading, error } = useProfile(authToken, frontPage);
-  const secureImageUrl = useSecureImage(profile?.profileImageName);
-
-  
-  const user = profile
-    ? {
-        username: profile.username,
-        profilePicture: profile.profilePictureUrl,
-      }
-    : null;
 
   useEffect(() => {
     const handleWheel = (e) => {
@@ -149,13 +131,6 @@ const sectionImages = [
   return (
     <>
     <div className="frontpage-wrapper">
-      <Header
-        user={user ? { name: user.username, imageUrl: secureImageUrl } : null}
-        onRegisterClick={() => setShowRegister(true)}
-        onLoginClick={() => setShowLogin(true)}
-        onToggleNavLinks={() => setShowNavLinks((prev) => !prev)}
-      />
-      {showNavLinks && <NavLinksWindow />}
 
       <div
         style={{
