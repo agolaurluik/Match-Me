@@ -86,7 +86,10 @@ const useFriendConnections = (viewerId) => {
                 api.fetchConnectionDataByUserId(friendId),
                 api.fetchUserById(friendId),
                 api.fetchUserBioById(friendId),
-                api.fetchUserProfileById(friendId).catch(() => null),
+                api.fetchUserProfileById(friendId).catch(err => {
+                  console.error(`Failed to fetch profile for user ${friendId}:`, err);
+                  return null;
+                }),
                 api.fetchUsersMatchingInfoById(friendId),
               ]);
 
