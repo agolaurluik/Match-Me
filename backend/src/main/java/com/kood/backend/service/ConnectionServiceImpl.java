@@ -6,6 +6,7 @@ import com.kood.backend.entity.UserEntities.MatchingFilter;
 import com.kood.backend.entity.UserEntities.User;
 import com.kood.backend.repository.ChatMessageRepository;
 import com.kood.backend.repository.ConnectionRepository;
+import com.kood.backend.repository.MatchingFilterRepository;
 import com.kood.backend.service.matching.Algorithm;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -28,6 +30,7 @@ public class ConnectionServiceImpl implements ConnectionService {
 
     private final ConnectionRepository connectionRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final MatchingFilterRepository matchingFilterRepository;
     private final UserService userService;
 
     private final Algorithm algorithm;
@@ -326,10 +329,12 @@ public class ConnectionServiceImpl implements ConnectionService {
 
         List<Long> userConnections = getAllConnections(requesterId);
 
-        MatchingFilter filter = currentUser.getMatchingFilter();
-        if (filter == null) {
+        Optional<MatchingFilter> existingFilter = matchingFilterRepository.findByUserId(currentUser.getId());
+        if (existingFilter == null) {
             throw new Error("Filter is null, cannot invoke algorithm");
         }
+        MatchingFilter filter = existingFilter.get();
+
         List<Long> recommendations = algorithm.getTopMatchingUsersIDs(
                 currentUser,
                 filter.getMatch_limit(),

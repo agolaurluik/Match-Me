@@ -127,7 +127,7 @@ public class LocationService {
     @Transactional
     public UserLocationDTO updateUserLocation(LocationDTO location, UserDetailsImpl userDetails) {
         User dataBaseUser = new User();
-        UserLocation oldBinding = new UserLocation();
+        UserLocation newBinding = new UserLocation();
 
         Optional<User> foundUser = userRepository.findById(userDetails.getId());
         if (!foundUser.isPresent()) {
@@ -137,11 +137,11 @@ public class LocationService {
 
         Optional<UserLocation> existingBinding = userLocationRepository.findByUser(dataBaseUser);
         if (existingBinding.isPresent()) {
-            oldBinding = existingBinding.get();
+            newBinding = existingBinding.get();
         } else {
             return createUserLocation(location, userDetails);
         }
-        Location oldLocation = oldBinding.getLocation();
+        Location oldLocation = newBinding.getLocation();
 
         Optional<Location> foundLocation = locationRepository.findExistingLocation(
                 location.getPoint().getLongitude(),
@@ -149,22 +149,22 @@ public class LocationService {
                 1000);
 
         if (foundLocation.isPresent()) {
-            if (!oldBinding.getLocation().equals(foundLocation.get())) {
-                oldBinding.setLocation(foundLocation.get());
+            if (!newBinding.getLocation().equals(foundLocation.get())) {
+                newBinding.setLocation(foundLocation.get());
             }
         } else {
-            oldBinding.setLocation(createLocation(location));
+            newBinding.setLocation(createLocation(location));
         }
 
-        userLocationRepository.save(oldBinding);
-        dataBaseUser.setLocation(oldBinding);
+        userLocationRepository.save(newBinding);
+        dataBaseUser.setLocation(newBinding);
         userRepository.save(dataBaseUser);
 
         if (oldLocation != null && !userLocationRepository.existsByLocation(oldLocation)) {
             locationRepository.delete(oldLocation);
             locationRepository.flush();
         }
-        return userLocationMapper.toDTO(oldBinding);
+        return userLocationMapper.toDTO(newBinding);
     }
 
     public void createMockUserLocation(LocationDTO location, String email) {

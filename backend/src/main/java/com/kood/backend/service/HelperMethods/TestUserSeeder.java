@@ -35,6 +35,7 @@ import com.kood.backend.exceptions.DatabaseNotReadyException;
 import com.kood.backend.mapper.LocationMapper;
 import com.kood.backend.repository.GenderRepository;
 import com.kood.backend.repository.InterestRepository;
+import com.kood.backend.repository.MatchingFilterRepository;
 import com.kood.backend.repository.NationalityRepository;
 import com.kood.backend.repository.PersonalityRepository;
 import com.kood.backend.repository.PurposeRepository;
@@ -55,6 +56,7 @@ public class TestUserSeeder implements CommandLineRunner {
     private final PersonalityService personalityService; // This runs automatically when the app starts, so a 100 new
                                                          // random users on each startup
     private final UserRepository userRepository;
+    private final MatchingFilterRepository matchingFilterRepository;
     private final GenderRepository genderRepository;
     private final NationalityRepository nationalityRepository;
     private final PersonalityRepository personalityRepository;
@@ -110,10 +112,10 @@ public class TestUserSeeder implements CommandLineRunner {
             user.setPersonalities(getRandomPersonalities());
             user.setPurpose(getRandomPurpose());
 
-            MatchingFilter filter = new MatchingFilter();
-            filter.setUser(user);
-            user.setMatchingFilter(filter);
+            userRepository.save(user);
 
+            MatchingFilter filter = new MatchingFilter();
+            filter.setUserId(user.getId());
             filter.setMatch_limit(9);
             filter.setGenderPreference("lookingforall");
             filter.setNationalityScore(1);
@@ -124,7 +126,8 @@ public class TestUserSeeder implements CommandLineRunner {
             filter.setLowestAge(0);
             filter.setRadius(1000);
 
-            userRepository.save(user);
+            matchingFilterRepository.save(filter);
+
             String locationFlag = "default";
             if (i >= 30 && i < 40) {
                 locationFlag = "lithuania";
@@ -139,6 +142,7 @@ public class TestUserSeeder implements CommandLineRunner {
             }
             locationService.createMockUserLocation(getRandomLocation(locationFlag), user.getEmail());
         }
+        System.out.println("Database seeding complete.");
     }
 
     public LocationDTO getRandomLocation(String locationFlag) {
