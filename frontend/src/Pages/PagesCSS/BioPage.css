@@ -1,52 +1,73 @@
+/* =========================================================
+   BIO PAGE
+   ========================================================= */
+
 .biopage-scale-wrapper {
-  width: min(1200px, 95%);
-  min-height: calc(100vh - 100px);
+  width: min(1100px, calc(100% - 48px));
+  min-height: calc(100vh - 58px);
 
-  margin: 90px auto 2rem;
-  padding: 1.5rem;
-
-  display: flex;
-  justify-content: center;
-
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 20px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  margin: 90px auto 40px;
+  padding: 2.5rem;
 
   box-sizing: border-box;
+
+  background: #EDEADE;
+
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.12);
 }
 
 
-/* Main profile layout */
+/* =========================================================
+   MAIN LAYOUT
+   ========================================================= */
 
 .biopage-grid {
   width: 100%;
 
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.25rem;
+
+  gap: 1.5rem;
 
   align-items: stretch;
 }
 
 
-/* Individual selector containers */
+/* =========================================================
+   SELECTOR CARDS
+   ========================================================= */
 
 .selector-container {
   width: 100%;
   min-width: 0;
   height: 100%;
 
-  padding: 1rem;
+  box-sizing: border-box;
+
+  padding: 1.5rem;
   margin: 0;
 
   overflow: auto;
 
-  border-radius: 10px;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.35);
 
-  box-shadow: 1px 2px 10px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 14px;
+
+  box-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.06);
+
+  color: #222;
 }
+
+
+/* =========================================================
+   SELECTOR POSITIONING
+   ========================================================= */
 
 .selector-name,
 .selector-profile-picture,
@@ -66,13 +87,19 @@
 }
 
 
-/* Paired selectors */
+/* =========================================================
+   PAIRED SELECTORS
+   ========================================================= */
 
 .pair-purposes-nationalities,
 .pair-personalities-interests {
   display: grid;
+
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.25rem;
+
+  gap: 1.5rem;
+
+  min-width: 0;
 }
 
 
@@ -81,75 +108,150 @@
   min-width: 0;
 }
 
-/* Submit button */
+
+/* =========================================================
+   SUBMIT BUTTON
+   ========================================================= */
 
 .selector-submit {
   width: 100%;
-  min-height: 60px;
+  min-height: 58px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   align-self: center;
+
+  margin: 0;
+
+  /* Override the large global Button styling */
+  padding: 0.75rem 1.5rem;
+
+  font-size: 1rem;
 }
 
 
-/* Selected options */
+/* =========================================================
+   SELECTED OPTIONS
+   ========================================================= */
 
 .selector-selected {
   margin-top: 10px;
-  padding: 20px;
+  padding: 12px 14px;
 
-  background-color: rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.04);
+
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
 }
 
 
-/* Smaller screens */
+/* =========================================================
+   GENERAL INPUT / TEXT COLORS
+   ========================================================= */
+
+/*
+   These are intentionally light-touch.
+   Selector.css can still control the actual controls.
+*/
+
+.biopage-grid input,
+.biopage-grid textarea,
+.biopage-grid select {
+  color: #222;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
 
 @media screen and (max-width: 900px) {
+
   .biopage-scale-wrapper {
-    width: 95%;
+    width: calc(100% - 32px);
+
     margin-top: 80px;
-    padding: 1rem;
+
+    padding: 1.75rem;
   }
 
   .biopage-grid {
     grid-template-columns: 1fr;
+
+    gap: 1.25rem;
   }
 
   .pair-purposes-nationalities,
   .pair-personalities-interests {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 1.25rem;
   }
 }
 
 
-/* Phones */
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
 @media screen and (max-width: 600px) {
+
   .biopage-scale-wrapper {
     width: 100%;
-    min-height: 100vh;
+    min-height: calc(100vh - 50px);
 
     margin: 70px 0 0;
-    padding: 0.75rem;
+
+    padding: 1rem;
 
     border-radius: 0;
+    border-left: none;
+    border-right: none;
+
+    box-shadow: none;
   }
+
 
   .biopage-grid {
     gap: 1rem;
   }
 
+
   .pair-purposes-nationalities,
   .pair-personalities-interests {
     grid-template-columns: 1fr;
+
     gap: 1rem;
+  }
+
+
+  .selector-container {
+    padding: 1rem;
+
+    border-radius: 12px;
+  }
+
+
+  .selector-submit {
+    min-height: 54px;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media screen and (max-width: 380px) {
+
+  .biopage-scale-wrapper {
+    padding: 0.75rem;
   }
 
   .selector-container {
-    padding: 0.75rem;
+    padding: 0.85rem;
   }
 }
+

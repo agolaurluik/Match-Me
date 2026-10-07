@@ -1,7 +1,5 @@
-import React, {useState, useEffect } from "react";  
+import { useEffect, useState } from "react";
 import './PagesCSS/Pages.css'
-import Header from "../components/UiComponents/HeaderUI/Header";
-import NavLinksWindow from '../components/UiComponents/HeaderUI/NavLinksWindow';
 import DashBoard from "../components/UiComponents/ConnectionUI/DashBoard";
 import useProfile from '../hooks/useProfile';
 import { useSecureImage } from '../hooks/useSecureImage';
@@ -12,15 +10,12 @@ import { StompProvider } from "../components/UiComponents/ConnectionUI/StompProv
 
 const ConnectionsPage = () => {
 
-   
-    const [showNavLinks, setShowNavLinks] = useState(false);
-    const { profile, loading: profileLoading, error: profileError } = useProfile();
-    const [countdown, setCountdown] = useState(5);
-    const navigate = useNavigate();
-    
-    const profileSecureImageUrl = useSecureImage(profile?.profileImageName);
 
-      const isProfileComplete = (profile) => {
+  const { profile, loading: profileLoading, error: profileError } = useProfile();
+  const [countdown, setCountdown] = useState(5);
+  const navigate = useNavigate();
+
+  const isProfileComplete = (profile) => {
     if (!profile) return false;
 
     const {
@@ -53,7 +48,7 @@ const ConnectionsPage = () => {
     );
   };
 
-    useEffect(() => {
+  useEffect(() => {
     if (!profile || isProfileComplete(profile)) return;
 
     const timer = setInterval(() => {
@@ -69,7 +64,7 @@ const ConnectionsPage = () => {
     return () => clearInterval(timer);
   }, [profile, navigate]);
 
-  if (profileLoading ) {
+  if (profileLoading) {
     return <div className="loading-container">Loading your profile...</div>;
   }
 
@@ -77,7 +72,7 @@ const ConnectionsPage = () => {
     return <div className="error-container">Failed to load profile data.</div>;
   }
 
-    if (!isProfileComplete(profile)) {
+  if (!isProfileComplete(profile)) {
     return (
       <div className="incomplete-profile-container">
         <h2>Complete your profile to start connecting with others!</h2>
@@ -88,21 +83,13 @@ const ConnectionsPage = () => {
 
   // console.log(profile)
 
-    return (
-       <StompProvider>
-      <>
-        <Header user={{
-          name: profile.username,
-          imageUrl: profileSecureImageUrl,
-        }}
-        onToggleNavLinks={() => setShowNavLinks(prev => !prev)} />
-        {showNavLinks && (<NavLinksWindow/>)}
-        <div className="page-wrapper">
-          <DashBoard/>
-        </div>
-      </>
-      </StompProvider>
-    );
-  }
+  return (
+    <StompProvider>
+      <div className="page-wrapper">
+        <DashBoard />
+      </div>
+    </StompProvider>
+  );
+}
 
 export default ConnectionsPage;

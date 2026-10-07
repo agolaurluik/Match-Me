@@ -1,175 +1,342 @@
-.grid-container {
+/* =========================================================
+   PROFILE PAGE
+   ========================================================= */
+
+.profile-page {
+  min-height: calc(100vh - 58px);
+  padding: 100px 24px 50px;
+
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  min-height: 100vh;
+
   box-sizing: border-box;
-  margin-top: 90px;
-  
 }
 
-.grid-container-wrapper {
+
+/* =========================================================
+   MAIN PROFILE CARD
+   ========================================================= */
+
+.profile-card {
   width: 100%;
-  max-width: 1400px;
-  min-height: 570px;
-  box-sizing: border-box;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
-  background: rgb(0, 0, 0, 0.3);
-  margin-top: 5rem;
-  border: 2px solid orange;
+  max-width: 1100px;
+
+  background: #EDEADE;
+  border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 20px;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.12);
+
+  padding: 2.5rem;
+
+  box-sizing: border-box;
 }
 
 
-.profile-grid {
-  display: grid;
-  min-height: 65vh;
-  height: 65vh;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(8, 1fr) ;
-  gap: 2em;
+/* =========================================================
+   PROFILE HEADER
+   ========================================================= */
 
-  grid-template-areas: 
-  "pic pic abo abo abo"
-  "pic pic abo abo abo"
-  "pic pic abo abo abo"
-  "pic pic abo abo abo"
-  "pic pic gen int edb"
-  "pic pic age int edb"
-  "pic pic nat per edb"
-  "pic pic pou per edb"; 
+.profile-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 2rem;
+
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+
+.profile-identity {
+  display: flex;
+  align-items: center;
+
+  min-width: 0;
+  gap: 1.5rem;
+}
+
+
+/* =========================================================
+   PROFILE IMAGE
+   ========================================================= */
+
+.profile-picture-wrapper {
+  width: 120px;
+  height: 120px;
+
+  flex-shrink: 0;
+
+  overflow: hidden;
+
+  border-radius: 50%;
+
+  border: 3px solid rgba(255, 107, 107, 0.8);
+
+  background: rgba(0, 0, 0, 0.08);
+}
+
+
+.profile-picture {
   width: 100%;
-  padding: 40px;
-  border-radius: 16px;
-  
-  max-width: 100%; 
-}
-.pic {
-  grid-area: pic;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  height: 100%;
 
-    
-  
+  display: block;
+
+  object-fit: cover;
 }
-.abo {
-  grid-area: abo;
-  padding-top: 1.8em;
+
+
+/* =========================================================
+   PROFILE IDENTITY
+   ========================================================= */
+
+.profile-identity-info {
+  min-width: 0;
 }
-.gen {
-  grid-area: gen;
-  padding-top: 1.8em;
+
+
+.profile-identity-info h1 {
+  margin: 0;
+
+  font-size: 2rem;
+  font-weight: 700;
+
+  color: #222;
 }
-.age {
-  grid-area: age;
-  padding-top: 1.8em;
+
+
+.profile-email {
+  margin: 0.4rem 0 0;
+
+  color: rgba(0, 0, 0, 0.6);
+
+  font-size: 0.95rem;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.nat {
-  grid-area: nat;
-  padding-top: 1.8em;
+
+
+/* =========================================================
+   EDIT BUTTON
+   ========================================================= */
+
+.profile-edit-btn {
+  flex-shrink: 0;
+
+  width: auto;
+  margin: 0;
+
+  padding: 0.65rem 1.5rem;
+
+  font-size: 1rem;
 }
-.pou {
-  grid-area: pou;
-  padding-top: 1.8em;
-}
-.int {
-  grid-area: int;
-  padding-top: 1.8em;
-  padding-right: 1em;
-}
-.per {
-  grid-area: per;
-  padding-top: 1.8em;
-  padding-right: 1em;
-}
-.edb {
-  grid-area: edb;
-  margin-top: auto;
-}
+
+
+/* =========================================================
+   SECTIONS
+   ========================================================= */
 
 .profile-section {
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
-  background: rgba(255, 255, 255, 0.3);
-  padding-left: 1rem;
-  border-radius: 12px;
-  border: 1px solid orange;
-  display: flex;
-  flex-direction: column;
-}
-.pic.profile-section {
-  background: transparent;
-  box-shadow: none;
-  border: none;
+  padding: 2rem 0;
 
- justify-content: center;  /*  ugly */
-
-    border: 2px solid orange;
-  background: rgba(255, 255, 255, 0.3);
-  
-  border-radius: 12px;
-  border: 1px solid orange;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
+
+
+.profile-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+
+.profile-section h2 {
+  margin: 0 0 1.25rem;
+
+  font-size: 1.15rem;
+  font-weight: 700;
+
+  color: #222;
+}
+
+
+/* =========================================================
+   ABOUT ME
+   ========================================================= */
+
+.profile-about {
+  padding-top: 2.25rem;
+}
+
+
+.profile-about .profile-data-block {
+  max-width: 850px;
+}
+
+
+/* =========================================================
+   BASIC INFORMATION
+   ========================================================= */
+
+.profile-info-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 1rem 3rem;
+}
+
+
+/* =========================================================
+   INTERESTS / PERSONALITIES
+   ========================================================= */
+
+.profile-tags-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 2rem;
+}
+
+
+/* =========================================================
+   PROFILE DATA BLOCKS
+   ========================================================= */
 
 .profile-data-block-header {
-  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+
+  font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 0.75rem;
+
+  color: rgba(0, 0, 0, 0.55);
 }
 
-@media screen and (max-width: 1354px) {
-  .grid-container {
-    padding: 20px;
-    margin-top: 60px;
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+  .profile-page {
+    padding: 85px 16px 30px;
   }
 
-  .grid-container-wrapper {
-    margin-top: 1rem;
+  .profile-card {
+    padding: 1.75rem;
+    border-radius: 16px;
   }
 
-  .profile-grid {
-    display: flex;
+
+  /* Header */
+
+  .profile-card-header {
+    align-items: flex-start;
+  }
+
+  .profile-picture-wrapper {
+    width: 90px;
+    height: 90px;
+  }
+
+  .profile-identity {
+    gap: 1rem;
+  }
+
+  .profile-identity-info h1 {
+    font-size: 1.6rem;
+  }
+
+
+  /* Grids */
+
+  .profile-info-grid,
+  .profile-tags-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+
+@media (max-width: 550px) {
+
+  .profile-page {
+    padding: 70px 10px 20px;
+  }
+
+  .profile-card {
+    padding: 1.25rem;
+    border-radius: 14px;
+  }
+
+
+  /* Header becomes vertical */
+
+  .profile-card-header {
     flex-direction: column;
-    gap: 1.5em;
-    padding: 20px;
-    height: auto;
+    align-items: stretch;
+    gap: 1.5rem;
   }
 
-  .pic,
-  .abo,
-  .gen,
-  .age,
-  .nat,
-  .pou,
-  .int,
-  .per,
-  .edb {
+  .profile-identity {
     width: 100%;
-    padding: 1em;
-    margin: 0 auto;
   }
 
-  .profile-section {
-    width: 100%;
-    padding: 1em;
+  .profile-picture-wrapper {
+    width: 75px;
+    height: 75px;
   }
 
-  .int,
-  .per {
-    padding-right: 0;
+  .profile-identity-info h1 {
+    font-size: 1.4rem;
   }
 
-  .edb {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-  }
 
   .profile-edit-btn {
     width: 100%;
-    max-width: 300px;
+  }
+
+
+  /* Sections */
+
+  .profile-section {
+    padding: 1.5rem 0;
   }
 }
 
+
+/* =========================================================
+   VERY SMALL SCREENS
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+  .profile-card {
+    padding: 1rem;
+  }
+
+  .profile-identity {
+    gap: 0.75rem;
+  }
+
+  .profile-picture-wrapper {
+    width: 65px;
+    height: 65px;
+  }
+
+  .profile-identity-info h1 {
+    font-size: 1.2rem;
+  }
+
+  .profile-email {
+    font-size: 0.8rem;
+  }
+}
 

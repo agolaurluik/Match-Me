@@ -1,99 +1,286 @@
 .user-filter-grid {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: repeat(6, auto);
-    height: 100%;
-    gap: 1rem;
-    padding: 1rem;
-    /* border: 2px solid #d73737; */
-    border-radius: 12px;
-    resize: both;
-    overflow: auto;
+    width: 100%;
+    min-height: 100%;
+    box-sizing: border-box;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    padding: 2rem;
 }
+
+
+/* =========================
+   Filter panel
+   ========================= */
 
 .user-filter-grid-item {
+    width: 100%;
+    max-width: 700px;
+
+    box-sizing: border-box;
+
     display: flex;
     flex-direction: column;
-    background-color: rgba(0, 0, 0, 0.2);
-    padding: 0.75rem;
-    border: 1px solid orange;
-    border-radius: 12px;
-    box-shadow: 0 0 4px rgba(0,0,0,0.1);
-    padding: 1.5rem;
-    
 
-    grid-column: 3 / span 8;
-    grid-row: 2 / span 4;
+    padding: 2rem;
+
+    background: #EDEADE;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 20px;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
 }
+
+
+/* =========================
+   Labels / fields
+   ========================= */
 
 .user-filter-grid-item label {
-    margin-bottom: 1rem;
-  font-weight: bold;
-  color: #333;
-  font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+
+    margin-bottom: 1.4rem;
+
+    color: #222;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.4;
 }
 
-.user-filter-grid-item label > select,
-.user-filter-grid-item label > input {
-  margin-top: 0.5rem; 
-}
+
+/* =========================
+   Selects
+   ========================= */
 
 .user-filter-grid-item select {
-  padding: 0.9rem;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 12px;
-  border: 2px solid orange;
-  font-weight: bold;
-  width: 100%;
-  box-sizing: border-box;
+    width: 100%;
+    box-sizing: border-box;
+
+    margin-top: 0.5rem;
+    padding: 0.7rem 0.85rem;
+
+    background: rgba(255, 255, 255, 0.75);
+
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    border-radius: 10px;
+
+    color: #222;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background-color 0.15s ease;
 }
+
+.user-filter-grid-item select:hover {
+    background: #fff;
+    border-color: rgba(255, 150, 50, 0.65);
+}
+
+.user-filter-grid-item select:focus {
+    outline: none;
+
+    background: #fff;
+    border-color: rgba(255, 140, 40, 0.9);
+
+    box-shadow:
+        0 0 0 3px rgba(255, 140, 40, 0.12);
+}
+
+
+/* =========================
+   Age range
+   ========================= */
 
 .range-container {
-   padding: 1.9rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+    display: flex;
+    flex-direction: column;
+
+    gap: 0.75rem;
+
+    margin-top: 0.75rem;
+    padding: 0.5rem 0;
 }
 
-.range-label {
 
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 0.25rem;
-  text-align: center;
+/* =========================
+   Range sliders
+   ========================= */
+
+.user-filter-grid-item input[type="range"] {
+    width: 100%;
+    height: 6px;
+
+    margin: 0;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    background: rgba(0, 0, 0, 0.14);
+
+    border-radius: 999px;
+    outline: none;
+
+    cursor: pointer;
 }
 
-input[type="range"] {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 8px;
-  background: #ddd;
-  border-radius: 4px;
-  outline: none;
-  cursor: pointer;
+
+/* Chrome / Edge / Safari */
+
+.user-filter-grid-item input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px;
+
+    background: rgba(0, 0, 0, 0.14);
+
+    border-radius: 999px;
 }
 
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  height: 20px;
-  width: 20px;
-  background: orange;
-  border-radius: 50%;
-  border: none;
-  margin-top: -6px;
+.user-filter-grid-item input[type="range"]::-webkit-slider-thumb {
+    width: 18px;
+    height: 18px;
+
+    margin-top: -6px;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    background: rgb(255, 140, 40);
+
+    border: 2px solid #EDEADE;
+    border-radius: 50%;
+
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
 }
 
-input[type="range"]::-moz-range-thumb {
-  height: 20px;
-  width: 20px;
-  background: orange;
-  border-radius: 50%;
-  border: none;
+.user-filter-grid-item input[type="range"]:hover::-webkit-slider-thumb {
+    transform: scale(1.12);
+
+    box-shadow:
+        0 3px 8px rgba(255, 140, 40, 0.3);
 }
 
-input[type="range"]::-webkit-slider-runnable-track,
-input[type="range"]::-moz-range-track {
-  background: white;
-  height: 8px;
-  border-radius: 4px;
+
+/* Firefox */
+
+.user-filter-grid-item input[type="range"]::-moz-range-track {
+    height: 6px;
+
+    background: rgba(0, 0, 0, 0.14);
+
+    border-radius: 999px;
+}
+
+.user-filter-grid-item input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+
+    background: rgb(255, 140, 40);
+
+    border: 2px solid #EDEADE;
+    border-radius: 50%;
+
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   Submit button
+   ========================= */
+
+.user-filter-grid-item .filter-submit {
+    width: 100%;
+
+    margin: 0.5rem 0 0;
+    padding: 0.75rem 1.5rem;
+
+    min-height: 50px;
+
+    font-size: 1rem;
+}
+
+
+/* =========================
+   Loading / error
+   ========================= */
+
+.loading-container,
+.error-container {
+    min-height: 300px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 2rem;
+
+    box-sizing: border-box;
+
+    color: #222;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.error-container {
+    color: #a52a2a;
+}
+
+
+/* =========================
+   Tablet
+   ========================= */
+
+@media (max-width: 800px) {
+
+    .user-filter-grid {
+        padding: 1.5rem;
+    }
+
+    .user-filter-grid-item {
+        padding: 1.75rem;
+    }
+}
+
+
+/* =========================
+   Mobile
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .user-filter-grid {
+        padding: 1rem;
+    }
+
+    .user-filter-grid-item {
+        padding: 1.25rem;
+
+        border-radius: 16px;
+    }
+
+    .user-filter-grid-item label {
+        margin-bottom: 1.2rem;
+    }
+
+    .user-filter-grid-item select {
+        padding: 0.65rem 0.75rem;
+    }
+
+    .range-container {
+        padding: 0.4rem 0;
+    }
 }

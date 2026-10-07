@@ -9,7 +9,7 @@ const ConnectionsTab = () => {
 
     const [refreshTrigger, setRefreshTrigger] = useState(0);
     const [removalCount, setRemovalCount] = useState(0);
-    const [RecommendedUsers, setRecommendedUsers] = useState([]);
+    const [recommendedUsers, setRecommendedUsers] = useState([]);
 
     const { users, loading, error } = useUserProfiles({ refreshKey: refreshTrigger });
 
@@ -39,7 +39,7 @@ const ConnectionsTab = () => {
     if (loading) return <div className='connections-tab-container-message'><h2>Loading recommendations...</h2></div>;
     if (error) return <div className='connections-tab-container-message'><h2>Failed to load recommendations</h2></div>;
 
-        if (!RecommendedUsers || RecommendedUsers.length === 0) {
+        if (!recommendedUsers || recommendedUsers.length === 0) {
       return (
         <div className='connections-tab-container-message'>
           <h2>No incoming connections</h2>
@@ -48,7 +48,7 @@ const ConnectionsTab = () => {
     }
 
   return (
-    <UserGrid users={RecommendedUsers}
+    <UserGrid users={recommendedUsers}
     classPrefix="connections-tab"
     onUserRemoved={handleUserRemoved} />
   );

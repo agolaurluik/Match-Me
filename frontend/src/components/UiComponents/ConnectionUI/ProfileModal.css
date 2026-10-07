@@ -1,116 +1,527 @@
+/* =========================
+   Overlay
+   ========================= */
+
 .connections-tab-profile-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
+
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.6);
+
   display: flex;
   justify-content: center;
   align-items: center;
+
+  padding: 1.5rem;
+
+  box-sizing: border-box;
+
+  background: rgba(0, 0, 0, 0.5);
+
   z-index: 10000;
 }
 
+
+/* =========================
+   Modal
+   ========================= */
+
 .connections-tab-profile-modal-content {
-  background: radial-gradient(circle, #dcdcdc 0%, #a58686 80%);
-  padding: 2rem;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 800px;
-  max-height: 90vh;
-  overflow-y: auto;
   position: relative;
+
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+
+  box-sizing: border-box;
+
+  padding: 2.85rem;
+
+  overflow-y: auto;
+
+  background: #EDEADE;
+
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.25);
+
+  color: #222;
+
   font-family: Arial, sans-serif;
 }
 
-.connections-tab-profile-modal-image-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  flex-wrap: wrap; /* for responsiveness */
-}
 
-.connections-tab-profile-about-me {
-  flex: 1;
-  min-width: 200px;
-  max-width: 400px;
-  background-color: rgba(255, 255, 255, 0.7);
-  border-radius: 8px;
-  padding: 1rem;
-  font-size: 0.95rem;
-  line-height: 1.4;
-}
-
-.connections-tab-profile-modal-image {
-  width: 100%;
-  max-height: 300px;
-  max-width: 300px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 1rem;
-  border-radius: 50%;
-}
+/* =========================
+   Close button
+   ========================= */
 
 .connections-tab-profile-modal-close {
   position: absolute;
+
   top: 1rem;
   right: 1rem;
+
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  background: rgba(0, 0, 0, 0.05);
+
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 50%;
+
+  color: #333;
+
   font-size: 1.5rem;
-  background: transparent;
-  border: none;
+  line-height: 1;
+
   cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
 }
+
+.connections-tab-profile-modal-close:hover {
+  background: rgba(255, 140, 40, 0.15);
+
+  border-color: rgba(255, 140, 40, 0.5);
+
+  transform: scale(1.05);
+}
+
+
+/* =========================
+   Profile header
+   ========================= */
+
+.connections-tab-profile-modal-image-container {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 1.5rem;
+
+  margin-bottom: 1.75rem;
+
+  padding-bottom: 1.5rem;
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.connections-tab-profile-header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.connections-tab-profile-header-info h2 {
+  margin: 0 0 0.9rem;
+  color: #222;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.connections-tab-profile-header-info .connections-tab-profile-about-me {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* =========================
+   Profile image
+   ========================= */
+
+.connections-tab-profile-modal-image {
+  flex-shrink: 0;
+
+  width: 180px;
+  height: 180px;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+  border: 3px solid rgba(255, 140, 40, 0.7);
+
+  background: rgba(0, 0, 0, 0.05);
+
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.12);
+}
+
+
+/* =========================
+   About me
+   ========================= */
+
+.connections-tab-profile-about-me {
+  flex: 1;
+  min-width: 0;
+
+  padding: 1rem 1.1rem;
+
+  background: rgba(255, 255, 255, 0.45);
+
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+}
+
+.connections-tab-profile-about-me h3 {
+  margin: 0 0 0.6rem;
+
+  color: #222;
+
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.connections-tab-profile-about-me p {
+  margin: 0;
+
+  color: rgba(0, 0, 0, 0.7);
+
+  font-size: 0.9rem;
+  line-height: 1.5;
+
+  white-space: pre-wrap;
+}
+
+
+/* /* =========================
+   Profile heading
+   ========================= */
+
+/* .connections-tab-profile-modal-content>h2 {
+  margin: 0 0 1.25rem;
+
+  color: #222;
+
+  font-size: 1.6rem;
+  font-weight: 700;
+} */ */
+
+
+/* =========================
+   Profile information
+   ========================= */
+
+.connections-tab-profile-modal-content>p {
+  margin: 0;
+
+  padding: 0.7rem 0;
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+  color: rgba(0, 0, 0, 0.7);
+
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.connections-tab-profile-modal-content>p:last-of-type {
+  border-bottom: none;
+}
+
+.connections-tab-profile-modal-content>p strong {
+  color: #222;
+  font-weight: 700;
+}
+
+
+.profile-modal-section {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.profile-modal-section:last-of-type {
+  border-bottom: none;
+}
+
+.profile-modal-section h3 {
+  margin: 0 0 1rem;
+  color: #222;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+/* Basic information */
+
+.profile-modal-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1rem;
+}
+
+.profile-modal-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.8rem 0.9rem;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+}
+
+.profile-modal-info-item span,
+.profile-modal-label,
+.profile-modal-match-item span {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.profile-modal-info-item strong {
+  color: #222;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Interests / personality */
+
+.profile-modal-tag-group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.profile-modal-tag-group>div {
+  min-width: 0;
+}
+
+.profile-modal-label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.profile-modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.profile-modal-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.65rem;
+  background: rgba(255, 150, 50, 0.14);
+  border: 1px solid rgba(255, 140, 40, 0.3);
+  border-radius: 999px;
+  color: #8a4a12;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Matching */
+
+.profile-modal-matching {
+  padding-bottom: 0;
+}
+
+.profile-modal-match-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.profile-modal-match-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.85rem 0.9rem;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+}
+
+.profile-modal-match-item strong {
+  color: #222;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+
+/* =========================
+   Action buttons
+   ========================= */
 
 .connections-tab-profile-modal-actions {
   display: flex;
-  justify-content: space-around;
-  margin-top: 20px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 0.75rem;
+
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-.connections-tab-match-button {
-  background-color: #4caf50;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
+.connections-tab-match-button,
+.connections-tab-reject-button,
+.connections-tab-delete-button {
+  min-width: 120px;
+
+  padding: 0.65rem 1.2rem;
+
+  border-radius: 10px;
+
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.2s ease;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+
+/* =========================
+   Match
+   ========================= */
+
+.connections-tab-match-button {
+  background: rgba(255, 150, 50, 0.9);
+
+  color: white;
+
+  border: 1px solid rgba(255, 130, 30, 0.7);
 }
 
 .connections-tab-match-button:hover {
-  background-color: #388e3c;
+  background: rgb(255, 140, 40);
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 4px 10px rgba(255, 140, 40, 0.2);
 }
 
+
+/* =========================
+   Reject / block
+   ========================= */
+
 .connections-tab-reject-button {
-  background-color: #f44336;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.2s ease;
+  background: rgba(190, 45, 45, 0.08);
+
+  color: #a52a2a;
+
+  border: 1px solid rgba(165, 42, 42, 0.3);
 }
 
 .connections-tab-reject-button:hover {
-  background-color: #d32f2f;
+  background: rgba(190, 45, 45, 0.14);
+
+  border-color: rgba(165, 42, 42, 0.5);
+
+  transform: translateY(-1px);
 }
 
+
+/* =========================
+   Delete
+   ========================= */
+
 .connections-tab-delete-button {
-  background-color: #b71c1c; /* dark red */
-  color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.2s ease;
-  margin-left: 10px;
+  background: rgba(0, 0, 0, 0.06);
+
+  color: #333;
+
+  border: 1px solid rgba(0, 0, 0, 0.18);
 }
 
 .connections-tab-delete-button:hover {
-  background-color: #7f0000;
+  background: rgba(0, 0, 0, 0.1);
+
+  border-color: rgba(0, 0, 0, 0.3);
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================
+   Mobile
+   ========================= */
+
+@media (max-width: 600px) {
+
+  .connections-tab-profile-modal-overlay {
+    padding: 0.75rem;
+
+    align-items: center;
+  }
+
+  .connections-tab-profile-modal-content {
+    max-height: 94vh;
+
+    padding: 1.25rem;
+
+    border-radius: 16px;
+  }
+
+  .connections-tab-profile-modal-image-container {
+    flex-direction: column;
+    align-items: center;
+
+    gap: 1rem;
+
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+  }
+
+  .connections-tab-profile-modal-image {
+    width: 140px;
+    height: 140px;
+  }
+
+  .connections-tab-profile-about-me {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .connections-tab-profile-modal-content>h2 {
+    font-size: 1.35rem;
+  }
+
+  .connections-tab-profile-modal-content>p {
+    font-size: 0.88rem;
+  }
+
+  .connections-tab-profile-modal-actions {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .connections-tab-match-button,
+  .connections-tab-reject-button,
+  .connections-tab-delete-button {
+    width: 100%;
+  }
+
+
+  .profile-modal-info-grid,
+  .profile-modal-tag-group,
+  .profile-modal-match-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-modal-section {
+    padding: 1.25rem 0;
+  }
+
 }

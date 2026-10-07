@@ -1,316 +1,392 @@
-/*header*/
 @import url('https://fonts.googleapis.com/css2?family=Potta+One&display=swap');
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
 .frontpage-header {
     position: fixed;
     top: 0;
+    left: 0;
     width: 100%;
     height: 58px;
-    display: block;
-    background: linear-gradient(170deg, #FF6B6B, #FFD93D);
-    backdrop-filter: blur(10px);
     z-index: 9999;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    border-bottom: 2px solid rgb(99, 97, 97);
-  }
-  
-  .header-content {
+
+    background: linear-gradient(170deg, #FF6B6B, #FFD93D);
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+
+    box-sizing: border-box;
+}
+
+.header-content {
     width: 100%;
     height: 100%;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 2rem;
-  }
-  
-  .logo-container {
+
+    padding: 0 1.5rem;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.logo-container {
     height: 100%;
     display: flex;
     align-items: center;
-    float: left;
-  }
-  
-  .logo-container h1{
-    color: wheat;
-    height: 100%;
-    display: table-cell;
-    vertical-align: middle;
-    font-family: "Potta One", system-ui;
-    
-  }
 
-.logo-link {
-  text-decoration: none;
-  color: inherit;
+    min-width: 0;
 }
+
+.logo-container .logo-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    height: 100%;
+
+    text-decoration: none;
+    color: inherit;
+}
+
+.small-logo {
+    height: 46px;
+    width: auto;
+    object-fit: contain;
+}
+
+.multicolor-logo {
+    margin: 0;
+
+    font-family: "Potta One", system-ui, sans-serif;
+    font-size: 1.8rem;
+    line-height: 1;
+
+    white-space: nowrap;
+}
+
+.multicolor-logo span {
+    display: inline-block;
+
+    transition: transform 0.2s ease;
+
+    text-shadow:
+        -2px 5px 0 #000,
+         2px -2px 0 #000,
+        -2px  2px 0 #000,
+         2px  2px 0 #000;
+}
+
+.logo-link:hover .multicolor-logo span {
+    transform: translateY(-1px);
+}
+
+
+/* Logo colors — intentionally unchanged */
+
+.c1 { color: #FF6B00; }
+.c2 { color: #FF9248; }
+.c3 { color: #FFA94D; }
+.c4 { color: #FFB347; }
+.c5 { color: #FF7F11; }
+.c6 { color: #FFAE42; }
+.c7 { color: #FFC66E; }
+.c8 { color: #FF8C42; }
+
+
+/* =========================================================
+   RIGHT SIDE
+   ========================================================= */
+
+.header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    min-width: 0;
+}
+
+
+/* =========================================================
+   USER INFO
+   ========================================================= */
 
 .user-info-link {
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  align-items: center;
-}
-  
-  .header-buttons {
-    display: flex;
-    gap: 1rem;
-  }
-
-  .user-info {
     display: flex;
     align-items: center;
-    max-width: 240px; 
-    min-width: 180px;
-    /* justify-content: center; */
-    border-left: 1px solid black;
-    border-right: 1px solid black; 
-    flex-shrink: 0;
-    padding: 8px;
-    border-radius: 0px; 
-  }
-  .user-info img {
-  width: 32px;
-  height: 32px;
-  object-fit: cover;
-  border-radius: 50%;
-  flex-shrink: 0;
+
+    text-decoration: none;
+    color: inherit;
+
+    min-width: 0;
 }
 
-  .user-info:hover {
-    background: rgba(255, 255, 255, 0.3);
-  }
-  
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
 
-  /* Hamburger menu icon */
-  .hamburger {
+    min-width: 160px;
+    max-width: 240px;
+
+    padding: 5px 10px;
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(0, 0, 0, 0.35);
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.16);
+
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.user-info:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.user-info img {
+    width: 32px;
+    height: 32px;
+
+    object-fit: cover;
+    border-radius: 50%;
+
+    flex-shrink: 0;
+}
+
+.user-name {
+    min-width: 0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #222;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   HAMBURGER
+   ========================================================= */
+
+.hamburger {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
 
-    cursor: pointer;
-    margin-right: 15px;
-    margin-left: 10px;
-    padding: 10px 0;
-    align-self: center; 
-  }
-
-  .hamburger {
-    padding: 0;
+    width: 30px;
     height: 24px;
-  }
+
+    margin: 0 5px;
+    padding: 0;
+
+    cursor: pointer;
+}
 
 .hamburger span {
-  display: block;
-  width: 30px;
-  height: 3px;
-  background-color: #fff;
+    display: block;
+
+    width: 30px;
+    height: 3px;
+
+    background-color: #fff;
+    border-radius: 2px;
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
 }
 
 .hamburger-button {
-  background: rgba(255, 255, 255, 0);
-  border: none;
-  padding: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 9px;
+
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    transition: background-color 0.15s ease;
 }
 
 .hamburger-button:hover {
-  background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.25);
 }
 
 
-  
-  .header-btn{
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.5rem;
-    color: white;
-    cursor: pointer;
-    font-weight: 500;
+/* =========================================================
+   HEADER BUTTONS
+   Used for Register / Login
+   ========================================================= */
+
+.header-btn {
     position: relative;
-    transition: all 0.2s;
-    background-color: rgba(0, 0, 0, 0.3);
 
-    z-index: 1; 
-  }
+    padding: 0.55rem 1rem;
 
-  
-  @property --angle {
-    syntax: "<angle>";
-    initial-value: 0deg;
-    inherits: false;
-  }
-  
-  .header-btn::before,
-  .header-btn::after{
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 0.5rem;
-    z-index: -1; 
-    padding: 2px;
-    background-image: conic-gradient(
-      from var(--angle),
-      transparent 1%,
-      rgb(248, 161, 0),
-      rgb(132, 155, 2),
-      rgb(253, 253, 253)
-    );
-    -webkit-mask: 
-      linear-gradient(#fff 0 0) content-box, 
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    animation: spin 4s linear infinite;
-  }
-  
-  
-  
-  .header-btn::before{
-    z-index: -2;
-    filter: blur(1.5rem);
-    opacity: 0.5;
-  }
-  .header-btn::after{
-    z-index: -1;
-  }
-  
-  @keyframes spin {
-    from {
-      --angle: 0deg;
-    }
-    to {
-      --angle: 360deg;
-    }
-  }
-  
-  .header-btn:hover{
-    background-color: white;
-    color: #000;
-    box-shadow: 0 0 15px rgb(240, 184, 0),
-    0 0 30px rgba(25, 2, 155, 1),
-    0 0 45px rgba(15, 149, 202, 1);
-  }
-  
-  .header-btn:hover::before,
-  .header-btn:hover::after{
-    background-color: #990512;
-    animation-duration: 1s;
-    padding: 4px;
-    opacity: 1;
-  }
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 9px;
 
-  .multicolor-logo span {
-  display: inline-block;
-  transition: transform 0.2s ease;
-  text-shadow:
-    -2px 5px 0 #000,
-     2px -2px 0 #000,
-    -2px  2px 0 #000,
-     2px  2px 0 #000;
-}
+    color: #fff;
 
-.c1 { color: #FF6B00; } 
-.c2 { color: #FF9248; } 
-.c3 { color: #FFA94D; } 
-.c4 { color: #FFB347; }  
-.c5 { color: #FF7F11; } 
-.c6 { color: #FFAE42; } 
-.c7 { color: #FFC66E; } 
-.c8 { color: #FF8C42; } 
-
-
-.small-logo {
-  height: 50px;
-  width: auto;
-  object-fit: contain;
-}
-
-
-.logo-container .logo-link {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-
-.multicolor-logo {
-  font-size: 1.8rem; 
-}
-
-/* Mobile styles */
-@media (max-width: 600px) {
-  .frontpage-header {
-    height: 50px;
-    padding: 0 1rem;
-  }
-  .header-content {
-    padding: 0 1rem;
-  }
-  .header-buttons {
-    gap: 0.5rem;
-  }
-  .user-info {
-    padding: 4px 6px;
-  }
-  .header-btn {
-    padding: 0.4rem 0.8rem;
+    font-family: inherit;
     font-size: 0.9rem;
-  }
-  
-  .multicolor-logo {
-    font-size: 0.9rem; /* smaller font on mobile */
-  }
+    font-weight: 600;
 
-  .small-logo {
-    height: 25px;
-  }
+    cursor: pointer;
 
-  /* USER */
-
-  .user-info {
-    padding: 4px 8px;
-    min-width: 150px;
-    max-width: 220px;
-    display: flex;
-    align-items: center;
-    gap: 20px;             
-    flex-shrink: 0;
-    flex-wrap: nowrap;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .user-info img, .user-info > * {
-    width: 28px !important;
-    height: 28px !important;
-    min-width: 28px !important;
-    min-height: 28px !important;
-  
-    flex-shrink: 0;
-    display: block;          
-  }
-
-  .user-name {
-    font-size: 0.95rem;
-    line-height: 28px;       
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex-grow: 1;
-    min-width: 0;
-    font-weight: 600;        
-    color: black;             
-     transform: none;
-     margin-left: 2px;
-  }
-
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease,
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
 }
+
+.header-btn:hover {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 1);
+
+    color: #222;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.header-btn:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .frontpage-header {
+        height: 50px;
+    }
+
+    .header-content {
+        padding: 0 0.75rem;
+    }
+
+    .header-buttons {
+        gap: 0.4rem;
+    }
+
+    .small-logo {
+        height: 36px;
+    }
+
+    .multicolor-logo {
+        font-size: 1.15rem;
+    }
+
+    .user-info {
+        min-width: 0;
+        max-width: 180px;
+
+        padding: 4px 7px;
+
+        gap: 0.5rem;
+
+        border-radius: 8px;
+    }
+
+    .user-info img {
+        width: 28px;
+        height: 28px;
+    }
+
+    .user-name {
+        font-size: 0.85rem;
+    }
+
+    .header-btn {
+        padding: 0.45rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .hamburger {
+        margin: 0 2px;
+    }
+
+    .hamburger span {
+        width: 26px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL SCREENS
+   ========================================================= */
+
 @media (max-width: 420px) {
-  .multicolor-logo {
-    display: none !important;
-  }
+
+    .header-content {
+        padding: 0 0.5rem;
+    }
+
+    .multicolor-logo {
+        display: none;
+    }
+
+    .small-logo {
+        height: 34px;
+    }
+
+    .user-info {
+        max-width: 145px;
+    }
+
+    .user-name {
+        font-size: 0.8rem;
+    }
 }
 
+.header-buttons {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+}
+
+.user-info-link {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.user-info {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.header-buttons > * {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
