@@ -368,25 +368,3 @@
     }
 }
 
-.header-buttons {
-    display: flex !important;
-    align-items: center !important;
-    gap: 0.75rem !important;
-}
-
-.user-info-link {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-.user-info {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-.header-buttons > * {
-    visibility: visible !important;
-    opacity: 1 !important;
-}
