@@ -174,7 +174,6 @@ public class UserMapperImpl implements UserMapper {
                 personalityService.getPersonalitiesByIds(userDTO.getPersonalityIds()),
                 locationService.getUserLocationByUserId(userDTO.getId()),
                 interestService.getInterestsByIds(userDTO.getInterestIds()),
-                authService.getMatchingFilterByUserId(userDTO.getId()),
                 purposeService.getPurposeById(userDTO.getPurposeId()),
                 userDTO.getUserDescription());
         return user;

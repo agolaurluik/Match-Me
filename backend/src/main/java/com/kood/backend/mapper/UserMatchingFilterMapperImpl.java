@@ -22,7 +22,7 @@ public class UserMatchingFilterMapperImpl implements UserMatchingFilterMapper {
 
         return UserMatchingFilterDTO.builder()
                 .id(entity.getId())
-                .userId(entity.getUser().getId())
+                .userId(entity.getUserId())
                 .match_limit(entity.getMatch_limit())
                 .genderPreference(entity.getGenderPreference())
                 .interestScore(entity.getInterestScore())
@@ -53,9 +53,11 @@ public class UserMatchingFilterMapperImpl implements UserMatchingFilterMapper {
         filter.setRadius(dto.getRadius());
 
         userRepository.findById(dto.getUserId())
-                .ifPresentOrElse(filter::setUser, () -> {
-                    throw new BadRequestException("User not found with id: " + dto.getUserId());
-                });
+                .ifPresentOrElse(
+                        userId -> filter.setUserId(dto.getUserId()),
+                        () -> {
+                            throw new BadRequestException("User not found with id: " + dto.getUserId());
+                        });
 
         return filter;
     }

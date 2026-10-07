@@ -26,13 +26,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 public class User {
 
@@ -78,10 +80,6 @@ public class User {
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @JoinTable(name = "user_interest", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "interest_id"))
     private Set<Interest> interests = new HashSet<>();
-
-    @JsonIgnore
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private MatchingFilter matchingFilter;
 
     @ManyToOne
     @JoinColumn(name = "purpose_id")

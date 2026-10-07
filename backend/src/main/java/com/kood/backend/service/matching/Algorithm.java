@@ -9,10 +9,13 @@ import com.kood.backend.mapper.UserMatchingFilterMapperImpl;
 import com.kood.backend.dto.algorithmDTOs.UserMatchDetailDTO;
 import com.kood.backend.dto.algorithmDTOs.UserMatchingFilterDTO;
 import com.kood.backend.repository.UserRepository;
+import com.kood.backend.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
 import com.kood.backend.repository.LocationRepository;
+import com.kood.backend.repository.MatchingFilterRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -32,6 +35,8 @@ public class Algorithm {
 
         private final UserRepository userRepository;
         private final LocationRepository locationRepository;
+        private final MatchingFilterRepository matchingFilterRepository;
+        private final UserService userService;
         private final UserMatchingFilterMapperImpl userMatchingFilterMapperImpl;
 
         private boolean matchesGenderPreference(User candidate, String genderPreference) {
@@ -215,12 +220,12 @@ public class Algorithm {
         }
 
         public UserMatchingFilterDTO updateMatchingFilter(User user, UserMatchingFilterDTO points) {
-                MatchingFilter filter = user.getMatchingFilter();
+                MatchingFilter filter = userService.getUserMatchingFilterByUserId(user.getId());
 
                 if (filter == null) {
                         filter = new MatchingFilter();
-                        filter.setUser(user);
-                        user.setMatchingFilter(filter);
+                        filter.setUserId(user.getId());
+                        matchingFilterRepository.save(filter);
                 }
 
                 // Time to overwrite the old filter values

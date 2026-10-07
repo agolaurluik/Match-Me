@@ -12,6 +12,7 @@ import com.kood.backend.exceptions.EmailAlreadyExistsException;
 import com.kood.backend.exceptions.EmailNotFoundException;
 import com.kood.backend.repository.AuthRepository;
 import com.kood.backend.repository.GenderRepository;
+import com.kood.backend.repository.MatchingFilterRepository;
 import com.kood.backend.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthRepository authRepository;
     private final GenderRepository genderRepository;
+    private final MatchingFilterRepository matchingFilterRepository;
 
     public User registerUser(RegisterDTO userData) {
         if (userRepository.existsByEmail(userData.getEmail())) {
@@ -58,9 +60,9 @@ public class AuthService {
         user.setNationality(null);
         user.setLocation(null);
 
+        User savedUser = userRepository.save(user);
         MatchingFilter filter = new MatchingFilter();
-        filter.setUser(user);
-        user.setMatchingFilter(filter);
+        filter.setUserId(user.getId());
 
         filter.setMatch_limit(9);
         filter.setGenderPreference("lookingforall");
@@ -71,8 +73,8 @@ public class AuthService {
         filter.setHighestAge(100);
         filter.setLowestAge(0);
         filter.setRadius(10000);
-
-        return userRepository.save(user);
+        matchingFilterRepository.save(filter);
+        return savedUser;
     }
 
     public MatchingFilter getMatchingFilterByUserId(Long userId) {

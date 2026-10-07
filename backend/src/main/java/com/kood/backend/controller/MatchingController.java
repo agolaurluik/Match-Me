@@ -66,7 +66,7 @@ public class MatchingController {
                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
                 User currentUser = userService.getUserById(userDetails.getId());
-                MatchingFilter filter = currentUser.getMatchingFilter();
+                MatchingFilter filter = userService.getUserMatchingFilterByUserId(currentUser.getId());
                 Map<String, Object> response = new HashMap<>();
                 if (filter == null) {
                         response.put("error",
@@ -103,7 +103,7 @@ public class MatchingController {
                 System.err.println("found current User");
                 User candidate = userService.getUserById(id);
                 System.err.println("found candidate User");
-                MatchingFilter filter = currentUser.getMatchingFilter();
+                MatchingFilter filter = userService.getUserMatchingFilterByUserId(currentUser.getId());
                 Map<String, Object> response = new HashMap<>();
                 if (filter == null) {
                         response.put("error",

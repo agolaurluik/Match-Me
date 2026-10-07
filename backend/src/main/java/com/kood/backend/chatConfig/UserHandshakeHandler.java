@@ -21,7 +21,7 @@ public class UserHandshakeHandler extends DefaultHandshakeHandler {
         return new Principal() {
             @Override
             public String getName() {
-                System.out.println("determineUser: returning Principal name = " + userId);
+                System.out.println("determineUser: returning userId = " + userId);
                 return String.valueOf(userId);
             }
         };

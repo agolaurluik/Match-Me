@@ -101,6 +101,15 @@ public class UserService {
         }
     }
 
+    public MatchingFilter getUserMatchingFilterByUserId(Long id) {
+        Optional<MatchingFilter> existingFilter = matchingFilterRepository.findByUserId(id);
+        if (existingFilter.isPresent()) {
+            return existingFilter.get();
+        } else {
+            throw new NotFoundException("Matching filter not found for user ID: " + id);
+        }
+    }
+
     // Update
     @Transactional
     public UserFullDTO updateProfile(UserDetailsImpl userDetails, UserDTO userData) {
