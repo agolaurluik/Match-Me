@@ -33,6 +33,8 @@ public class ImageProcessingService {
         File tempFile = null;
         try {
             tempFile = File.createTempFile("uploaded-image-", ".tmp");
+            if (tempFile == null)
+                throw new ImageProcessingException("TempFile null while processing image");
             newProfileImage.transferTo(tempFile);
             File processedImage = imageConverter.processImage(tempFile);
             return processedImage.getName();
@@ -62,6 +64,8 @@ public class ImageProcessingService {
 
         try {
             tempFile = File.createTempFile("profile-upload-", newProfileImage.getOriginalFilename());
+            if (tempFile == null)
+                throw new ImageProcessingException("TempFile null while updating Image");
             newProfileImage.transferTo(tempFile);
             File processedNewImageFile = imageConverter.processImage(tempFile);
             newProfileImageName = processedNewImageFile.getName();

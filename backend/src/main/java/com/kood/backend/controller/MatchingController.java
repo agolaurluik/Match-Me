@@ -98,14 +98,12 @@ public class MatchingController {
         }
 
         @GetMapping("/getMatchInfoByID/{id}")
-        public ResponseEntity<Map<String, Object>> getMatchInfoByID(
+        public ResponseEntity<Map<String, Object>> getMatchInfoByCandidateId(
                         @AuthenticationPrincipal UserDetailsImpl userDetails,
                         @PathVariable @NonNull Long id) {
 
                 User currentUser = userService.getUserById(Objects.requireNonNull(userDetails.getId()));
-                System.err.println("found current User");
                 User candidate = userService.getUserById(id);
-                System.err.println("found candidate User");
                 MatchingFilter filter = userService.getUserMatchingFilterByUserId(currentUser.getId());
                 Map<String, Object> response = new HashMap<>();
                 if (filter == null) {
