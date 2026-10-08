@@ -11,7 +11,15 @@ import { StompProvider } from "../components/UiComponents/ConnectionUI/StompProv
 const ConnectionsPage = () => {
 
 
-  const { profile, loading: profileLoading, error: profileError } = useProfile();
+  const authToken = localStorage.getItem('Authorization');
+
+  const {
+    profile,
+    loading: profileLoading,
+    error: profileError
+  } = useProfile(authToken);
+
+  
   const [countdown, setCountdown] = useState(5);
   const navigate = useNavigate();
 
@@ -32,19 +40,25 @@ const ConnectionsPage = () => {
       username
     } = profile;
 
-    const hasLocation = locationId !== null || namedLocationId !== null;
+    const hasLocation =
+      locationId != null || namedLocationId != null;
 
     return (
-      aboutMeText !== null &&
-      birthDate !== null &&
-      genderId !== null &&
-      interestIds?.length > 0 &&
+      aboutMeText != null &&
+      aboutMeText.trim() !== '' &&
+      birthDate != null &&
+      genderId != null &&
+      Array.isArray(interestIds) &&
+      interestIds.length > 0 &&
       hasLocation &&
-      nationalityId !== null &&
-      personalityIds?.length > 0 &&
-      profileImageName !== null &&
-      purposeId !== null &&
-      username !== null
+      nationalityId != null &&
+      Array.isArray(personalityIds) &&
+      personalityIds.length > 0 &&
+      profileImageName != null &&
+      profileImageName !== '' &&
+      purposeId != null &&
+      username != null &&
+      username !== ''
     );
   };
 

@@ -30,7 +30,8 @@ function BioPage() {
   const [aboutMeText, setAboutMeText] = useState()
   const navigate = useNavigate();
 
-  const { profile, loading, error } = useProfile();
+  const authToken = localStorage.getItem('Authorization');
+  const { profile, loading, error } = useProfile(authToken);
 
   const originalData = profile;
   //hooks

@@ -7,14 +7,13 @@ export default function useProfile(authToken, frontPage = false) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log("token?")
-    if (!authToken && frontPage) {
+    if (!authToken) {
       setLoading(false);
+      setProfile(null);
       return;
     }
-    // console.log("fetching")
+
     async function fetchProfile() {
-      // console.log("fetching profile...")
       try {
         const [userDataResponse, bioDataResponse, profileDataResponse] = await Promise.all([
           api.fetchMeById(),
@@ -22,7 +21,7 @@ export default function useProfile(authToken, frontPage = false) {
           api.fetchMeProfile(),
         ]);
 
-        const userData = userDataResponse.bio || {}; 
+        const userData = userDataResponse.bio || {};
         const bioData = bioDataResponse.bio || bioDataResponse;
         const profileData = profileDataResponse.profile || profileDataResponse
 
@@ -33,7 +32,7 @@ export default function useProfile(authToken, frontPage = false) {
           aboutMeText: profileData.userDescription,
           email: profileData.email,
         });
-        
+
       } catch (err) {
         setError(err);
       } finally {

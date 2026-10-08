@@ -3,7 +3,7 @@ import './RegisterModal.css';
 import api from '../../api/api';
 import { useNavigate } from 'react-router-dom';
 
-function LoginModal({ onClose }) {
+function LoginModal({ onClose, onLoginSuccess }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
     const [error, setError] = useState('');
@@ -19,9 +19,11 @@ function LoginModal({ onClose }) {
         try {
             const data = await api.loginUser({ email, password });
 
-            localStorage.setItem('Authorization', "Bearer " + data.token);
+            const token = 'Bearer ' + data.token;
 
-            // console.log('Login success:', data);
+            localStorage.setItem('Authorization', token);
+            onLoginSuccess(token);
+
             onClose();
             navigate('/connections');
         } catch (error) {
