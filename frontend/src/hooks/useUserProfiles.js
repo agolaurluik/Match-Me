@@ -62,7 +62,6 @@ export function useUserProfiles({ userIds = null, fetchFromRecommendations = tru
           const usersData = await Promise.all(
             ids.map(async (id) => {
             try {
-              console.log(`🔄 Fetching data for user ID: ${id}`);
 
               const [userRes, bioRes, matchRes] = await Promise.all([
                 api.fetchUserById(id),
@@ -74,7 +73,7 @@ export function useUserProfiles({ userIds = null, fetchFromRecommendations = tru
               const bio = bioRes.profile;
               const matchingInfo = matchRes.matchInfo;
 
-              console.log("✅ Data fetched:", { user, bio, matchingInfo });
+              console.log("Matching info for user ID:", { user, bio, matchingInfo });
 
               function calculateAge(birthDateStringOrDate) {
                 if (!birthDateStringOrDate) return null;
@@ -106,15 +105,15 @@ export function useUserProfiles({ userIds = null, fetchFromRecommendations = tru
                   nationality: getNationalityName(bio.nationalityId),
                   interests: getInterestNames(bio.interestIds),
                   personalities: getPersonalityNames(bio.personalityIds),
-                  sharedInterests: matchingInfo.sharedInterests,
-                  sharedPersonalities: matchingInfo.sharedPersonalities,
+                  sharedInterests: matchingInfo.sharedInterestsSet,
+                  sharedPersonalities: matchingInfo.sharedPersonalitiesSet,
                   distance: matchingInfo.distance,
-                  score: matchingInfo.score
+                  score: matchingInfo.matchPercentageRounded
                 }
               };
             } catch (err) {
               console.error(`Error fetching data for user ID ${id}:`, err);
-              return null; // skip this user
+              return null; 
             }
           })
         );

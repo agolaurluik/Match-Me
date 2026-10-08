@@ -318,6 +318,13 @@
   font-weight: 600;
 }
 
+.profile-modal-tag.shared {
+    background: rgba(255, 150, 50, 0.9);
+    border-color: rgba(255, 130, 30, 0.9);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(255, 140, 40, 0.18);
+}
+
 /* Matching */
 
 .profile-modal-matching {

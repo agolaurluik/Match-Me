@@ -181,23 +181,40 @@ const ProfileModal = ({ user, onClose, classPrefix, onUserRemoved, updateConnect
                     <div className="profile-modal-tag-group">
                         <div>
                             <span className="profile-modal-label">Interests</span>
+
                             <div className="profile-modal-tags">
-                                {user.bio.interests.map((interest, index) => (
-                                    <span key={index} className="profile-modal-tag">
-                                        {interest}
-                                    </span>
-                                ))}
+                                {user.bio.interests.map((interest, index) => {
+                                    const isShared = user.bio.sharedInterests?.includes(interest);
+
+                                    return (
+                                        <span
+                                            key={index}
+                                            className={`profile-modal-tag ${isShared ? 'shared' : ''}`}
+                                        >
+                                            {interest}
+                                        </span>
+                                    );
+                                })}
                             </div>
                         </div>
 
                         <div>
                             <span className="profile-modal-label">Personality</span>
+
                             <div className="profile-modal-tags">
-                                {user.bio.personalities.map((personality, index) => (
-                                    <span key={index} className="profile-modal-tag">
-                                        {personality}
-                                    </span>
-                                ))}
+                                {user.bio.personalities.map((personality, index) => {
+                                    const isShared =
+                                        user.bio.sharedPersonalities?.includes(personality);
+
+                                    return (
+                                        <span
+                                            key={index}
+                                            className={`profile-modal-tag ${isShared ? 'shared' : ''}`}
+                                        >
+                                            {personality}
+                                        </span>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
@@ -208,16 +225,6 @@ const ProfileModal = ({ user, onClose, classPrefix, onUserRemoved, updateConnect
 
                     <div className="profile-modal-match-grid">
                         <div className="profile-modal-match-item">
-                            <span>Shared interests</span>
-                            <strong>{user.bio.sharedInterests}</strong>
-                        </div>
-
-                        <div className="profile-modal-match-item">
-                            <span>Shared personalities</span>
-                            <strong>{user.bio.sharedPersonalities}</strong>
-                        </div>
-
-                        <div className="profile-modal-match-item">
                             <span>Distance</span>
                             <strong>{user.bio.distance} km</strong>
                         </div>
@@ -225,14 +232,8 @@ const ProfileModal = ({ user, onClose, classPrefix, onUserRemoved, updateConnect
                         <div className="profile-modal-match-item">
                             <span>Matching score</span>
                             <strong>
-                                {"⭐".repeat(
-                                    user.bio.score > 9
-                                        ? 3
-                                        : user.bio.score > 4
-                                            ? 2
-                                            : 1
-                                )}{" "}
-                                {user.bio.score}
+                                {"⭐".repeat(Math.ceil(user.bio.score / 20))}{" "}
+                                {user.bio.score}%
                             </strong>
                         </div>
                     </div>
