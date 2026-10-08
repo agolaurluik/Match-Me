@@ -17,7 +17,11 @@ const PageLayout = () => {
 
     const location = useLocation();
 
-    const { profile } = useProfile();
+    const [authToken, setAuthToken] = useState(
+        localStorage.getItem('Authorization')
+    );
+    const { profile } = useProfile(authToken);
+
     const secureImageUrl = useSecureImage(profile?.profileImageName);
 
     const isFrontpage = location.pathname === '/';
@@ -65,6 +69,7 @@ const PageLayout = () => {
             {showLogin && (
                 <LoginModal
                     onClose={() => setShowLogin(false)}
+                    onLoginSuccess={(token) => setAuthToken(token)}
                 />
             )}
         </>

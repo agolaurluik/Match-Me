@@ -5,7 +5,13 @@
 .page-grid {
     display: grid;
 
-    grid-template-columns: minmax(220px, 1.1fr) minmax(0, 4fr);
+    /*
+     * Sidebar gets a reasonable fixed-ish range,
+     * chat takes the remaining space.
+     */
+    grid-template-columns:
+        minmax(200px, 280px)
+        minmax(0, 1fr);
 
     gap: 1rem;
 
@@ -20,6 +26,16 @@
 }
 
 
+/*
+ * Very important:
+ * allow grid children to actually shrink.
+ */
+.page-grid > * {
+    min-width: 0;
+    min-height: 0;
+}
+
+
 /* =========================
    Sidebar
    ========================= */
@@ -27,17 +43,20 @@
 .sidebar {
     min-width: 0;
     min-height: 0;
-    background: rgb(237, 234, 223);
 
+    width: 100%;
     height: 100%;
 
+    box-sizing: border-box;
+
+    background: #EDEADE;
+
+    overflow-x: hidden;
     overflow-y: auto;
 
     border-right: 1px solid rgba(0, 0, 0, 0.12);
 
     padding-right: 0.75rem;
-
-    box-sizing: border-box;
 }
 
 
@@ -49,12 +68,23 @@
     min-width: 0;
     min-height: 0;
 
+    width: 100%;
     height: 100%;
 
     display: flex;
     flex-direction: column;
 
     overflow: hidden;
+}
+
+
+/*
+ * Make sure the ChatBox itself cannot
+ * force the grid wider.
+ */
+.chat-main > * {
+    min-width: 0;
+    max-width: 100%;
 }
 
 
@@ -77,6 +107,30 @@
 
     display: flex;
     flex-direction: column;
+
+    min-width: 0;
+}
+
+
+/* =========================
+   Medium screens
+   ========================= */
+
+@media (max-width: 900px) {
+
+    .page-grid {
+        grid-template-columns:
+            minmax(180px, 220px)
+            minmax(0, 1fr);
+
+        gap: 0.75rem;
+
+        padding: 0.75rem;
+    }
+
+    .sidebar {
+        padding-right: 0.6rem;
+    }
 }
 
 
@@ -97,6 +151,7 @@
     }
 
     .sidebar {
+        width: 100%;
         height: 35vh;
         max-height: 300px;
 
@@ -105,10 +160,12 @@
         border-right: none;
         border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 
+        overflow-x: hidden;
         overflow-y: auto;
     }
 
     .chat-main {
+        width: 100%;
         min-height: 0;
     }
 }

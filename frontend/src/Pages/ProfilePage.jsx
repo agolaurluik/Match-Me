@@ -19,7 +19,10 @@ const findNameById = (list, id) => {
 
 
 const ProfilePage = () => {
-    const { profile, loading, error } = useProfile();
+    
+    const authToken = localStorage.getItem('Authorization');
+    const { profile, loading, error } = useProfile(authToken);
+
     const secureImageUrl = useSecureImage(profile?.profileImageName);
 
     const {
