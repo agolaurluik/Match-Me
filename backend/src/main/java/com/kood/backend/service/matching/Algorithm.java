@@ -326,7 +326,7 @@ public class Algorithm {
                                                         + (viewer.getPersonalities().size() * personalityScore) +
                                                         sharedPurposeScore + sharedNationalityScore;
 
-                                        double matchPercentageDouble = score / maxScore;
+                                        double matchPercentageDouble = (double) score / (double) maxScore;
 
                                         int matchPercentageRounded = (int) Math.round(matchPercentageDouble);
 
