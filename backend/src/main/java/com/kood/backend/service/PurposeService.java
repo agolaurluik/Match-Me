@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.kood.backend.dto.EntityDTOs.PurposeDTO;
@@ -69,7 +70,7 @@ public class PurposeService {
     }
 
     // Retrieve
-    public PurposeDTO getPurposeDTOById(Long id) {
+    public PurposeDTO getPurposeDTOById(@NonNull Long id) {
         Optional<Purpose> existingPurpose = purposeRepository.findById(id);
         if (existingPurpose.isPresent()) {
             PurposeDTO foundPurposeDTO = PurposeMapper.toDTO(existingPurpose.get());
@@ -78,7 +79,7 @@ public class PurposeService {
         throw new BadRequestException("Purpose with the id: " + id + "not found.");
     }
 
-    public Purpose getPurposeById(Long id) {
+    public Purpose getPurposeById(@NonNull Long id) {
         Optional<Purpose> existingPurpose = purposeRepository.findById(id);
         if (existingPurpose.isPresent()) {
             Purpose foundPurposeDTO = existingPurpose.get();
@@ -100,7 +101,10 @@ public class PurposeService {
         Set<Purpose> retrievedPurposes = new HashSet<>();
         if (incomingPurposes != null) {
             for (Purpose p : incomingPurposes) {
-                Purpose existingPurpose = getPurposeById(p.getId());
+                Long purposeId = p.getId();
+                if (purposeId == null)
+                    continue;
+                Purpose existingPurpose = getPurposeById(purposeId);
                 retrievedPurposes.add(existingPurpose);
             }
         }
@@ -121,8 +125,9 @@ public class PurposeService {
 
     @Transactional
     public PurposeDTO updatePurpose(PurposeDTO incomingPurpose) {
-        if (incomingPurpose.getId() != null) {
-            Optional<Purpose> existingPurpose = purposeRepository.findById(incomingPurpose.getId());
+        Long incomingPurposeId = incomingPurpose.getId();
+        if (incomingPurposeId != null) {
+            Optional<Purpose> existingPurpose = purposeRepository.findById(incomingPurposeId);
             if (existingPurpose.isPresent()) {
                 Purpose updatedPurpose = existingPurpose.get();
                 updatedPurpose.setName(incomingPurpose.getName());
@@ -139,7 +144,7 @@ public class PurposeService {
     }
 
     // Delete
-    public void deletePurposeById(Long id) {
+    public void deletePurposeById(@NonNull Long id) {
         if (purposeRepository.existsById(id)) {
             purposeRepository.deleteById(id);
         } else {

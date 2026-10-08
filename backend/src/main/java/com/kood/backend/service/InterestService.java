@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.kood.backend.dto.EntityDTOs.InterestDTO;
@@ -68,7 +69,7 @@ public class InterestService {
     }
 
     // Retrieve
-    public InterestDTO getInterestDTOById(Long id) {
+    public InterestDTO getInterestDTOById(@NonNull Long id) {
         Optional<Interest> existingInterest = InterestRepository.findById(id);
         if (existingInterest.isPresent()) {
             InterestDTO foundInterestDTO = InterestMapper.toDTO(existingInterest.get());
@@ -77,7 +78,7 @@ public class InterestService {
         throw new BadRequestException("Interest with the id: " + id + "not found.");
     }
 
-    public Interest getInterestById(Long id) {
+    public Interest getInterestById(@NonNull Long id) {
         Optional<Interest> existingInterest = InterestRepository.findById(id);
         if (existingInterest.isPresent()) {
             Interest foundInterest = existingInterest.get();
@@ -90,6 +91,8 @@ public class InterestService {
         Set<Interest> retrievedInterests = new HashSet<>();
         if (ids != null && !ids.isEmpty()) {
             for (Long i : ids) {
+                if (i == null)
+                    continue;
                 Interest existingInterest = getInterestById(i);
                 retrievedInterests.add(existingInterest);
             }
@@ -101,7 +104,10 @@ public class InterestService {
         Set<Interest> retrievedInterests = new HashSet<>();
         if (incomingInterests != null) {
             for (Interest i : incomingInterests) {
-                Interest existingInterest = getInterestById(i.getId());
+                Long interestId = i.getId();
+                if (interestId == null)
+                    continue;
+                Interest existingInterest = getInterestById(interestId);
                 retrievedInterests.add(existingInterest);
             }
         }
@@ -122,8 +128,9 @@ public class InterestService {
 
     @Transactional
     public InterestDTO updateInterest(InterestDTO incomingInterest) {
-        if (incomingInterest.getId() != null) {
-            Optional<Interest> existingInterest = InterestRepository.findById(incomingInterest.getId());
+        Long incomingInterestId = incomingInterest.getId();
+        if (incomingInterestId != null) {
+            Optional<Interest> existingInterest = InterestRepository.findById(incomingInterestId);
             if (existingInterest.isPresent()) {
                 Interest updatedInterest = existingInterest.get();
                 updatedInterest.setName(incomingInterest.getName());
@@ -140,7 +147,7 @@ public class InterestService {
     }
 
     // Delete
-    public void deleteInterestById(Long id) {
+    public void deleteInterestById(@NonNull Long id) {
         if (InterestRepository.existsById(id)) {
             InterestRepository.deleteById(id);
         } else {

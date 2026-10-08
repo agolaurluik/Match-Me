@@ -38,7 +38,12 @@ public class UserLocationMapperImpl implements UserLocationMapper {
         }
         UserLocation userLocation = new UserLocation();
         userLocation.setId(locationDTO.getLocationId());
-        Optional<User> existingUser = userRepository.findById(locationDTO.getUserId());
+
+        Long locationDTOId = locationDTO.getLocationId();
+        if (locationDTOId == null) {
+            throw new BadRequestException("Location id is null during entity conversion");
+        }
+        Optional<User> existingUser = userRepository.findById(locationDTOId);
         if (existingUser.isPresent()) {
             userLocation.setUser(existingUser.get());
         } else {
@@ -46,7 +51,7 @@ public class UserLocationMapperImpl implements UserLocationMapper {
                     "User with the id: " + locationDTO.getId() + "not found during entity conversion.");
         }
 
-        Optional<Location> existingLocation = locationRepository.findById(locationDTO.getLocationId());
+        Optional<Location> existingLocation = locationRepository.findById(locationDTOId);
         if (existingLocation.isPresent()) {
             userLocation.setLocation(existingLocation.get());
         } else {

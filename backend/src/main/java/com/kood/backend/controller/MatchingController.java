@@ -28,11 +28,13 @@ import lombok.RequiredArgsConstructor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -65,13 +67,14 @@ public class MatchingController {
         public ResponseEntity<Map<String, Object>> getRecommendations(
                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-                User currentUser = userService.getUserById(userDetails.getId());
+                User currentUser = userService.getUserById(Objects.requireNonNull(userDetails.getId()));
                 MatchingFilter filter = userService.getUserMatchingFilterByUserId(currentUser.getId());
+
                 Map<String, Object> response = new HashMap<>();
                 if (filter == null) {
                         response.put("error",
                                         "Matching filter not found for this user with id: " + userDetails.getId());
-                        return ResponseEntity.status(HttpStatus.OK)
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                         .body(response);
                 }
                 List<Long> userConnections = connectionService.getAllConnections(currentUser.getId());
@@ -97,9 +100,9 @@ public class MatchingController {
         @GetMapping("/getMatchInfoByID/{id}")
         public ResponseEntity<Map<String, Object>> getMatchInfoByID(
                         @AuthenticationPrincipal UserDetailsImpl userDetails,
-                        @PathVariable Long id) {
+                        @PathVariable @NonNull Long id) {
 
-                User currentUser = userService.getUserById(userDetails.getId());
+                User currentUser = userService.getUserById(Objects.requireNonNull(userDetails.getId()));
                 System.err.println("found current User");
                 User candidate = userService.getUserById(id);
                 System.err.println("found candidate User");
@@ -148,7 +151,7 @@ public class MatchingController {
                         @AuthenticationPrincipal UserDetailsImpl userDetails,
                         @RequestBody UserMatchingFilterDTO points) {
 
-                User currentUser = userService.getUserById(userDetails.getId());
+                User currentUser = userService.getUserById(Objects.requireNonNull(userDetails.getId()));
                 UserMatchingFilterDTO updated = algorithm.updateMatchingFilter(currentUser, points);
 
                 Map<String, Object> response = new HashMap<>();

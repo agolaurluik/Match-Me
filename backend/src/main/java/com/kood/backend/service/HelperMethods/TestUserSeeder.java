@@ -245,6 +245,8 @@ public class TestUserSeeder implements CommandLineRunner {
 
         Set<Interest> aSetOfRandomInterests = new HashSet<>();
         for (Long randomID : randomSetIntegers) {
+            if (randomID == null)
+                continue;
             Interest newInterest = interestService.getInterestById(randomID);
             if (newInterest != null) {
                 aSetOfRandomInterests.add(newInterest);
@@ -262,6 +264,8 @@ public class TestUserSeeder implements CommandLineRunner {
 
         Set<Personality> aSetOfRandomPersonalities = new HashSet<>();
         for (Long randomID : randomSetIntegers) {
+            if (randomID == null)
+                continue;
             Personality newPersonality = personalityService.getPersonalityById(randomID);
             if (newPersonality != null) {
                 aSetOfRandomPersonalities.add(newPersonality);

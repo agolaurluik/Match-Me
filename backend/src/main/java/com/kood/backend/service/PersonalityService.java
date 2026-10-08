@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.kood.backend.dto.EntityDTOs.PersonalityDTO;
@@ -68,7 +69,7 @@ public class PersonalityService {
     }
 
     // Retrieve
-    public PersonalityDTO getPersonalityDTOById(Long id) {
+    public PersonalityDTO getPersonalityDTOById(@NonNull Long id) {
         Optional<Personality> existingPersonality = personalityRepository.findById(id);
         if (existingPersonality.isPresent()) {
             PersonalityDTO foundPersonalityDTO = PersonalityMapper.toDTO(existingPersonality.get());
@@ -77,7 +78,7 @@ public class PersonalityService {
         throw new BadRequestException("Personality with the id: " + id + "not found.");
     }
 
-    public Personality getPersonalityById(Long id) {
+    public Personality getPersonalityById(@NonNull Long id) {
         Optional<Personality> existingPersonality = personalityRepository.findById(id);
         if (existingPersonality.isPresent()) {
             Personality p = existingPersonality.get();
@@ -90,6 +91,8 @@ public class PersonalityService {
         Set<Personality> retrievedPersonalities = new HashSet<>();
         if (ids != null && !ids.isEmpty()) {
             for (Long i : ids) {
+                if (i == null)
+                    continue;
                 Personality existingPersonality = getPersonalityById(i);
                 retrievedPersonalities.add(existingPersonality);
             }
@@ -101,8 +104,11 @@ public class PersonalityService {
         Set<Personality> retrievedPersonalities = new HashSet<>();
         if (incomingPersonalities != null) {
             for (Personality p : incomingPersonalities) {
-                Personality existingPersonality = getPersonalityById(p.getId());
-                retrievedPersonalities.add(existingPersonality);
+                Long personalityId = p.getId();
+                if (personalityId != null) {
+                    Personality existingPersonality = getPersonalityById(personalityId);
+                    retrievedPersonalities.add(existingPersonality);
+                }
             }
         }
         return retrievedPersonalities;
@@ -122,8 +128,9 @@ public class PersonalityService {
 
     @Transactional
     public PersonalityDTO updatePersonality(PersonalityDTO incomingPersonality) {
-        if (incomingPersonality.getId() != null) {
-            Optional<Personality> existingPersonality = personalityRepository.findById(incomingPersonality.getId());
+        Long incomingPersonalityId = incomingPersonality.getId();
+        if (incomingPersonalityId != null) {
+            Optional<Personality> existingPersonality = personalityRepository.findById(incomingPersonalityId);
             if (existingPersonality.isPresent()) {
                 Personality updatedPersonality = existingPersonality.get();
                 updatedPersonality.setName(incomingPersonality.getName());
@@ -140,7 +147,7 @@ public class PersonalityService {
     }
 
     // Delete
-    public void deletePersonalityById(Long id) {
+    public void deletePersonalityById(@NonNull Long id) {
         if (personalityRepository.existsById(id)) {
             personalityRepository.deleteById(id);
         } else {

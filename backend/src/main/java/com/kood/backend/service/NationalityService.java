@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.kood.backend.dto.EntityDTOs.NationalityDTO;
@@ -59,8 +60,9 @@ public class NationalityService {
 
     public Nationality checkNationality(Nationality incomingNationality) {
         Nationality retrievedNationality = new Nationality();
-        if (incomingNationality != null) {
-            retrievedNationality = getNationalityById(incomingNationality.getId());
+        Long incomingNationalityId = incomingNationality.getId();
+        if (incomingNationality != null && incomingNationalityId != null) {
+            retrievedNationality = getNationalityById(incomingNationalityId);
         }
         return retrievedNationality;
     }
@@ -77,7 +79,7 @@ public class NationalityService {
     }
 
     // Retrieve
-    public NationalityDTO getNationalityDTOById(Long id) {
+    public NationalityDTO getNationalityDTOById(@NonNull Long id) {
         Optional<Nationality> existingNationality = nationalityRepository.findById(id);
         if (existingNationality.isPresent()) {
             NationalityDTO foundNationalityDTO = NationalityMapper.toDTO(existingNationality.get());
@@ -86,7 +88,7 @@ public class NationalityService {
         throw new BadRequestException("Nationality with the id: " + id + "not found.");
     }
 
-    public Nationality getNationalityById(Long id) {
+    public Nationality getNationalityById(@NonNull Long id) {
         Optional<Nationality> existingNationality = nationalityRepository.findById(id);
         if (existingNationality.isPresent()) {
             Nationality foundNationality = existingNationality.get();
@@ -118,8 +120,9 @@ public class NationalityService {
 
     @Transactional
     public NationalityDTO updateNationality(NationalityDTO incomingNationality) {
-        if (incomingNationality.getId() != null) {
-            Optional<Nationality> existingNationality = nationalityRepository.findById(incomingNationality.getId());
+        Long incomingNationalityId = incomingNationality.getId();
+        if (incomingNationality.getId() != null && incomingNationalityId != null) {
+            Optional<Nationality> existingNationality = nationalityRepository.findById(incomingNationalityId);
             if (existingNationality.isPresent()) {
                 Nationality updatedNationality = existingNationality.get();
                 updatedNationality.setName(incomingNationality.getName());
@@ -136,7 +139,7 @@ public class NationalityService {
     }
 
     // Delete
-    public void deleteNationalityById(Long id) {
+    public void deleteNationalityById(@NonNull Long id) {
         if (nationalityRepository.existsById(id)) {
             nationalityRepository.deleteById(id);
         } else {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.kood.backend.dto.EntityDTOs.GenderDTO;
@@ -68,7 +69,7 @@ public class GenderService {
     }
 
     // Retrieve
-    public GenderDTO getGenderDTOById(Long id) {
+    public GenderDTO getGenderDTOById(@NonNull Long id) {
         Optional<Gender> existingGender = genderRepository.findById(id);
         if (existingGender.isPresent()) {
             GenderDTO foundGenderDTO = GenderMapper.toDTO(existingGender.get());
@@ -77,7 +78,7 @@ public class GenderService {
         throw new BadRequestException("Gender with the id: " + id + "not found.");
     }
 
-    public Gender getGenderById(Long id) {
+    public Gender getGenderById(@NonNull Long id) {
         Optional<Gender> existingGender = genderRepository.findById(id);
         if (existingGender.isPresent()) {
             Gender foundGender = existingGender.get();
@@ -97,8 +98,9 @@ public class GenderService {
 
     public Gender checkGender(Gender incomingGender) {
         Gender existingGender = new Gender();
-        if (incomingGender != null) {
-            existingGender = getGenderById(incomingGender.getId());
+        Long incomingGenderId = incomingGender.getId();
+        if (incomingGender != null && incomingGenderId != null) {
+            existingGender = getGenderById(incomingGenderId);
         }
         return existingGender;
     }
@@ -117,8 +119,9 @@ public class GenderService {
 
     @Transactional
     public GenderDTO updateGender(GenderDTO incomingGender) {
-        if (incomingGender.getId() != null) {
-            Optional<Gender> existingGender = genderRepository.findById(incomingGender.getId());
+        Long incomingGenderId = incomingGender.getId();
+        if (incomingGenderId != null) {
+            Optional<Gender> existingGender = genderRepository.findById(incomingGenderId);
             if (existingGender.isPresent()) {
                 Gender updatedGender = existingGender.get();
                 updatedGender.setName(incomingGender.getName());
@@ -135,7 +138,7 @@ public class GenderService {
     }
 
     // Delete
-    public void deleteGenderById(Long id) {
+    public void deleteGenderById(@NonNull Long id) {
         if (genderRepository.existsById(id)) {
             genderRepository.deleteById(id);
         } else {

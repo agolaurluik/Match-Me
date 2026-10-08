@@ -2,10 +2,12 @@ package com.kood.backend.controller;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +43,7 @@ public class UserController {
 
         @GetMapping("/getLocation/{id}")
         public ResponseEntity<Map<String, Object>> getLocationById(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                        @PathVariable Long id) {
+                        @PathVariable @NonNull Long id) {
                 LocationDTO retrievedLocation = locationService.getLocationById(id);
                 Map<String, Object> response = new HashMap<>();
                 if (retrievedLocation == null) {
@@ -56,7 +58,7 @@ public class UserController {
 
         @GetMapping("/get-username/{userId}")
         public ResponseEntity<Map<String, String>> getUsernameById(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                        @PathVariable Long userId) {
+                        @PathVariable @NonNull Long userId) {
                 User user = userService.getUserById(userId);
                 Map<String, String> response = new HashMap<>();
                 if (user == null) {
@@ -71,7 +73,7 @@ public class UserController {
         @GetMapping("/{id}")
         public ResponseEntity<Map<String, Object>> getUserById(
                         @AuthenticationPrincipal UserDetailsImpl userDetails,
-                        @PathVariable Long id) {
+                        @PathVariable @NonNull Long id) {
                 User retrievedUser = userService.getUserById(id);
                 Map<String, Object> response = new HashMap<>();
                 if (retrievedUser == null) {
@@ -87,7 +89,7 @@ public class UserController {
         @GetMapping("/{id}/bio")
         public ResponseEntity<Map<String, Object>> getUserBioById(
                         @AuthenticationPrincipal UserDetailsImpl userDetails,
-                        @PathVariable Long id) {
+                        @PathVariable @NonNull Long id) {
                 User retrievedUser = userService.getUserById(id);
                 Map<String, Object> response = new HashMap<>();
                 if (retrievedUser == null) {
@@ -103,7 +105,7 @@ public class UserController {
         @GetMapping("/{id}/profile")
         public ResponseEntity<Map<String, Object>> getUserProfileById(
                         @AuthenticationPrincipal UserDetailsImpl userDetails,
-                        @PathVariable Long id) {
+                        @PathVariable @NonNull Long id) {
                 User user = userService.getUserById(id);
                 // Checks if the requesting user is allowed to view the requested id profile
                 if (user == null || !connectionService.canView(userDetails.getId(), id)) {
@@ -126,7 +128,8 @@ public class UserController {
         @GetMapping("/me")
         public ResponseEntity<Map<String, Object>> getMe(
                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-                UserSmallDTO retrievedUser = userMapper.toSmallDTO(userService.getUserById(userDetails.getId()));
+                UserSmallDTO retrievedUser = userMapper
+                                .toSmallDTO(userService.getUserById(Objects.requireNonNull(userDetails.getId())));
                 Map<String, Object> response = new HashMap<>();
                 if (retrievedUser == null) {
                         response.put("message", "User not found");
@@ -141,7 +144,8 @@ public class UserController {
         @GetMapping("/me/bio")
         public ResponseEntity<Map<String, Object>> getMeBio(
                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-                UserBioDTO retrievedUser = userMapper.toBioDTO(userService.getUserById(userDetails.getId()));
+                UserBioDTO retrievedUser = userMapper
+                                .toBioDTO(userService.getUserById(Objects.requireNonNull(userDetails.getId())));
                 Map<String, Object> response = new HashMap<>();
                 if (retrievedUser == null) {
                         response.put("message", "<me> with the ID: " + userDetails.getId() + " not found");
@@ -157,7 +161,7 @@ public class UserController {
         public ResponseEntity<Map<String, Object>> getMeProfile(
                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
                 UserMeProfileDTO retrievedUser = userMapper
-                                .toMeProfileDTO(userService.getUserById(userDetails.getId()));
+                                .toMeProfileDTO(userService.getUserById(Objects.requireNonNull(userDetails.getId())));
                 Map<String, Object> response = new HashMap<>();
 
                 if (retrievedUser == null) {

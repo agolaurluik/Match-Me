@@ -1,7 +1,5 @@
 package com.kood.backend.service.matching;
 
-import com.kood.backend.entity.Entities.Interest;
-import com.kood.backend.entity.Entities.Personality;
 import com.kood.backend.entity.UserEntities.MatchingFilter;
 import com.kood.backend.entity.UserEntities.User;
 import com.kood.backend.entity.UserEntities.UserLocation;
@@ -25,7 +23,7 @@ import java.time.ZoneId;
 import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -110,17 +108,21 @@ public class Algorithm {
 
                                 .map(candidate -> {
                                         Set<String> viewerInterests = viewer.getInterests().stream()
-                                                        .map(Interest::getName)
+                                                        .map(Objects::requireNonNull)
+                                                        .map(interest -> interest.getName())
                                                         .collect(Collectors.toSet());
                                         Set<String> viewerPersonalities = viewer.getPersonalities().stream()
-                                                        .map(Personality::getName)
+                                                        .map(Objects::requireNonNull)
+                                                        .map(personality -> personality.getName())
                                                         .collect(Collectors.toSet());
 
                                         Set<String> candidateInterests = candidate.getInterests().stream()
-                                                        .map(Interest::getName)
+                                                        .map(Objects::requireNonNull)
+                                                        .map(interest -> interest.getName())
                                                         .collect(Collectors.toSet());
                                         Set<String> candidatePersonalities = candidate.getPersonalities().stream()
-                                                        .map(Personality::getName)
+                                                        .map(Objects::requireNonNull)
+                                                        .map(personality -> personality.getName())
                                                         .collect(Collectors.toSet());
 
                                         Set<String> sharedInterests = new HashSet<>(viewerInterests);
@@ -158,7 +160,7 @@ public class Algorithm {
                                 .filter(entry -> entry.getValue() >= 3)
                                 .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
                                 .limit(match_limit)
-                                .map(Map.Entry::getKey)
+                                .map(entry -> entry.getKey())// check this for failure
                                 .collect(Collectors.toList());
         }
 
@@ -172,14 +174,22 @@ public class Algorithm {
                         Integer nationalityScore,
                         Integer purposeScore) {
                 Set<String> viewerInterests = viewer.getInterests().stream()
-                                .map(Interest::getName).collect(Collectors.toSet());
+                                .map(Objects::requireNonNull)
+                                .map(interest -> interest.getName())
+                                .collect(Collectors.toSet());
                 Set<String> viewerPersonalities = viewer.getPersonalities().stream()
-                                .map(Personality::getName).collect(Collectors.toSet());
+                                .map(Objects::requireNonNull)
+                                .map(personality -> personality.getName())
+                                .collect(Collectors.toSet());
 
                 Set<String> candidateInterests = candidate.getInterests().stream()
-                                .map(Interest::getName).collect(Collectors.toSet());
+                                .map(Objects::requireNonNull)
+                                .map(interest -> interest.getName())
+                                .collect(Collectors.toSet());
                 Set<String> candidatePersonalities = candidate.getPersonalities().stream()
-                                .map(Personality::getName).collect(Collectors.toSet());
+                                .map(Objects::requireNonNull)
+                                .map(personality -> personality.getName())
+                                .collect(Collectors.toSet());
 
                 Set<String> sharedInterests = new HashSet<>(viewerInterests);
                 sharedInterests.retainAll(candidateInterests);
@@ -264,14 +274,22 @@ public class Algorithm {
                                 .map(candidate -> {
 
                                         Set<String> viewerInterests = viewer.getInterests().stream()
-                                                        .map(Interest::getName).collect(Collectors.toSet());
+                                                        .map(Objects::requireNonNull)
+                                                        .map(interest -> interest.getName())
+                                                        .collect(Collectors.toSet());
                                         Set<String> viewerPersonalities = viewer.getPersonalities().stream()
-                                                        .map(Personality::getName).collect(Collectors.toSet());
+                                                        .map(Objects::requireNonNull)
+                                                        .map(personality -> personality.getName())
+                                                        .collect(Collectors.toSet());
 
                                         Set<String> candidateInterests = candidate.getInterests().stream()
-                                                        .map(Interest::getName).collect(Collectors.toSet());
+                                                        .map(Objects::requireNonNull)
+                                                        .map(interest -> interest.getName())
+                                                        .collect(Collectors.toSet());
                                         Set<String> candidatePersonalities = candidate.getPersonalities().stream()
-                                                        .map(Personality::getName).collect(Collectors.toSet());
+                                                        .map(Objects::requireNonNull)
+                                                        .map(personality -> personality.getName())
+                                                        .collect(Collectors.toSet());
 
                                         Set<String> sharedInterests = new HashSet<>(viewerInterests);
                                         sharedInterests.retainAll(candidateInterests);

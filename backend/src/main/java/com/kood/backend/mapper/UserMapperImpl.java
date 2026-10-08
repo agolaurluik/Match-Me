@@ -1,5 +1,6 @@
 package com.kood.backend.mapper;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -11,10 +12,8 @@ import com.kood.backend.dto.UserDTOs.UserFullDTO;
 import com.kood.backend.dto.UserDTOs.UserMeProfileDTO;
 import com.kood.backend.dto.UserDTOs.UserProfileDTO;
 import com.kood.backend.dto.UserDTOs.UserSmallDTO;
-import com.kood.backend.entity.Entities.Interest;
-import com.kood.backend.entity.Entities.Personality;
 import com.kood.backend.entity.UserEntities.User;
-import com.kood.backend.service.AuthService;
+import com.kood.backend.exceptions.BadRequestException;
 import com.kood.backend.service.GenderService;
 import com.kood.backend.service.InterestService;
 import com.kood.backend.service.LocationService;
@@ -34,7 +33,6 @@ public class UserMapperImpl implements UserMapper {
     private final PurposeService purposeService;
     private final PersonalityService personalityService;
     private final LocationService locationService;
-    private final AuthService authService;
 
     @Override
     public UserDTO toDTO(User user) { // This will return full object anyway because Lombok and Jackson auto-serialize
@@ -89,14 +87,16 @@ public class UserMapperImpl implements UserMapper {
 
         if (user.getPersonalities() != null && !user.getPersonalities().isEmpty()) {
             Set<Long> personalityIds = user.getPersonalities().stream()
-                    .map(Personality::getId)
+                    .map(Objects::requireNonNull)
+                    .map(personality -> personality.getId())
                     .collect(Collectors.toSet());
             builder.personalityIds(personalityIds);
         }
 
         if (user.getInterests() != null && !user.getInterests().isEmpty()) {
             Set<Long> interestIds = user.getInterests().stream()
-                    .map(Interest::getId)
+                    .map(Objects::requireNonNull)
+                    .map(interest -> interest.getId())
                     .collect(Collectors.toSet());
             builder.interestIds(interestIds);
         }
@@ -132,14 +132,16 @@ public class UserMapperImpl implements UserMapper {
 
         if (user.getPersonalities() != null && !user.getPersonalities().isEmpty()) {
             Set<Long> personalityIds = user.getPersonalities().stream()
-                    .map(Personality::getId)
+                    .map(Objects::requireNonNull)
+                    .map(personality -> personality.getId())
                     .collect(Collectors.toSet());
             builder.personalityIds(personalityIds);
         }
 
         if (user.getInterests() != null && !user.getInterests().isEmpty()) {
             Set<Long> interestIds = user.getInterests().stream()
-                    .map(Interest::getId)
+                    .map(Objects::requireNonNull)
+                    .map(interest -> interest.getId())
                     .collect(Collectors.toSet());
             builder.interestIds(interestIds);
         }
@@ -159,22 +161,26 @@ public class UserMapperImpl implements UserMapper {
         if (userDTO == null) {
             return null;
         }
+        Long userGenderId = userDTO.getGenderId();
+        Long userNationalityId = userDTO.getNationalityId();
+        Long userPurposeId = userDTO.getPurposeId();
+        Long userId = userDTO.getId();
+        if (userGenderId == null || userId == null || userNationalityId == null || userPurposeId == null)
+            throw new BadRequestException("Null value in dto during user dto to entity conversion");
         User user = new User(
                 userDTO.getId(),
                 userDTO.getUsername(),
                 userDTO.getEmail(),
                 userDTO.getBirthDate(),
                 userDTO.getLastSeen(),
-                genderService.getGenderById(userDTO
-                        .getGenderId()),
-                nationalityService.getNationalityById(userDTO
-                        .getNationalityId()),
+                genderService.getGenderById(userGenderId),
+                nationalityService.getNationalityById(userNationalityId),
                 userDTO.getPasswordHash(),
                 userDTO.getProfileImageName(),
                 personalityService.getPersonalitiesByIds(userDTO.getPersonalityIds()),
-                locationService.getUserLocationByUserId(userDTO.getId()),
+                locationService.getUserLocationByUserId(userId),
                 interestService.getInterestsByIds(userDTO.getInterestIds()),
-                purposeService.getPurposeById(userDTO.getPurposeId()),
+                purposeService.getPurposeById(userPurposeId),
                 userDTO.getUserDescription());
         return user;
     }

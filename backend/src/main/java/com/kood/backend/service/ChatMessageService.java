@@ -9,6 +9,7 @@ import com.kood.backend.repository.ConnectionRepository;
 import com.kood.backend.mapper.ChatMessageMapper;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +52,7 @@ public class ChatMessageService {
     }
 
     // Retrieve
-    public ChatMessageDTO getChatMessageById(Long id) {
+    public ChatMessageDTO getChatMessageById(@NonNull Long id) {
         Optional<ChatMessage> existingChatMessage = chatMessageRepository.findById(id);
         if (existingChatMessage.isPresent()) {
             ChatMessageDTO foundChatMessageDTO = ChatMessageMapper.toDTO(existingChatMessage.get());
@@ -69,8 +70,9 @@ public class ChatMessageService {
 
     @Transactional
     public ChatMessageDTO updateChatMessage(ChatMessageDTO incomingChatMessage) {
-        if (incomingChatMessage.getId() != null) {
-            Optional<ChatMessage> existingChatMessage = chatMessageRepository.findById(incomingChatMessage.getId());
+        Long incomindChatMessageId = incomingChatMessage.getId();
+        if (incomindChatMessageId != null) {
+            Optional<ChatMessage> existingChatMessage = chatMessageRepository.findById(incomindChatMessageId);
             if (existingChatMessage.isPresent()) {
                 ChatMessage updatedChatMessage = existingChatMessage.get();
                 updatedChatMessage
@@ -88,7 +90,7 @@ public class ChatMessageService {
     }
 
     // Delete
-    public void deleteChatMessageById(Long id) {
+    public void deleteChatMessageById(@NonNull Long id) {
         if (chatMessageRepository.existsById(id)) {
             chatMessageRepository.deleteById(id);
         } else {
