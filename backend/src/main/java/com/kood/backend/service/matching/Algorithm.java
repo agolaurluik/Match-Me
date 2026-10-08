@@ -220,13 +220,20 @@ public class Algorithm {
                 int score = (sharedInterests.size() * interestScore) +
                                 (sharedPersonalities.size() * personalityScore) +
                                 sharedPurposeScore + sharedNationalityScore;
+                int maxScore = (viewer.getInterests().size() * interestScore)
+                                + (viewer.getPersonalities().size() * personalityScore) +
+                                sharedPurposeScore + sharedNationalityScore;
+
+                double matchPercentageDouble = score / maxScore;
+
+                int matchPercentageRounded = (int) Math.round(matchPercentageDouble);
 
                 return new UserMatchDetailDTO(
                                 candidate.getId(),
                                 distance,
-                                score,
-                                sharedInterests.size(),
-                                sharedPersonalities.size());
+                                matchPercentageRounded,
+                                sharedInterests,
+                                sharedPersonalities);
         }
 
         public UserMatchingFilterDTO updateMatchingFilter(User user, UserMatchingFilterDTO points) {
@@ -315,6 +322,14 @@ public class Algorithm {
                                                         + (sharedPersonalities.size() * personalityScore)
                                                         + sharedPurposeScore + sharedNationalityScore;
 
+                                        int maxScore = (viewer.getInterests().size() * interestScore)
+                                                        + (viewer.getPersonalities().size() * personalityScore) +
+                                                        sharedPurposeScore + sharedNationalityScore;
+
+                                        double matchPercentageDouble = score / maxScore;
+
+                                        int matchPercentageRounded = (int) Math.round(matchPercentageDouble);
+
                                         double distanceA = locationRepository
                                                         .calculateDistanceBetween(viewer.getLocation().getId(),
                                                                         candidate.getLocation().getId())
@@ -325,11 +340,12 @@ public class Algorithm {
                                         return new UserMatchDetailDTO(
                                                         candidate.getId(),
                                                         distance,
-                                                        score,
-                                                        sharedInterests.size(),
-                                                        sharedPersonalities.size());
+                                                        matchPercentageRounded,
+                                                        sharedInterests,
+                                                        sharedPersonalities);
                                 })
-                                .sorted((a, b) -> Integer.compare(b.getScore(), a.getScore()))
+                                .sorted((a, b) -> Integer.compare(b.getMatchPercentageRounded(),
+                                                a.getMatchPercentageRounded()))
                                 .limit(match_limit)
                                 .collect(Collectors.toList());
         }

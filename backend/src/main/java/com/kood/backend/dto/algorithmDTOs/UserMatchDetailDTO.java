@@ -1,5 +1,7 @@
 package com.kood.backend.dto.algorithmDTOs;
 
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,8 +12,8 @@ import lombok.NoArgsConstructor;
 public class UserMatchDetailDTO {
     private Long id;
 
-    private Double distance;
-    private int score;
-    private int sharedInterests;
-    private int sharedPersonalities;
+    private double distance;
+    private int matchPercentageRounded;
+    private Set<String> sharedInterestsSet;
+    private Set<String> sharedPersonalitiesSet;
 }
