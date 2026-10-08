@@ -8,6 +8,7 @@ import java.util.Set;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.kood.backend.dto.LocationDTOs.LocationPoint;
@@ -78,7 +79,7 @@ public class NamedLocationService {
     }
 
     // Retrieve
-    public NamedLocationDTO getNamedLocationById(Long id) {
+    public NamedLocationDTO getNamedLocationById(@NonNull Long id) {
         Optional<NamedLocation> existingLocation = namedLocationRepository.findById(id);
         if (existingLocation.isPresent()) {
             NamedLocationDTO foundLocationDTO = NamedLocationMapper.toDTO(existingLocation.get());
@@ -100,9 +101,10 @@ public class NamedLocationService {
 
     @Transactional
     public NamedLocationDTO updateNamedLocation(NamedLocationDTO incomingNamedLocationDTO) {
-        if (incomingNamedLocationDTO.getId() != null) {
+        Long incomingLocationDTOId = incomingNamedLocationDTO.getId();
+        if (incomingLocationDTOId != null) {
             Optional<NamedLocation> existingLocation = namedLocationRepository
-                    .findById(incomingNamedLocationDTO.getId());
+                    .findById(incomingLocationDTOId);
             if (existingLocation.isPresent()) {
                 NamedLocation updatedLocation = existingLocation.get();
 
@@ -125,7 +127,7 @@ public class NamedLocationService {
     }
 
     // Delete
-    public void deleteNamedLocationById(Long id) {
+    public void deleteNamedLocationById(@NonNull Long id) {
         if (namedLocationRepository.existsById(id)) {
             namedLocationRepository.deleteById(id);
         } else {

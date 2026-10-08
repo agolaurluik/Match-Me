@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,7 +50,7 @@ public class ImageProcessingService {
         }
     }
 
-    public String updateImage(Long userId, MultipartFile newProfileImage) {
+    public String updateImage(@NonNull Long userId, MultipartFile newProfileImage) {
         if (newProfileImage.isEmpty()) {
             throw new InvalidImageException("New profile picture file is empty.");
         }
@@ -94,7 +95,7 @@ public class ImageProcessingService {
         }
     }
 
-    public String resetImage(Long userId) {
+    public String resetImage(@NonNull Long userId) {
 
         User user = userService.getUserById(userId);
         String oldProfileImageName = user.getProfileImageName();

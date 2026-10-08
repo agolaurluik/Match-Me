@@ -7,6 +7,7 @@ import java.util.Set;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.kood.backend.dto.LocationDTOs.LocationDTO;
@@ -77,8 +78,10 @@ public class LocationService {
     public UserLocationDTO createUserLocation(LocationDTO location, UserDetailsImpl userDetails) {
         User dataBaseUser = new User();
         UserLocation newBinding = new UserLocation();
-
-        Optional<User> foundUser = userRepository.findById(userDetails.getId());
+        Long userDetailsId = userDetails.getId();
+        if (userDetailsId == null)
+            throw new IllegalArgumentException("User id is null while creating user location");
+        Optional<User> foundUser = userRepository.findById(userDetailsId);
         if (!foundUser.isPresent()) {
             throw new IllegalArgumentException("User not found in database with ID: " + userDetails.getId());
         }
@@ -129,7 +132,11 @@ public class LocationService {
         User dataBaseUser = new User();
         UserLocation newBinding = new UserLocation();
 
-        Optional<User> foundUser = userRepository.findById(userDetails.getId());
+        Long userDetailsId = userDetails.getId();
+        if (userDetailsId == null)
+            throw new IllegalArgumentException("User id null in update user location");
+
+        Optional<User> foundUser = userRepository.findById(userDetailsId);
         if (!foundUser.isPresent()) {
             throw new IllegalArgumentException("User not found in database with ID: " + userDetails.getId());
         }
@@ -224,7 +231,7 @@ public class LocationService {
     }
 
     // Retrieve
-    public LocationDTO getLocationById(Long id) {
+    public LocationDTO getLocationById(@NonNull Long id) {
         Optional<Location> existingLocation = locationRepository.findById(id);
         if (existingLocation.isPresent()) {
             LocationDTO foundLocationDTO = LocationMapper.toDTO(existingLocation.get());
@@ -233,7 +240,7 @@ public class LocationService {
         throw new BadRequestException("Location with the id: " + id + " not found.");
     }
 
-    public UserLocation getUserLocationByUserId(Long id) {
+    public UserLocation getUserLocationByUserId(@NonNull Long id) {
         User user = new User();
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isPresent()) {
@@ -252,8 +259,9 @@ public class LocationService {
 
     @Transactional
     public LocationDTO updateLocation(LocationDTO incomingLocation) {
-        if (incomingLocation.getId() != null) {
-            Optional<Location> existingLocation = locationRepository.findById(incomingLocation.getId());
+        Long incomingLocationId = incomingLocation.getId();
+        if (incomingLocationId != null) {
+            Optional<Location> existingLocation = locationRepository.findById(incomingLocationId);
             if (existingLocation.isPresent()) {
                 Location updatedLocation = existingLocation.get();
 
@@ -276,7 +284,7 @@ public class LocationService {
     }
 
     // Delete
-    public void deleteLocationById(Long id) {
+    public void deleteLocationById(@NonNull Long id) {
         if (locationRepository.existsById(id)) {
             locationRepository.deleteById(id);
         } else {

@@ -52,7 +52,11 @@ public class UserMatchingFilterMapperImpl implements UserMatchingFilterMapper {
         filter.setHighestAge(dto.getHighestAge());
         filter.setRadius(dto.getRadius());
 
-        userRepository.findById(dto.getUserId())
+        Long userDtoId = dto.getUserId();
+        if (userDtoId == null) {
+            throw new BadRequestException("Failed to retrieve userId from dto during conversion");
+        }
+        userRepository.findById(userDtoId)
                 .ifPresentOrElse(
                         userId -> filter.setUserId(dto.getUserId()),
                         () -> {

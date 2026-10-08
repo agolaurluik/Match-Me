@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Override
     @NonNull
-    Optional<User> findById(Long id);
+    Optional<User> findById(@NonNull Long id);
 
     User findUserByEmail(String email); // This is used only by the algorithm --- needs to be verified
 

@@ -4,6 +4,8 @@ import com.kood.backend.entity.ConnectionEntities.Connection;
 import com.kood.backend.entity.ConnectionEntities.ConnectionStatus;
 import com.kood.backend.entity.UserEntities.MatchingFilter;
 import com.kood.backend.entity.UserEntities.User;
+import com.kood.backend.exceptions.BadRequestException;
+import com.kood.backend.exceptions.NotFoundException;
 import com.kood.backend.repository.ChatMessageRepository;
 import com.kood.backend.repository.ConnectionRepository;
 import com.kood.backend.repository.MatchingFilterRepository;
@@ -83,7 +85,7 @@ public class ConnectionServiceImpl implements ConnectionService {
         all.addAll(sent);
         all.addAll(received);
 
-        all.sort(Comparator.comparing(Connection::getCreatedAt));
+        all.sort(Comparator.comparing(connection -> connection.getCreatedAt()));
 
         List<Long> otherUserIds = new ArrayList<>();
 
@@ -274,6 +276,9 @@ public class ConnectionServiceImpl implements ConnectionService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Connection does not exist between these users, nothing to delete"));
 
+        if (existingConnection == null) {
+            throw new NotFoundException("Connection not found within database");
+        }
         if (!isUserInConnection(receiverId, existingConnection)) {
             throw new SecurityException("User not authorized to delete this connection");
         }
@@ -290,6 +295,8 @@ public class ConnectionServiceImpl implements ConnectionService {
 
     @Override
     public Connection getConnectionById(Long connectionId) {
+        if (connectionId == null)
+            throw new BadRequestException("ConnectionId provided is null");
         return connectionRepository.findById(connectionId)
                 .orElseThrow(() -> new EntityNotFoundException("No connection with the id: " + connectionId));
     }

@@ -42,8 +42,9 @@ public class AuthService {
         user.setPasswordHash(hashedPassword);
         user.setBirthDate((userData.getBirthDate()));
 
-        if (userData.getGenderId() != null) {
-            Gender gender = genderRepository.findById(userData.getGenderId())
+        Long userGenderId = userData.getGenderId();
+        if (userGenderId != null) {
+            Gender gender = genderRepository.findById(userGenderId)
                     .orElseThrow(() -> new RuntimeException("Gender not found with id: " + userData.getGenderId()));
             user.setGender(gender);
         } else {

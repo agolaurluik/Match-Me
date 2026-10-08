@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -61,7 +62,7 @@ public class ImageController {
         try {
             Path privateDir = Paths.get(mediaStorageLocation, "private").toAbsolutePath().normalize();
             Path file = privateDir.resolve(filename).normalize();
-            Resource resource = new UrlResource(file.toUri());
+            Resource resource = new UrlResource(Objects.requireNonNull(file.toUri()));
 
             if (!file.startsWith(privateDir)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -71,9 +72,12 @@ public class ImageController {
                 return ResponseEntity.notFound().build();
             }
 
+            MediaType mediaType = Objects.requireNonNull(
+                    MediaTypeFactory.getMediaType(resource)
+                            .orElse(MediaType.APPLICATION_OCTET_STREAM));
+
             return ResponseEntity.ok()
-                    .contentType(MediaTypeFactory.getMediaType(resource)
-                            .orElse(MediaType.APPLICATION_OCTET_STREAM))
+                    .contentType(mediaType)
                     .body(resource);
         } catch (MalformedURLException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -90,7 +94,7 @@ public class ImageController {
         try {
             Path publicDir = Paths.get(mediaStorageLocation, "public").toAbsolutePath().normalize();
             Path file = publicDir.resolve(filename).normalize();
-            Resource resource = new UrlResource(file.toUri());
+            Resource resource = new UrlResource(Objects.requireNonNull(file.toUri()));
 
             if (!file.startsWith(publicDir)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -100,9 +104,12 @@ public class ImageController {
                 return ResponseEntity.notFound().build();
             }
 
+            MediaType mediaType = Objects.requireNonNull(
+                    MediaTypeFactory.getMediaType(resource)
+                            .orElse(MediaType.APPLICATION_OCTET_STREAM));
+
             return ResponseEntity.ok()
-                    .contentType(MediaTypeFactory.getMediaType(resource)
-                            .orElse(MediaType.APPLICATION_OCTET_STREAM))
+                    .contentType(mediaType)
                     .body(resource);
         } catch (MalformedURLException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -116,7 +123,8 @@ public class ImageController {
             System.err.println("Starting image update for user " + userDetails.getId() + ", file name: "
                     + file.getOriginalFilename() + ", size: " + file.getSize());
 
-            String createdImageName = imageProcessingService.updateImage(userDetails.getId(), file);
+            String createdImageName = imageProcessingService.updateImage(Objects.requireNonNull(userDetails.getId()),
+                    file);
             Map<String, String> response = new HashMap<>();
             response.put("imageName", createdImageName);
             return ResponseEntity.ok(response);
@@ -132,7 +140,7 @@ public class ImageController {
     @DeleteMapping("/reset")
     public ResponseEntity<Map<String, String>> resetToDefaultImage(
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        String newImageName = imageProcessingService.resetImage(userDetails.getId());
+        String newImageName = imageProcessingService.resetImage(Objects.requireNonNull(userDetails.getId()));
         Map<String, String> response = new HashMap<>();
         response.put("imageName", newImageName);
         response.put("message", "User profile Image has been reset to default");

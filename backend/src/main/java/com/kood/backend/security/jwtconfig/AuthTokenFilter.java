@@ -48,7 +48,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         String requestPath = request.getRequestURI();
+        if (requestPath == null)
+            throw new Error("Error retrieving requestURI in internal filter");
+
         for (String path : WHITELIST) {
+            if (path == null)
+                continue;
             if (pathMatcher.match(path, requestPath)) {
                 filterChain.doFilter(request, response);
                 return;
