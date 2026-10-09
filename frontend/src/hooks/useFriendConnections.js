@@ -93,6 +93,8 @@ const useFriendConnections = (viewerId) => {
                 api.fetchUsersMatchingInfoById(friendId),
               ]);
 
+              console.log('User profile response:', userProfile);
+              console.log('User description:', userProfile?.profile?.userDescription);
               const bio = userBio.profile;
 
               function calculateAge(birthDateStringOrDate) {
@@ -107,6 +109,8 @@ const useFriendConnections = (viewerId) => {
                 return age;
               }
 
+              const matchingInfo = matchInfo.matchInfo;
+
               return {
                 ...userConnData,
                 ...userData.user,
@@ -120,10 +124,10 @@ const useFriendConnections = (viewerId) => {
                   nationality: getNationalityName(bio.nationalityId),
                   interests: getInterestNames(bio.interestIds),
                   personalities: getPersonalityNames(bio.personalityIds),
-                  sharedInterests: matchInfo.matchInfo.sharedInterests,
-                  sharedPersonalities: matchInfo.matchInfo.sharedPersonalities,
-                  distance: matchInfo.matchInfo.distance,
-                  score: matchInfo.matchInfo.score,
+                  sharedInterests: matchingInfo.sharedInterestsSet,
+                  sharedPersonalities: matchingInfo.sharedPersonalitiesSet,
+                  distance: matchingInfo.distance,
+                  score: matchingInfo.matchPercentageRounded,
                 },
               };
             } catch (err) {
@@ -152,6 +156,8 @@ const useFriendConnections = (viewerId) => {
             }
           })
         );
+
+
 
 
         setConnections(enrichedConnections);

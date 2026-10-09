@@ -11,7 +11,7 @@ const ChatUsersGrid = ({
   onUserClick,
   viewerId,
   updateConnectionStatus,
-  onUserRemoved 
+  onUserRemoved
 }) => {
   const [profileUser, setProfileUser] = useState(null);
   const [removingIds, setRemovingIds] = useState([]);
@@ -28,7 +28,7 @@ const ChatUsersGrid = ({
   const { onlineUsers } = useStomp();
 
 
-// Sort connections by lastMessageTimestamp, newest first
+  // Sort connections by lastMessageTimestamp, newest first
   const sortedConnections = useMemo(() => {
     const normalizedConnections = connections.map(conn => {
       if (typeof conn === 'object') {
@@ -54,6 +54,8 @@ const ChatUsersGrid = ({
     return enriched.sort((a, b) => new Date(b.lastMessageTimestamp) - new Date(a.lastMessageTimestamp));
   }, [connections, onlineUsers, unreadCounts, viewerId]);
 
+
+  console.log("Chat connection passed to ProfileModal:", profileUser);
   return (
     <>
       <div className="chat-users-grid">

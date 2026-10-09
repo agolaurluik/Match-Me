@@ -68,6 +68,7 @@ const PageLayout = () => {
             {activeModal === 'register' && (
                 <RegisterModal
                     onClose={() => setActiveModal(null)}
+                    onRegisterSuccess={(token) => setAuthToken(token)}
                 />
             )}
 

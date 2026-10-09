@@ -3,7 +3,7 @@ import './RegisterModal.css';
 import api from '../../api/api';
 import { useNavigate } from 'react-router-dom';
 
-function RegisterModal({ onClose }) {
+function RegisterModal({ onClose, onRegisterSuccess }) {
     const [formData, setFormData] = useState({
         username: '',
         email: '',
@@ -39,10 +39,13 @@ function RegisterModal({ onClose }) {
                 email: formData.email,
                 password: formData.password
             });
-            localStorage.setItem('Authorization', 'Bearer ' + data.token);
+            const token = 'Bearer ' + data.token;
 
-            navigate('/connections');
+            localStorage.setItem('Authorization', token);
+            onRegisterSuccess(token);
+
             onClose();
+            navigate('/connections');
         } catch (err) {
             if (err.response && err.response.data && err.response.data.error) {
                 setError(err.response.data.error);

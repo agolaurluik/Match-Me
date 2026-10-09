@@ -8,6 +8,9 @@
     align-items: flex-start;
 
     padding: 2rem;
+
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 

@@ -226,14 +226,17 @@ const ProfileModal = ({ user, onClose, classPrefix, modalPrefix, onUserRemoved, 
                     <div className="profile-modal-match-grid">
                         <div className="profile-modal-match-item">
                             <span>Distance</span>
-                            <strong>{user.bio.distance} km</strong>
+                            <strong>
+                                {user.bio?.distance ?? 'N/A'} km
+                            </strong>
                         </div>
 
                         <div className="profile-modal-match-item">
                             <span>Matching score</span>
                             <strong>
-                                {"⭐".repeat(Math.ceil(user.bio.score / 20))}{" "}
-                                {user.bio.score}%
+                                {user.bio?.score != null
+                                    ? `${"⭐".repeat(Math.ceil(user.bio.score / 20))} ${user.bio.score}%`
+                                    : 'N/A'}
                             </strong>
                         </div>
                     </div>
