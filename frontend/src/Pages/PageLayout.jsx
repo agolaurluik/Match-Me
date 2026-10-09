@@ -58,7 +58,12 @@ const PageLayout = () => {
                 <NavLinksWindow onToggle={toggleNavLinks} />
             )}
 
-            <Outlet />
+            <Outlet
+                context={{
+                    onRegisterClick: () => setActiveModal('register'),
+                    isLoggedIn: Boolean(authToken),
+                }}
+            />
 
             {activeModal === 'register' && (
                 <RegisterModal
