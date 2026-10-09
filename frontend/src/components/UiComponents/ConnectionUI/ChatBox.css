@@ -87,7 +87,7 @@
 /* Your message */
 
 .chat-message.user {
-    align-self: flex-end;
+    align-self: flex-start;
 
     background: rgba(255, 150, 50, 0.9);
 

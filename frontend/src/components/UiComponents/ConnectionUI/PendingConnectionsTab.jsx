@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import './PendingConnectionsTab.css';
+import './ConnectionsTab.css';
 import UserGrid from './UsersGrid';
 import {useUserProfiles} from '../../../hooks/useUserProfiles';
 
@@ -45,11 +45,11 @@ useEffect(() => {
 
 
 
-    if (loading) return <div className='pending-connections-tab-container'>Loading pending connections...</div>;
-    if (error) return <div className='pending-connections-tab-container'>Failed to load pending connections</div>;
+    if (loading) return <div className='connections-tab-container-message'>Loading pending connections...</div>;
+    if (error) return <div className='connections-tab-container-message'>Failed to load pending connections</div>;
     if (!users || users.length === 0) {
     return (
-      <div className='pending-connections-tab-container-message'>
+      <div className='connections-tab-container-message'>
         <h2>No pending connections</h2>
       </div>
     );
@@ -58,7 +58,8 @@ useEffect(() => {
   return (
     <UserGrid
       users={users}
-      classPrefix="pending-connections-tab"
+      classPrefix="connections-tab"
+      modalPrefix="pending-connections-tab"
       onUserRemoved={removeUserFromList}
     />
   );

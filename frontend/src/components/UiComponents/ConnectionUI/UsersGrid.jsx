@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ProfileModal from "./ProfileModal";
 
-const UserGrid = ({ users = [], classPrefix, onUserRemoved }) => {
+const UserGrid = ({ users = [], classPrefix, modalPrefix, onUserRemoved }) => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [removingIds, setRemovingIds] = useState([]); //for removing id from list (before reloading)
@@ -14,7 +14,7 @@ const UserGrid = ({ users = [], classPrefix, onUserRemoved }) => {
     }, 300); // match CSS animation duration
   };
 
-  console.log("FULL USERS DATA:", users);
+  // console.log("FULL USERS DATA:", users);
 
   return (
     <div className={`${classPrefix}-container`}>
@@ -26,7 +26,8 @@ const UserGrid = ({ users = [], classPrefix, onUserRemoved }) => {
             onClick={() => setSelectedUser(user)}
           >
             <h2 className={`${classPrefix}-profile-name`}>{user.username}</h2>
-            <p>{user.bio.gender}, {user.bio.age}</p>
+            <p>Gender: {user.bio.gender}</p>
+            <p>Age: {user.bio.age}</p>
             <p>Purpose: {user.bio.purpose}</p>
             <p>Nationality: {user.bio.nationality}</p>
             <p className={`${classPrefix}-match-info`}>
@@ -49,6 +50,7 @@ const UserGrid = ({ users = [], classPrefix, onUserRemoved }) => {
         user={selectedUser}
         onClose={() => setSelectedUser(null)}
         classPrefix={classPrefix}
+        modalPrefix={modalPrefix}
         onUserRemoved={handleRemove}
       />
     </div>

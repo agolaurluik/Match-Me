@@ -1,80 +1,77 @@
-/* Nav links window */
 .nav-links-window {
-  position: fixed;   
-  top: 56px; /* Adjust depending on your header height */
-  right: 0;
+    position: fixed;
+    top: 66px;
+    right: 16px;
+    width: 240px;
+    height: auto;
+    max-height: calc(100vh - 82px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 8px;
 
-  height: 100vh;
-  width: 250px;
+    background: #EDEADE;
+    border: 3px solid rgba(255, 130, 30, 0.7);
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
 
-  background: linear-gradient(170deg, rgba(255, 107, 107, 0.5), #FFD93D);
-  backdrop-filter: blur(10px);
-  border: 2px solid #ccc;
-  padding: 10px;
-  z-index: 1000;
-  box-shadow: -10px 0 10px rgba(0, 0, 0, 0.1);
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-}
-
-
-.nav-link {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  padding-left: 5px;
-  box-sizing: border-box;
-
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  text-decoration: none;
-  color: black;
-  background: none;
-  border: none;
-  width: 100%;
-  text-align: left;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.nav-link:hover {
-  color: #003670;
-  background-color: rgba(0, 0, 0, 0.1);
-}
-
-.nav-links-window {
-  z-index: 9999 !important;
+    z-index: 9999;
 }
 
 .nav-links-window ul {
-  width: 100%;
-  list-style: none;
-  padding: 0;
-  margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .nav-links-window li {
-  height: 50px;
-  width: 100%;
-  margin: 10px 0;
+    width: 100%;
+    margin: 0;
 }
 
-.nav-links-window a {
-  height: 100%;
-  padding: 0, 30px;
+.nav-links-window .nav-link {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 44px;
+    padding: 0 12px;
+    box-sizing: border-box;
 
-  display: flex;
-  align-items: center;
-  padding-left: 5px;
-  
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  text-decoration: none;
-  color: black;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-align: left;
+    text-decoration: none;
+    color: #222;
+
+    cursor: pointer;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
 }
 
-.nav-links-window a:hover {
-  color: #003670;
-  background-color: rgba(0, 0, 0, 0.1);
+.nav-links-window .nav-link:hover {
+    color: #713b12;
+    background: rgba(255, 150, 50, 0.18);
 }
+
+.nav-links-window .logout-btn {
+    font: inherit;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 600px) {
+    .nav-links-window {
+        top: 56px;
+        right: 8px;
+        width: min(240px, calc(100vw - 16px));
+    }
+}
+

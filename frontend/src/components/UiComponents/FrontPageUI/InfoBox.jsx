@@ -1,6 +1,3 @@
-import React from "react";
-import './InfoBox.css';
-
 const InfoBox = ({side = 'left', title, text, children, marginTop}) => {
     return (
     <div className={`info-box ${side}`}>

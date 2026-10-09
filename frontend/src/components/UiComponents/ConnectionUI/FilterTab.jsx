@@ -171,7 +171,7 @@ export default function FilterTab({ onChange }) {
                     onClick={async () => {
                         try {
                             await api.patchMatchingFilter(filterData);
-                            console.log("Filter updated", filterData);
+                            // console.log("Filter updated", filterData);
                             setButtonText("Filter updated");
 
                             setTimeout(() => {

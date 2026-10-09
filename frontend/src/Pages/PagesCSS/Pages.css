@@ -1,6 +1,3 @@
-
-
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -16,27 +13,35 @@ body {
   background: #00a384;
   background-size: 100% 100%;
 
-    /* touch-action: none;
+  /* touch-action: none;
   overscroll-behavior: none; */
 }
 
 
 
 
-body.front-mode {
-  padding-top: 0;
-  background: transparent;
+body {
+  font-family: 'Roboto', sans-serif;
+  min-height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  background: #00a384;
 }
 
 body.front-mode {
-  overflow: hidden;
-  height: 100vh;
-  overscroll-behavior: none;
-  touch-action: none; 
+  padding-top: 0;
+  background: transparent;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: auto;
+  min-height: 100vh;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
 }
 
 #root {
   width: 100%;
+  min-height: 100%;
 }
 
 
@@ -45,8 +50,8 @@ body::-webkit-scrollbar {
 }
 
 body {
-  scrollbar-width: none; 
-  overflow-x: hidden; 
+  scrollbar-width: none;
+  overflow-x: hidden;
 }
 
 
@@ -55,7 +60,7 @@ body {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
-  overflow: visible; 
+  overflow: visible;
   gap: 2rem;
   padding: 1rem;
 }
@@ -63,11 +68,11 @@ body {
 
 .sidebar {
   width: 400px;
-  height: 90vh; 
+  height: 90vh;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  min-height: 0; 
+  min-height: 0;
   background-color: rgba(0, 0, 0, 0.2);
   padding: 1rem;
   border-radius: 8px;
@@ -75,10 +80,11 @@ body {
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.sidebar > * {
+.sidebar>* {
   flex-shrink: 1;
   min-height: 0;
 }
+
 /* ----------- */
 
 .profile-content {
@@ -93,7 +99,7 @@ body {
 
 .incomplete-profile-container {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100%;
@@ -104,13 +110,13 @@ body {
 }
 
 .incomplete-profile-container h2 {
-  font-size: 1.8rem; 
-  margin-bottom: 10px; 
+  font-size: 1.8rem;
+  margin-bottom: 10px;
 }
 
 .incomplete-profile-container p {
   font-size: 1rem;
-  color: #555; 
+  color: #555;
 }
 
 .incomplete-profile-container {
@@ -118,22 +124,24 @@ body {
 }
 
 @keyframes fadeInOut {
-  0% { opacity: 0; transform: translateY(10px); }
-  10% { opacity: 1; transform: translateY(0); }
-  90% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-10px); }
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 }
 
 /*  */
-
-
-
-
-
-
-
-
-
-
-
-

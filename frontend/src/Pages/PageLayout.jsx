@@ -12,8 +12,7 @@ import { useSecureImage } from '../hooks/useSecureImage';
 
 const PageLayout = () => {
     const [showNavLinks, setShowNavLinks] = useState(false);
-    const [showRegister, setShowRegister] = useState(false);
-    const [showLogin, setShowLogin] = useState(false);
+    const [activeModal, setActiveModal] = useState(null);
 
     const location = useLocation();
 
@@ -43,14 +42,15 @@ const PageLayout = () => {
                 }
                 onRegisterClick={
                     isFrontpage
-                        ? () => setShowRegister(true)
+                        ? () => setActiveModal('register')
                         : undefined
                 }
                 onLoginClick={
                     isFrontpage
-                        ? () => setShowLogin(true)
+                        ? () => setActiveModal('login')
                         : undefined
                 }
+
                 onToggleNavLinks={toggleNavLinks}
             />
 
@@ -60,15 +60,15 @@ const PageLayout = () => {
 
             <Outlet />
 
-            {showRegister && (
+            {activeModal === 'register' && (
                 <RegisterModal
-                    onClose={() => setShowRegister(false)}
+                    onClose={() => setActiveModal(null)}
                 />
             )}
 
-            {showLogin && (
+            {activeModal === 'login' && (
                 <LoginModal
-                    onClose={() => setShowLogin(false)}
+                    onClose={() => setActiveModal(null)}
                     onLoginSuccess={(token) => setAuthToken(token)}
                 />
             )}

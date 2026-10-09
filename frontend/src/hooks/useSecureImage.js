@@ -20,7 +20,7 @@ export function useSecureImage(imagePath) {
                     console.error("Image fetch failed:", err);
                     if (isMounted) setImageUrl(null);
                 });
-                                            console.log(imagePath)
+                                            // console.log(imagePath)
             } else {
             loadImageWithToken(`http://localhost:8080/api/image/private/${imagePath}`)
                 .then(blobUrl => {

@@ -42,7 +42,7 @@ const ConnectionsTab = () => {
         if (!recommendedUsers || recommendedUsers.length === 0) {
       return (
         <div className='connections-tab-container-message'>
-          <h2>No incoming connections</h2>
+          <h2>No Recommendations Available</h2>
         </div>
       );
     }

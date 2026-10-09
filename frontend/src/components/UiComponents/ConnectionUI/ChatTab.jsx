@@ -163,7 +163,7 @@ useEffect(() => {
   const loadOlderMessages = () => {
     const now = Date.now();
     if (now - lastSentRef.current < 500) {
-      console.log("Please wait before sending another message.");
+      // console.log("Please wait before sending another message.");
       return;
     }
     if (!activeConnectionId || !hasMore) return;
@@ -175,11 +175,11 @@ useEffect(() => {
     if (!activeChatUser) return;
 
 
-    console.log("[ChatTab] Sending message:", {
-      sender: viewerId,
-      receiver: activeChatUser,
-      text
-    });
+    // console.log("[ChatTab] Sending message:", {
+    //   sender: viewerId,
+    //   receiver: activeChatUser,
+    //   text
+    // });
 
     stompSendMessage(viewerId.toString(), activeChatUser.toString(), text);
 

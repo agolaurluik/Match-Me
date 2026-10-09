@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./NavLinksWindow.css";
 
 const NavLinksWindow = ({ onToggle }) => {
@@ -29,9 +29,9 @@ const NavLinksWindow = ({ onToggle }) => {
     return (
         <nav ref={navRef} className="nav-links-window">
             <ul>
-                <li><a className="nav-link" href="/">Home</a></li>
-                <li><a className="nav-link" href="profile">Profile</a></li>
-                <li><a className="nav-link" href="connections">Connections</a></li>
+                <li><Link className="nav-link" to="/">Home</Link></li> 
+                <li><Link className="nav-link" to="/profile">Profile</Link></li>
+                <li><Link className="nav-link" to="/connections">Connections</Link></li>
                 <li>
                     <button className="nav-link logout-btn" onClick={handleLogout}>
                         Logout

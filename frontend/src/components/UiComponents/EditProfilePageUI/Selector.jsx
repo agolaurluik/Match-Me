@@ -80,7 +80,7 @@ const Selector = ({
                 onChange(payload);
                 setLoadingLocation(false);
                 setGeoSuccess(true);
-                console.log("Location payload:", payload);
+                // console.log("Location payload:", payload);
             },
             (error) => {
                 alert("Unable to retrieve your location.");

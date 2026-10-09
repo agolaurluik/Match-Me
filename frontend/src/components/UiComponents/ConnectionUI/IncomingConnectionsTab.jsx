@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './IncomingConnectionsTab.css';
+import './ConnectionsTab.css';
 import UserGrid from './UsersGrid';
 import {useUserProfiles} from '../../../hooks/useUserProfiles';
 import api from '../../../api/api';
@@ -41,12 +41,12 @@ const IncomingConnectionsTab = () => {
       };
     
 
-    if (loading) return <div className='incoming-connections-tab-container'>Loading incoming connections...</div>;
-    if (error) return <div className='incoming-connections-tab-container'>Failed to load incoming connections</div>;
+    if (loading) return <div className='connections-tab-container-message'>Loading incoming connections...</div>;
+    if (error) return <div className='connections-tab-container-message'>Failed to load incoming connections</div>;
 
     if (!incomingUsersList || incomingUsersList.length === 0) {
       return (
-        <div className='incoming-connections-tab-container-message'>
+        <div className='connections-tab-container-message'>
           <h2>No incoming connections</h2>
         </div>
       );
@@ -55,7 +55,8 @@ const IncomingConnectionsTab = () => {
   return (
     <UserGrid
       users={users}
-      classPrefix="incoming-connections-tab"
+      classPrefix="connections-tab"
+      modalPrefix="incoming-connections-tab"
       onUserRemoved={removeUserFromList}
     />
   );

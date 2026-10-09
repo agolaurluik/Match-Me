@@ -1,4 +1,3 @@
-import React from "react";
 import './SubHeader.css'
 
 const SubHeader = ({activeTab, onTabChange}) => {

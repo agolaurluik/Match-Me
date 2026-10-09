@@ -45,10 +45,6 @@ useEffect(() => {
     });
   }, [scene, isMobile, isTablet, isDesktop]);
 
-  useEffect(() => {
-    console.log('Device:', { isMobile, isTablet, isDesktop });
-  }, [isMobile, isTablet, isDesktop]);
-
   useFrame(() => {
     const time = clockRef.current.getElapsedTime();
     const bpm = 55;

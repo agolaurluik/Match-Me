@@ -17,6 +17,6 @@ export function createStompClient() {
   return new Client({
     brokerURL: brokerURL, 
     reconnectDelay: 5000,
-    debug: (str) => console.log('[STOMP]', str),
+    // debug: (str) => console.log('[STOMP]', str),
   });
 }

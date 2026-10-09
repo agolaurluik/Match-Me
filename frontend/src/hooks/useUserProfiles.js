@@ -73,7 +73,7 @@ export function useUserProfiles({ userIds = null, fetchFromRecommendations = tru
               const bio = bioRes.profile;
               const matchingInfo = matchRes.matchInfo;
 
-              console.log("Matching info for user ID:", { user, bio, matchingInfo });
+              // console.log("Matching info for user ID:", { user, bio, matchingInfo });
 
               function calculateAge(birthDateStringOrDate) {
                 if (!birthDateStringOrDate) return null;

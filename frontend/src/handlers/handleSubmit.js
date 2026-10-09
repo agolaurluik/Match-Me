@@ -102,17 +102,17 @@ export async function handleProfileSubmit({
 
 if (isNewProfile) {
     await api.createProfile(changedFields);
-      console.log("Profile created!");
+      // console.log("Profile created!");
   } else if (Object.keys(changedFields).length === 0 && !locationChanged) {
-      console.log("No changes to save.");
+      // console.log("No changes to save.");
   } else {
     if (Object.keys(changedFields).length > 0) {
         await api.patchProfile(changedFields);
-        console.log("Profile updated.");
+        // console.log("Profile updated.");
     }
   }
 
-  console.log("Final location payload:", locationPayload);
+  // console.log("Final location payload:", locationPayload);
   if (locationPayload) {
     if (namedLocationId || locationId) {
       await api.updateUserLocation(locationPayload);
@@ -120,7 +120,7 @@ if (isNewProfile) {
       await api.createUserLocation(locationPayload);
     }
   } else {
-    console.log("Skipping location submission – no valid location payload.");
+    // console.log("Skipping location submission – no valid location payload.");
   }
 
   navigate('/profile');

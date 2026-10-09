@@ -7,14 +7,14 @@ import { useStomp } from './StompProvider';
 
 
 
-const ProfileModal = ({ user, onClose, classPrefix, onUserRemoved, updateConnectionStatus }) => {
+const ProfileModal = ({ user, onClose, classPrefix, modalPrefix, onUserRemoved, updateConnectionStatus }) => {
     if (!user) return null;
 
     const { sendConnectionStatusUpdate } = useStomp();
     const profileSecureImageUrl = useSecureImage(user.profilePicture);
 
-    const isIncomingTab = classPrefix === "incoming-connections-tab";
-    const isPendingTab = classPrefix === "pending-connections-tab";
+    const isIncomingTab = modalPrefix === "incoming-connections-tab";
+    const isPendingTab = modalPrefix === "pending-connections-tab";
     const isChatTab = classPrefix === "chat-tab"; //also includes about-me for user profile in chat
     const isBlockedByMe = user.userIsReceiver
         ? user.receiverStatus === "BLOCKED"

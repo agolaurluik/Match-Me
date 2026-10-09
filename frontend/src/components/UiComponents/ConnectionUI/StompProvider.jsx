@@ -42,7 +42,7 @@ export const StompProvider = ({ children }) => {
     const client = clientRef.current;
 
     client.onConnect = () => {
-      console.log('[STOMP] Connected!');
+      // console.log('[STOMP] Connected!');
       setIsConnected(true); 
 
       client.subscribe('/user/queue/messages', (msg) => {
@@ -116,7 +116,7 @@ export const StompProvider = ({ children }) => {
 
     client.onDisconnect = () => {
       setIsConnected(false); 
-      console.log('[STOMP] Disconnected');
+      // console.log('[STOMP] Disconnected');
     };
 
     client.activate();
