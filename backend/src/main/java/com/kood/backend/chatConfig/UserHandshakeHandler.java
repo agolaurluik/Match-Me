@@ -15,14 +15,12 @@ public class UserHandshakeHandler extends DefaultHandshakeHandler {
             @NonNull Map<String, Object> attributes) {
         Long userId = (Long) attributes.get("userId");
         if (userId == null) {
-            System.out.println("User ID not found in WebSocket handshake");
+
             return null;
         }
-        System.out.println("determineUser: userId in attributes = " + userId);
         return new Principal() {
             @Override
             public String getName() {
-                System.out.println("determineUser: returning userId = " + userId);
                 return String.valueOf(userId);
             }
         };

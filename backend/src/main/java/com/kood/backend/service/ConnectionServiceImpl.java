@@ -307,13 +307,13 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
 
     @Override
-    public boolean canView(Long requesterId, Long viewingId) {
+    public boolean canView(Long requesterId, Long candidateId) {
 
-        if (requesterId == null || viewingId == null) {
+        if (requesterId == null || candidateId == null) {
             return false;
         }
 
-        if (requesterId.equals(viewingId)) {
+        if (requesterId.equals(candidateId)) {
             return true;
         }
 
@@ -325,11 +325,13 @@ public class ConnectionServiceImpl implements ConnectionService {
         Set<Long> validConnectionIds = new HashSet<>();
 
         for (Connection item : acceptedConnections) {
-            validConnectionIds.add(item.getId());
+            validConnectionIds.add(item.getSender());
+            validConnectionIds.add(item.getReceiver());
         }
 
         for (Connection item : pendingConnections) {
-            validConnectionIds.add(item.getId());
+            validConnectionIds.add(item.getSender());
+            validConnectionIds.add(item.getReceiver());
         }
 
         User currentUser = userService.getUserById(requesterId);
@@ -337,8 +339,9 @@ public class ConnectionServiceImpl implements ConnectionService {
         List<Long> userConnections = getAllConnections(requesterId);
 
         Optional<MatchingFilter> existingFilter = matchingFilterRepository.findByUserId(currentUser.getId());
-        if (existingFilter == null) {
-            throw new Error("Filter is null, cannot invoke algorithm");
+        if (existingFilter.isEmpty()) {
+            throw new IllegalStateException(
+                    "No matching filter found for user ID: " + currentUser.getId());
         }
         MatchingFilter filter = existingFilter.get();
 
@@ -360,7 +363,7 @@ public class ConnectionServiceImpl implements ConnectionService {
                 validConnectionIds.add(userId);
             }
         }
-
-        return validConnectionIds.contains(viewingId);
+        System.out.println("Returning boolean validConnectionIds contains viewingId");
+        return validConnectionIds.contains(candidateId);
     }
 }

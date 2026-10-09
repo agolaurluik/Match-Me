@@ -106,9 +106,17 @@ public class UserController {
         public ResponseEntity<Map<String, Object>> getUserProfileById(
                         @AuthenticationPrincipal UserDetailsImpl userDetails,
                         @PathVariable @NonNull Long id) {
+                Long currentUserID = userDetails.getId();
                 User user = userService.getUserById(id);
-                // Checks if the requesting user is allowed to view the requested id profile
-                if (user == null || !connectionService.canView(userDetails.getId(), id)) {
+
+                if (user == null) {
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                        .body(Map.of("message", "Not found"));
+                }
+
+                boolean allowed = connectionService.canView(currentUserID, id);
+
+                if (!allowed) {
                         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                         .body(Map.of("message", "Not found"));
                 }
@@ -120,7 +128,6 @@ public class UserController {
                         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
                 }
                 response.put("profile", retrievedUser);
-                response.put("message", "Successfully retrieved profile for <user> with ID: " + userDetails.getId());
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(response);
         }

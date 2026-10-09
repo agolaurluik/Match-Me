@@ -40,8 +40,6 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
                         if (jwtUtils.validateJwtToken(token)) {
                             Long userId = jwtUtils.getUserIdFromJwtToken(token);
                             attributes.put("userId", userId);
-                            System.out.println(
-                                    "HandshakeInterceptor JWT extracted from query string: userId=" + userId);
                             return true;
                         }
                     }
