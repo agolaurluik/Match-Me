@@ -305,6 +305,88 @@
 
 
 /* =========================================================
+   DESKTOP NAVIGATION
+   ========================================================= */
+
+.desktop-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+
+    margin-left: auto;
+    margin-right: 1rem;
+}
+
+.desktop-nav-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0.55rem 0.8rem;
+
+    color: #222;
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+
+    white-space: nowrap;
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.desktop-nav-link:hover {
+    background: rgba(15, 15, 15, 0.13);
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.desktop-nav-link:active {
+    transform: translateY(1px);
+}
+
+.desktop-logout-btn {
+    appearance: none;
+}
+
+/* Hide hamburger on desktop */
+.mobile-nav-toggle {
+    display: none;
+}
+
+
+/* =========================================================
+   TABLET AND MOBILE NAVIGATION
+   ========================================================= */
+
+@media (max-width: 900px) {
+    .desktop-nav {
+        display: none;
+    }
+
+    .mobile-nav-toggle {
+        display: flex;
+        align-items: center;
+    }
+
+    .header-content {
+        padding: 0 1rem;
+    }
+
+    .header-buttons {
+        margin-left: auto;
+    }
+}
+
+/* =========================================================
    MOBILE
    ========================================================= */
 
@@ -363,6 +445,8 @@
         width: 26px;
     }
 }
+
+
 
 
 /* =========================================================
