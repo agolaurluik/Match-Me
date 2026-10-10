@@ -16,11 +16,9 @@ import com.kood.backend.repository.MatchingFilterRepository;
 
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
-import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -36,133 +34,6 @@ public class Algorithm {
         private final MatchingFilterRepository matchingFilterRepository;
         private final UserService userService;
         private final UserMatchingFilterMapperImpl userMatchingFilterMapperImpl;
-
-        private boolean matchesGenderPreference(User candidate, String genderPreference) {
-                if (candidate.getGender() == null) {
-                        System.err.println("Skipping candidate with ID " + candidate.getId() + ": gender is null.");
-                        return false; // Skip the user with null gender
-                }
-
-                return switch (genderPreference.toLowerCase()) {
-                        case "lookingformen" -> "male".equalsIgnoreCase(candidate.getGender().getName());
-                        case "lookingforwomen" -> "female".equalsIgnoreCase(candidate.getGender().getName());
-                        case "lookingforother" -> "other".equalsIgnoreCase(candidate.getGender().getName());
-                        case "lookingforall" -> true;
-                        default -> false; // Invalid preference, exclude by default
-                };
-        }
-
-        private boolean ageMatches(Instant birthDate, Integer highestAge, Integer lowestAge) {
-                if (birthDate == null)
-                        return false;
-                LocalDate birthDateLocal = birthDate.atZone(ZoneId.systemDefault()).toLocalDate();
-                int age = Period.between(birthDateLocal, LocalDate.now()).getYears();
-
-                if (lowestAge != null && age < lowestAge)
-                        return false;
-                if (highestAge != null && age > highestAge)
-                        return false;
-
-                return true;
-        }
-
-        private boolean radiusMatches(User candidate, User viewer, Integer radius) {
-                if (radius == null)
-                        return true; // No filter applied
-
-                UserLocation viewerLocation = viewer.getLocation();
-                UserLocation candidateLocation = candidate.getLocation();
-
-                if (viewerLocation == null || candidateLocation == null)
-                        return false;
-
-                Double distanceInMeters = locationRepository
-                                .calculateDistanceBetween(viewerLocation.getId(), candidateLocation.getId())
-                                .orElse(null);
-
-                if (distanceInMeters == null)
-                        return false;
-
-                return (distanceInMeters / 1000.0) <= radius;
-        }
-
-        public List<Long> getTopMatchingUsersIDs(
-                        User viewer,
-                        Integer match_limit,
-                        String genderPreference,
-                        Integer nationalityScore,
-                        Integer interestScore,
-                        Integer personalityScore,
-                        Integer purposeScore,
-                        Integer highestAge,
-                        Integer lowestAge,
-                        Integer radius,
-                        List<Long> connectedUserIds) {
-
-                return userRepository.findAll().stream()
-                                .filter(candidate -> !candidate.getId().equals(viewer.getId()))
-                                .filter(candidate -> matchesGenderPreference(candidate, genderPreference))
-                                .filter(candidate -> ageMatches(candidate.getBirthDate(), highestAge, lowestAge))
-                                .filter(candidate -> radiusMatches(candidate, viewer, radius))
-                                .filter(candidate -> !connectedUserIds.contains(candidate.getId()))
-
-                                .map(candidate -> {
-                                        Set<String> viewerInterests = viewer.getInterests().stream()
-                                                        .map(Objects::requireNonNull)
-                                                        .map(interest -> interest.getName())
-                                                        .collect(Collectors.toSet());
-                                        Set<String> viewerPersonalities = viewer.getPersonalities().stream()
-                                                        .map(Objects::requireNonNull)
-                                                        .map(personality -> personality.getName())
-                                                        .collect(Collectors.toSet());
-
-                                        Set<String> candidateInterests = candidate.getInterests().stream()
-                                                        .map(Objects::requireNonNull)
-                                                        .map(interest -> interest.getName())
-                                                        .collect(Collectors.toSet());
-                                        Set<String> candidatePersonalities = candidate.getPersonalities().stream()
-                                                        .map(Objects::requireNonNull)
-                                                        .map(personality -> personality.getName())
-                                                        .collect(Collectors.toSet());
-
-                                        Set<String> sharedInterests = new HashSet<>(viewerInterests);
-                                        sharedInterests.retainAll(candidateInterests);
-
-                                        Set<String> sharedPersonalities = new HashSet<>(viewerPersonalities);
-                                        sharedPersonalities.retainAll(candidatePersonalities);
-
-                                        // ----------------- purpose calculations:
-
-                                        int sharedPurposeScore = 0;
-                                        if (viewer.getPurpose() != null && candidate.getPurpose() != null
-                                                        && viewer.getPurpose().getName().equalsIgnoreCase(
-                                                                        candidate.getPurpose().getName())) {
-                                                sharedPurposeScore = purposeScore;
-                                        }
-
-                                        // -------------- nationality calculations:
-
-                                        int sharedNationalityScore = 0;
-                                        if (viewer.getNationality() != null && candidate.getNationality() != null
-                                                        && viewer.getNationality().getName().equalsIgnoreCase(
-                                                                        candidate.getNationality().getName())) {
-                                                sharedNationalityScore = nationalityScore;
-                                        }
-
-                                        // ---------------------------------------
-
-                                        int score = (sharedInterests.size() * interestScore)
-                                                        + (sharedPersonalities.size() * personalityScore)
-                                                        + sharedPurposeScore + sharedNationalityScore;
-
-                                        return new AbstractMap.SimpleEntry<>(candidate.getId(), score);
-                                })
-                                .filter(entry -> entry.getValue() >= 3)
-                                .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
-                                .limit(match_limit)
-                                .map(entry -> entry.getKey())// check this for failure
-                                .collect(Collectors.toList());
-        }
 
         public UserMatchDetailDTO getDetailedMatchInfo(
                         UserLocation currentUserLocation,
@@ -228,12 +99,14 @@ public class Algorithm {
 
                 int matchPercentageRounded = (int) Math.round(matchPercentageDouble);
 
+                String profileImageName = userService.getUserProfileImageNameByUserId(candidate.getId());
                 return new UserMatchDetailDTO(
                                 candidate.getId(),
-                                distance,
                                 matchPercentageRounded,
                                 sharedInterests,
-                                sharedPersonalities);
+                                sharedPersonalities,
+                                distance,
+                                profileImageName);
         }
 
         public UserMatchingFilterDTO updateMatchingFilter(User user, UserMatchingFilterDTO points) {
@@ -259,94 +132,42 @@ public class Algorithm {
                 return userMatchingFilterMapperImpl.toDTO(filter);
         }
 
-        public List<UserMatchDetailDTO> getTopMatchingUserDetails(
-                        User viewer,
-                        Integer match_limit,
-                        String genderPreference,
-                        Integer nationalityScore,
-                        Integer interestScore,
-                        Integer personalityScore,
-                        Integer purposeScore,
-                        Integer highestAge,
-                        Integer lowestAge,
-                        Integer radius,
-                        List<Long> connectedUserIds) {
+        public List<UserMatchDetailDTO> findTopMatchingUsers(
+                        Long viewerId,
+                        LocalDate today) {
 
-                return userRepository.findAll().stream()
-                                .filter(candidate -> !candidate.getId().equals(viewer.getId()))
-                                .filter(candidate -> matchesGenderPreference(candidate, genderPreference))
-                                .filter(candidate -> ageMatches(candidate.getBirthDate(), highestAge, lowestAge))
-                                .filter(candidate -> radiusMatches(candidate, viewer, radius))
-                                .filter(candidate -> !connectedUserIds.contains(candidate.getId()))
-                                .map(candidate -> {
+                List<Object[]> rows = userRepository.findTopMatchingUsers(
+                                viewerId,
+                                today);
 
-                                        Set<String> viewerInterests = viewer.getInterests().stream()
-                                                        .map(Objects::requireNonNull)
-                                                        .map(interest -> interest.getName())
-                                                        .collect(Collectors.toSet());
-                                        Set<String> viewerPersonalities = viewer.getPersonalities().stream()
-                                                        .map(Objects::requireNonNull)
-                                                        .map(personality -> personality.getName())
-                                                        .collect(Collectors.toSet());
+                List<UserMatchDetailDTO> matches = new ArrayList<>();
 
-                                        Set<String> candidateInterests = candidate.getInterests().stream()
-                                                        .map(Objects::requireNonNull)
-                                                        .map(interest -> interest.getName())
-                                                        .collect(Collectors.toSet());
-                                        Set<String> candidatePersonalities = candidate.getPersonalities().stream()
-                                                        .map(Objects::requireNonNull)
-                                                        .map(personality -> personality.getName())
-                                                        .collect(Collectors.toSet());
+                for (Object[] row : rows) {
+                        Long candidateId = ((Number) row[0]).longValue();
+                        double matchPercentage = ((Number) row[1]).doubleValue();
+                        Set<String> sharedInterests = row[2] == null
+                                        ? new HashSet<>()
+                                        : new HashSet<>(Arrays.asList((String[]) row[2]));
 
-                                        Set<String> sharedInterests = new HashSet<>(viewerInterests);
-                                        sharedInterests.retainAll(candidateInterests);
+                        Set<String> sharedPersonalities = row[3] == null
+                                        ? new HashSet<>()
+                                        : new HashSet<>(Arrays.asList((String[]) row[3]));
 
-                                        Set<String> sharedPersonalities = new HashSet<>(viewerPersonalities);
-                                        sharedPersonalities.retainAll(candidatePersonalities);
+                        Double distanceKm = row[4] == null
+                                        ? null
+                                        : ((Number) row[4]).doubleValue();
+                        String profileImageName = userService.getUserProfileImageNameByUserId(candidateId);
+                        UserMatchDetailDTO dto = new UserMatchDetailDTO(
+                                        candidateId,
+                                        matchPercentage,
+                                        sharedInterests,
+                                        sharedPersonalities,
+                                        distanceKm,
+                                        profileImageName);
 
-                                        int sharedPurposeScore = 0;
-                                        if (viewer.getPurpose() != null && candidate.getPurpose() != null &&
-                                                        viewer.getPurpose().getName().equalsIgnoreCase(
-                                                                        candidate.getPurpose().getName())) {
-                                                sharedPurposeScore = purposeScore;
-                                        }
+                        matches.add(dto);
+                }
 
-                                        int sharedNationalityScore = 0;
-                                        if (viewer.getNationality() != null && candidate.getNationality() != null &&
-                                                        viewer.getNationality().getName().equalsIgnoreCase(
-                                                                        candidate.getNationality().getName())) {
-                                                sharedNationalityScore = nationalityScore;
-                                        }
-
-                                        int score = (sharedInterests.size() * interestScore)
-                                                        + (sharedPersonalities.size() * personalityScore)
-                                                        + sharedPurposeScore + sharedNationalityScore;
-
-                                        int maxScore = (viewer.getInterests().size() * interestScore)
-                                                        + (viewer.getPersonalities().size() * personalityScore) +
-                                                        sharedPurposeScore + sharedNationalityScore;
-
-                                        double matchPercentageDouble = (double) score / (double) maxScore;
-
-                                        int matchPercentageRounded = (int) Math.round(matchPercentageDouble);
-
-                                        double distanceA = locationRepository
-                                                        .calculateDistanceBetween(viewer.getLocation().getId(),
-                                                                        candidate.getLocation().getId())
-                                                        .orElse(0.0) / 1000.0;
-
-                                        double distance = (int) distanceA;
-
-                                        return new UserMatchDetailDTO(
-                                                        candidate.getId(),
-                                                        distance,
-                                                        matchPercentageRounded,
-                                                        sharedInterests,
-                                                        sharedPersonalities);
-                                })
-                                .sorted((a, b) -> Integer.compare(b.getMatchPercentageRounded(),
-                                                a.getMatchPercentageRounded()))
-                                .limit(match_limit)
-                                .collect(Collectors.toList());
+                return matches;
         }
 }

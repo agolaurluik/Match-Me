@@ -112,6 +112,20 @@ public class UserService {
         }
     }
 
+    public String getUserProfileImageNameByUserId(Long id) {
+
+        if (id == null) {
+            throw new BadRequestException("Id not provided for fetching profile image name");
+        }
+
+        String profileImageName = getUserById(id).getProfileImageName();
+        if (!profileImageName.equals(null)) {
+            return profileImageName;
+        } else {
+            throw new NotFoundException("Profile image name not found for user ID: " + id);
+        }
+    }
+
     // Update
     @Transactional
     public UserFullDTO updateProfile(UserDetailsImpl userDetails, UserDTO userData) {

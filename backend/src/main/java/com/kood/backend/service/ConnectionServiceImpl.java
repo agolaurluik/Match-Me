@@ -1,5 +1,6 @@
 package com.kood.backend.service;
 
+import com.kood.backend.dto.algorithmDTOs.UserMatchDetailDTO;
 import com.kood.backend.entity.ConnectionEntities.Connection;
 import com.kood.backend.entity.ConnectionEntities.ConnectionStatus;
 import com.kood.backend.entity.UserEntities.MatchingFilter;
@@ -18,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -336,31 +339,17 @@ public class ConnectionServiceImpl implements ConnectionService {
 
         User currentUser = userService.getUserById(requesterId);
 
-        List<Long> userConnections = getAllConnections(requesterId);
-
         Optional<MatchingFilter> existingFilter = matchingFilterRepository.findByUserId(currentUser.getId());
         if (existingFilter.isEmpty()) {
             throw new IllegalStateException(
                     "No matching filter found for user ID: " + currentUser.getId());
         }
-        MatchingFilter filter = existingFilter.get();
+        LocalDate today = LocalDate.now(ZoneId.of("Europe/Tallinn"));
+        List<UserMatchDetailDTO> recommendations = algorithm.findTopMatchingUsers(candidateId, today);
 
-        List<Long> recommendations = algorithm.getTopMatchingUsersIDs(
-                currentUser,
-                filter.getMatch_limit(),
-                filter.getGenderPreference(),
-                filter.getNationalityScore(),
-                filter.getInterestScore(),
-                filter.getPersonalityScore(),
-                filter.getPurposeScore(),
-                filter.getHighestAge(),
-                filter.getLowestAge(),
-                filter.getRadius(),
-                userConnections);
-
-        for (Long userId : recommendations) {
-            if (!validConnectionIds.contains(userId)) {
-                validConnectionIds.add(userId);
+        for (UserMatchDetailDTO userProfile : recommendations) {
+            if (!validConnectionIds.contains(userProfile.getId())) {
+                validConnectionIds.add(userProfile.getId());
             }
         }
         System.out.println("Returning boolean validConnectionIds contains viewingId");

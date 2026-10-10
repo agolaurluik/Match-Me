@@ -13,7 +13,6 @@ import com.kood.backend.entity.UserEntities.User;
 import com.kood.backend.entity.UserEntities.UserLocation;
 import com.kood.backend.security.UserDetailsImpl;
 import com.kood.backend.security.jwtconfig.JwtUtils;
-import com.kood.backend.service.ConnectionService;
 import com.kood.backend.service.GenderService;
 import com.kood.backend.service.InterestService;
 import com.kood.backend.service.NamedLocationService;
@@ -25,6 +24,8 @@ import com.kood.backend.service.matching.Algorithm;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,10 +52,6 @@ public class MatchingController {
         private final NationalityService nationalityService;
         private final GenderService genderService;
         private final NamedLocationService namedLocationService;
-        private final ConnectionService connectionService;
-
-        @Autowired
-        AuthenticationManager authenticationManager;// What is this for? Imported and all but not used anywhere here
 
         @Autowired
         JwtUtils jwtUtils;
@@ -77,20 +73,9 @@ public class MatchingController {
                         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                         .body(response);
                 }
-                List<Long> userConnections = connectionService.getAllConnections(currentUser.getId());
+                LocalDate today = LocalDate.now(ZoneId.of("Europe/Tallinn"));
 
-                List<Long> topIds = algorithm.getTopMatchingUsersIDs(
-                                currentUser,
-                                filter.getMatch_limit(),
-                                filter.getGenderPreference(),
-                                filter.getNationalityScore(),
-                                filter.getInterestScore(),
-                                filter.getPersonalityScore(),
-                                filter.getPurposeScore(),
-                                filter.getHighestAge(),
-                                filter.getLowestAge(),
-                                filter.getRadius(),
-                                userConnections);
+                List<UserMatchDetailDTO> topIds = algorithm.findTopMatchingUsers(currentUser.getId(), today);
 
                 response.put("recommendations", topIds);
                 return ResponseEntity.status(HttpStatus.OK)

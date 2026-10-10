@@ -11,8 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserMatchDetailDTO {
     private Long id;
-    private double distance;
-    private int matchPercentageRounded;
+    private double matchPercentage;
     private Set<String> sharedInterestsSet;
     private Set<String> sharedPersonalitiesSet;
+    private double distance;
+    private String profileImageName;
 }
