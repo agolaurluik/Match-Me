@@ -55,6 +55,7 @@ public class UserMapperImpl implements UserMapper {
 
     @Override
     public UserProfileDTO toProfileDTO(User user) {
+        System.out.println("Inside converter user ID is: " + user.getId());
         return UserProfileDTO.builder()
                 .id(user.getId())
                 .userDescription(user.getUserDescription())
