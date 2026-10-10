@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -156,18 +157,20 @@ public class Algorithm {
                         Double distanceKm = row[4] == null
                                         ? null
                                         : ((Number) row[4]).doubleValue();
+                        int distance = Math.toIntExact(Math.round(distanceKm));
                         String profileImageName = userService.getUserProfileImageNameByUserId(candidateId);
                         UserMatchDetailDTO dto = new UserMatchDetailDTO(
                                         candidateId,
                                         matchPercentage,
                                         sharedInterests,
                                         sharedPersonalities,
-                                        distanceKm,
+                                        distance,
                                         profileImageName);
 
                         matches.add(dto);
                 }
-
+                matches.sort(Comparator.comparingDouble((UserMatchDetailDTO dto) -> dto.getMatchPercentage())
+                                .reversed());
                 return matches;
         }
 }

@@ -143,15 +143,13 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
 
     public List<Connection> getAllIncomingConnections(Long userId) {
-        System.err.println("Fetching incoming connections for userId: " + userId);
         List<Connection> A1 = connectionRepository.findByReceiverAndReceiverStatus(userId, ConnectionStatus.PENDING);
         return A1;
     }
 
     public List<Connection> getAllOutgoingConnections(Long userId) {
-        System.err.println("Fetching outgoing connections for userId: " + userId);
-        List<Connection> A1 = connectionRepository.findBySenderAndSenderStatus(userId, ConnectionStatus.PENDING);
-        return A1;
+        List<Connection> O1 = connectionRepository.findBySenderAndSenderStatus(userId, ConnectionStatus.PENDING);
+        return O1;
     }
 
     @Override
