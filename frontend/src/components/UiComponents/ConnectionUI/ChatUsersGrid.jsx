@@ -54,8 +54,6 @@ const ChatUsersGrid = ({
     return enriched.sort((a, b) => new Date(b.lastMessageTimestamp) - new Date(a.lastMessageTimestamp));
   }, [connections, onlineUsers, unreadCounts, viewerId]);
 
-
-  console.log("Chat connection passed to ProfileModal:", profileUser);
   return (
     <>
       <div className="chat-users-grid">

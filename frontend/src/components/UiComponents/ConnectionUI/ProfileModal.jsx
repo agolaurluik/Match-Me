@@ -77,14 +77,14 @@ const ProfileModal = ({ user, onClose, classPrefix, modalPrefix, onUserRemoved, 
                 sendConnectionStatusUpdate(user.myId, user.id);
             } else {
                 console.log("Rejecting recommended user connection with ", user);
-                // if (!user.matchData?.signature) {
-                //     throw new Error('Missing recommendation signature');
-                // }
-                // await api.createConnection(user.matchData);
-                // //  console.log("Created reccommended user ", user.username);
-                // await api.rejectConnection(user.id);
-                // // console.log("Blocked reccommended user ", user.username);
-                // onUserRemoved?.(user.friendId ?? user.id);
+                if (!user.matchData?.signature) {
+                    throw new Error('Missing recommendation signature');
+                }
+                await api.createConnection(user.matchData);
+                //  console.log("Created reccommended user ", user.username);
+                await api.rejectConnection(user.id);
+                // console.log("Blocked reccommended user ", user.username);
+                onUserRemoved?.(user.friendId ?? user.id);
             }
 
         } catch (error) {

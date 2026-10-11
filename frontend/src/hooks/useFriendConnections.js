@@ -93,8 +93,6 @@ const useFriendConnections = (viewerId) => {
                 api.fetchUsersMatchingInfoById(friendId),
               ]);
 
-              console.log('User profile response:', userProfile);
-              console.log('User description:', userProfile?.profile?.userDescription);
               const bio = userBio.profile;
 
               function calculateAge(birthDateStringOrDate) {
@@ -127,7 +125,7 @@ const useFriendConnections = (viewerId) => {
                   sharedInterests: matchingInfo.sharedInterestsSet,
                   sharedPersonalities: matchingInfo.sharedPersonalitiesSet,
                   distance: matchingInfo.distance,
-                  score: matchingInfo.matchPercentageRounded,
+                  score: matchingInfo.matchPercentage ?? null,
                 },
               };
             } catch (err) {
