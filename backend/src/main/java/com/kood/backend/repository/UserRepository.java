@@ -403,7 +403,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
             FROM scored_candidates
 
-            WHERE match_score >= 3
+            WHERE match_score >= 1
 
             ORDER BY
                 match_score DESC,

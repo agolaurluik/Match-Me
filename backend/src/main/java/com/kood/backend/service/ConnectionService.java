@@ -2,15 +2,17 @@ package com.kood.backend.service;
 
 import org.springframework.stereotype.Service;
 
+import com.kood.backend.dto.algorithmDTOs.UserMatchDetailDTO;
 import com.kood.backend.entity.ConnectionEntities.Connection;
 import com.kood.backend.entity.ConnectionEntities.ConnectionStatus;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public interface ConnectionService {
 
-    Connection createConnection(Long senderId, Long receiverId);
+    Connection createConnection(Long senderId, UserMatchDetailDTO dto);
 
     List<Long> getAllConnections(Long userId);
 
@@ -20,9 +22,9 @@ public interface ConnectionService {
 
     List<Connection> getConnectionsByStatus(Long userId, ConnectionStatus status, boolean acceptedView);
 
-    List<Connection> getAllIncomingConnections(Long userId);
+    Set<UserMatchDetailDTO> getAllIncomingConnections(Long userId);
 
-    List<Connection> getAllOutgoingConnections(Long userId);
+    Set<UserMatchDetailDTO> getAllOutgoingConnections(Long userId);
 
     Connection acceptConnection(Long userId, Long candidateId);
 
