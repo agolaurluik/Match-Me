@@ -43,10 +43,13 @@ const ProfileModal = ({ user, onClose, classPrefix, modalPrefix, onUserRemoved, 
         try {
             if (isIncomingTab) {
                 await api.acceptConnection(user.id);
-                // console.log("Accepted connection from", user.username);
             } else {
-                await api.createConnection(user.id);
-                // console.log("Matched with", user.username);
+
+                if (!user.matchData?.signature) {
+                    throw new Error('Missing recommendation signature');
+                }
+                console.log("Creating reccommended user connection with ", user.matchData);
+                await api.createConnection(user.matchData);
             }
             onUserRemoved?.(user.friendId ?? user.id);
         } catch (error) {
@@ -73,11 +76,15 @@ const ProfileModal = ({ user, onClose, classPrefix, modalPrefix, onUserRemoved, 
                 onUserRemoved?.(user.id);
                 sendConnectionStatusUpdate(user.myId, user.id);
             } else {
-                await api.createConnection(user.id);
-                //  console.log("Created reccommended user ", user.username);
-                await api.rejectConnection(user.id);
-                // console.log("Blocked reccommended user ", user.username);
-                onUserRemoved?.(user.friendId ?? user.id);
+                console.log("Rejecting recommended user connection with ", user);
+                // if (!user.matchData?.signature) {
+                //     throw new Error('Missing recommendation signature');
+                // }
+                // await api.createConnection(user.matchData);
+                // //  console.log("Created reccommended user ", user.username);
+                // await api.rejectConnection(user.id);
+                // // console.log("Blocked reccommended user ", user.username);
+                // onUserRemoved?.(user.friendId ?? user.id);
             }
 
         } catch (error) {

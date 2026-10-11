@@ -91,7 +91,7 @@ async function deleteData(url) {
     try {
         return await response.json();
     } catch {
-        return null; 
+        return null;
     }
 }
 
@@ -180,8 +180,8 @@ const api = {
     updateUserLocation: (data) => putData(`${API_BASE_URL}/users/me/profile/updateUserLocation`, data),
     createUserLocation: (data) => postJSON(`${API_BASE_URL}/users/me/profile/createUserLocation`, data),
 
-    createConnection: (userId) => postJSON(`${API_BASE_URL}/connections/create/${userId}`),
-    
+    createConnection: (data) =>postJSON(`${API_BASE_URL}/connections/create`, data),
+
     blockConnection: (userId) => postJSON(`${API_BASE_URL}/connections/${userId}/block`),
     unblockConnection: (userId) => postJSON(`${API_BASE_URL}/connections/${userId}/unblock`),
 
@@ -199,7 +199,7 @@ const api = {
 
     fetchUserNameById: (userId) => fetchJSON(`${API_BASE_URL}/users/get-username/${userId}`),
     fetchChatHistory: (connectionId, page = 0, size = 20) =>
-    fetchJSON(`${API_BASE_URL}/chat/history?connectionId=${connectionId}&page=${page}&size=${size}`), 
+        fetchJSON(`${API_BASE_URL}/chat/history?connectionId=${connectionId}&page=${page}&size=${size}`),
     setMessagesAsRead: (connectionId) => patchJSON(`${API_BASE_URL}/chat/read?connectionId=${connectionId}`)
 
 };

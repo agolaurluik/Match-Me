@@ -93,10 +93,11 @@ export function useUserProfiles({
               // Resolve the other user's ID.
               // Recommendations use id; connections use sender/receiver.
               const userId =
-                profile.userId ??
-                (connectionDirection === 'outgoing' ? profile.receiver : undefined) ??
-                (connectionDirection === 'incoming' ? profile.sender : undefined) ??
-                profile.id;
+                connectionDirection === 'outgoing'
+                  ? profile.receiver ?? profile.candidateId ?? profile.id
+                  : connectionDirection === 'incoming'
+                    ? profile.sender ?? profile.viewerId ?? profile.id
+                    : profile.candidateId ?? profile.userId ?? profile.id;
 
               if (userId == null) {
                 console.error('Could not resolve user ID from profile:', profile);
@@ -128,6 +129,7 @@ export function useUserProfiles({
                 username: user.username,
 
                 profilePicture:
+                  profile.candidateProfileImageName ||
                   profile.profileImage ||
                   user.profileImageName ||
                   'no picture',
@@ -155,33 +157,46 @@ export function useUserProfiles({
                   // backend adds them to its response.
                   sharedInterests: Array.isArray(sharedInterestIds)
                     ? sharedInterestIds.map(item =>
-                        typeof item === 'object' && item !== null
-                          ? item.name
-                          : interests.find(option =>
-                              String(option.id) === String(item)
-                            )?.name ?? item
-                      )
+                      typeof item === 'object' && item !== null
+                        ? item.name
+                        : interests.find(option =>
+                          String(option.id) === String(item)
+                        )?.name ?? item
+                    )
                     : [],
 
                   sharedPersonalities: Array.isArray(sharedPersonalityIds)
                     ? sharedPersonalityIds.map(item =>
-                        typeof item === 'object' && item !== null
-                          ? item.name
-                          : personalities.find(option =>
-                              String(option.id) === String(item)
-                            )?.name ?? item
-                      )
+                      typeof item === 'object' && item !== null
+                        ? item.name
+                        : personalities.find(option =>
+                          String(option.id) === String(item)
+                        )?.name ?? item
+                    )
                     : [],
 
                   distance: profile.distance ?? null,
-                  score: profile.matchPercentage ?? null
+                  score: profile.matchPercentage ?? null,
                 },
 
-                // Preserve connection information for components that need it.
+                matchData: {
+                  viewerId: profile.viewerId,
+                  candidateId: profile.candidateId,
+                  matchPercentage: profile.matchPercentage,
+                  sharedInterestsSet: profile.sharedInterestsSet,
+                  sharedPersonalitiesSet: profile.sharedPersonalitiesSet,
+                  distance: profile.distance,
+                  viewerProfileImageName: profile.viewerProfileImageName,
+                  candidateProfileImageName: profile.candidateProfileImageName,
+                  createdAt: profile.createdAt,
+                  signature: profile.signature
+                },
+
                 sender: profile.sender,
                 receiver: profile.receiver,
                 senderStatus: profile.senderStatus,
                 receiverStatus: profile.receiverStatus
+
               };
             } catch (err) {
               console.error(

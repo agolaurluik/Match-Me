@@ -1,50 +1,49 @@
-
 import React, { useEffect, useState } from 'react';
 import './ConnectionsTab.css';
 import UserGrid from './UsersGrid';
 import { useUserProfiles } from '../../../hooks/useUserProfiles';
 import api from '../../../api/api';
 
-const PendingConnectionsTab = () => {
-  const [outgoingConnections, setOutgoingConnections] = useState(null);
+const IncomingConnectionsTab = () => {
+  const [incomingConnections, setIncomingConnections] = useState(null);
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    async function fetchOutgoing() {
+    async function fetchIncoming() {
       try {
-        const data = await api.fetchOutgoingPendingConnections();
-        setOutgoingConnections(data);
+        const data = await api.fetchIncomingPendingConnections();
+        setIncomingConnections(data);
       } catch (err) {
-        console.error('Failed to fetch outgoing connections', err);
-        setOutgoingConnections([]);
+        console.error('Failed to fetch incoming connections', err);
+        setIncomingConnections([]);
       }
     }
 
-    fetchOutgoing();
+    fetchIncoming();
   }, []);
 
   const {
-    users: pendingUsersList,
+    users: incomingUsersList,
     loading,
     error
   } = useUserProfiles({
-    userIds: outgoingConnections,
+    userIds: incomingConnections,
     fetchFromRecommendations: false,
-    connectionDirection: 'outgoing'
+    connectionDirection: 'incoming'
   });
 
   useEffect(() => {
-    setUsers(pendingUsersList);
-  }, [pendingUsersList]);
+    setUsers(incomingUsersList);
+  }, [incomingUsersList]);
 
   const removeUserFromList = (userId) => {
     setUsers(prev => prev.filter(user => user.id !== userId));
   };
 
-  if (outgoingConnections === null || loading) {
+  if (incomingConnections === null || loading) {
     return (
       <div className="connections-tab-container-message">
-        Loading pending connections...
+        Loading incoming connections...
       </div>
     );
   }
@@ -52,7 +51,7 @@ const PendingConnectionsTab = () => {
   if (error) {
     return (
       <div className="connections-tab-container-message">
-        Failed to load pending connections
+        Failed to load incoming connections
       </div>
     );
   }
@@ -60,7 +59,7 @@ const PendingConnectionsTab = () => {
   if (users.length === 0) {
     return (
       <div className="connections-tab-container-message">
-        <h2>No pending connections</h2>
+        <h2>No incoming connections</h2>
       </div>
     );
   }
@@ -69,10 +68,10 @@ const PendingConnectionsTab = () => {
     <UserGrid
       users={users}
       classPrefix="connections-tab"
-      modalPrefix="pending-connections-tab"
+      modalPrefix="incoming-connections-tab"
       onUserRemoved={removeUserFromList}
     />
   );
 };
 
-export default PendingConnectionsTab;
+export default IncomingConnectionsTab;
