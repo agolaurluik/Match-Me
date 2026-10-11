@@ -57,6 +57,8 @@
    ========================= */
 
 .connections-tab-profile-card {
+    position: relative;
+
     width: 100%;
     max-width: 280px;
     min-width: 0;
@@ -80,7 +82,6 @@
 
 .connections-tab-profile-card:hover {
     transform: translateY(-5px);
-
     border-color: rgba(255, 140, 40, 0.65);
 
     box-shadow:
@@ -88,25 +89,26 @@
         0 3px 8px rgba(255, 140, 40, 0.12);
 }
 
-
 /* =========================
    Profile image
    ========================= */
 
 .connections-tab-profile-image {
-    display: block;
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
 
-    width: 100%;
-    height: 180px;
+    width: 54px;
+    height: 54px;
 
     object-fit: cover;
+    border-radius: 50%;
 
-    border-radius: 12px;
-    margin-bottom: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
 
     background: rgba(0, 0, 0, 0.06);
 }
-
 
 /* =========================
    Name
@@ -127,15 +129,12 @@
     text-overflow: ellipsis;
 }
 
-
 /* =========================
    Match information
    ========================= */
 
 .connections-tab-match-info {
     margin: 0;
-
-    color: rgba(0, 0, 0, 0.6);
     font-size: 0.9rem;
     font-weight: 500;
     line-height: 1.4;

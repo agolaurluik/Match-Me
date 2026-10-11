@@ -58,20 +58,22 @@ const Frontpage = () => {
             title={section.title}
             text={section.text}
           >
-            {isLoggedIn ? (
-              <button
-                className="register-button"
-                onClick={() => navigate('/connections')}
-              >
-                Go to Connections
-              </button>
-            ) : (
-              <button
-                className="register-button"
-                onClick={onRegisterClick}
-              >
-                Register Now
-              </button>
+            {section.hasButton && (
+              isLoggedIn ? (
+                <button
+                  className="register-button"
+                  onClick={() => navigate('/connections')}
+                >
+                  Go to Connections
+                </button>
+              ) : (
+                <button
+                  className="register-button"
+                  onClick={onRegisterClick}
+                >
+                  Register Now
+                </button>
+              )
             )}
           </InfoBox>
 

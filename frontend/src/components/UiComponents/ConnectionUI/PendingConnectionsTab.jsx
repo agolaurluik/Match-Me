@@ -1,25 +1,22 @@
-import React, { useEffect, useState, useRef } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import './ConnectionsTab.css';
 import UserGrid from './UsersGrid';
-import {useUserProfiles} from '../../../hooks/useUserProfiles';
-
+import { useUserProfiles } from '../../../hooks/useUserProfiles';
 import api from '../../../api/api';
 
 const PendingConnectionsTab = () => {
+  const [outgoingConnections, setOutgoingConnections] = useState(null);
+  const [users, setUsers] = useState([]);
 
-
-    const [outgoingIds, setOutgoingIds] = useState(null);
-    const [users, setUsers] = useState([]);
- 
   useEffect(() => {
     async function fetchOutgoing() {
-        try {
+      try {
         const data = await api.fetchOutgoingPendingConnections();
-        const ids = data.map(conn => conn.receiver);
-        
-        setOutgoingIds(ids);
+        setOutgoingConnections(data);
       } catch (err) {
-        console.error("Failed to fetch outgoing connections", err);
+        console.error('Failed to fetch outgoing connections', err);
+        setOutgoingConnections([]);
       }
     }
 
@@ -27,29 +24,42 @@ const PendingConnectionsTab = () => {
   }, []);
 
   const {
-    users:  pendingUsersList,
-            loading,
-              error
-  } = useUserProfiles({ userIds: outgoingIds, fetchFromRecommendations: false });
+    users: pendingUsersList,
+    loading,
+    error
+  } = useUserProfiles({
+    userIds: outgoingConnections,
+    fetchFromRecommendations: false,
+    connectionDirection: 'outgoing'
+  });
 
-
-useEffect(() => {
-  if (pendingUsersList) {
+  useEffect(() => {
     setUsers(pendingUsersList);
-  }
-}, [pendingUsersList]);
+  }, [pendingUsersList]);
 
   const removeUserFromList = (userId) => {
     setUsers(prev => prev.filter(user => user.id !== userId));
   };
 
-
-
-    if (loading) return <div className='connections-tab-container-message'>Loading pending connections...</div>;
-    if (error) return <div className='connections-tab-container-message'>Failed to load pending connections</div>;
-    if (!users || users.length === 0) {
+  if (outgoingConnections === null || loading) {
     return (
-      <div className='connections-tab-container-message'>
+      <div className="connections-tab-container-message">
+        Loading pending connections...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="connections-tab-container-message">
+        Failed to load pending connections
+      </div>
+    );
+  }
+
+  if (users.length === 0) {
+    return (
+      <div className="connections-tab-container-message">
         <h2>No pending connections</h2>
       </div>
     );
