@@ -4,6 +4,7 @@ import com.kood.backend.dto.ConnectionDTOs.ConnectionDTO;
 import com.kood.backend.dto.ConnectionDTOs.ConnectionDetailedDTO;
 import com.kood.backend.dto.ConnectionDTOs.ConnectionUpdateNotification;
 import com.kood.backend.dto.ConnectionDTOs.UserStatusCheck;
+import com.kood.backend.dto.algorithmDTOs.UserMatchDetailDTO;
 import com.kood.backend.entity.ConnectionEntities.Connection;
 
 public class ConnectionMapper {
@@ -15,6 +16,18 @@ public class ConnectionMapper {
                 .receiverId(connection.getReceiver())
                 .senderStatus(connection.getSenderStatus())
                 .receiverStatus(connection.getReceiverStatus())
+                .createdAt(connection.getCreatedAt())
+                .build();
+    }
+
+    public static UserMatchDetailDTO toUserMatchDetailDTO(Connection connection) {
+        return UserMatchDetailDTO.builder()
+                .viewerId(connection.getSender())
+                .candidateId(connection.getReceiver())
+                .matchPercentage(connection.getMatchPercentage())
+                .sharedInterestsSet(connection.getSharedInterestsSet())
+                .sharedPersonalitiesSet(connection.getSharedPersonalitiesSet())
+                .distance(connection.getDistance())
                 .createdAt(connection.getCreatedAt())
                 .build();
     }

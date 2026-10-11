@@ -3,14 +3,12 @@ package com.kood.backend.service;
 import com.kood.backend.dto.algorithmDTOs.UserMatchDetailDTO;
 import com.kood.backend.entity.ConnectionEntities.Connection;
 import com.kood.backend.entity.ConnectionEntities.ConnectionStatus;
-import com.kood.backend.entity.UserEntities.MatchingFilter;
-import com.kood.backend.entity.UserEntities.User;
 import com.kood.backend.exceptions.BadRequestException;
 import com.kood.backend.exceptions.NotFoundException;
+import com.kood.backend.mapper.ConnectionMapper;
 import com.kood.backend.repository.ChatMessageRepository;
 import com.kood.backend.repository.ConnectionRepository;
-import com.kood.backend.repository.MatchingFilterRepository;
-import com.kood.backend.service.matching.Algorithm;
+import com.kood.backend.service.HelperMethods.MatchSigningUtility;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -19,13 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -35,25 +30,24 @@ public class ConnectionServiceImpl implements ConnectionService {
 
     private final ConnectionRepository connectionRepository;
     private final ChatMessageRepository chatMessageRepository;
-    private final MatchingFilterRepository matchingFilterRepository;
+    private final MatchSigningUtility matchSigningUtility;
     private final UserService userService;
-
-    private final Algorithm algorithm;
 
     // CREATE
 
     @Override
-    public Connection createConnection(Long senderId, Long receiverId) {
+    public Connection createConnection(Long senderId, UserMatchDetailDTO dto) {
 
-        if (receiverId.equals(senderId)) {
-            throw new IllegalArgumentException("You cannot create a connection with yourself.");
-        }
+        matchSigningUtility.validateMatchData(senderId, dto);
+        Long receiverId = dto.getCandidateId();
+
         if (connectionRepository.findBySenderAndReceiver(senderId, receiverId).isPresent()) {
             throw new IllegalStateException("Friend request already sent");
         }
         if (connectionRepository.findBySenderAndReceiver(receiverId, senderId).isPresent()) {
             throw new IllegalStateException("This user has already sent you a request");
         }
+
         Connection connection = new Connection();
 
         connection.setSender(senderId);
@@ -61,8 +55,17 @@ public class ConnectionServiceImpl implements ConnectionService {
         connection.setCreatedAt(Instant.now());
         connection.setLastMessageTimestamp(null);
         connection.setNumberOfMessages(0);
+
         connection.setSenderStatus(ConnectionStatus.PENDING);
         connection.setReceiverStatus(ConnectionStatus.PENDING);
+
+        connection.setMatchPercentage(dto.getMatchPercentage());
+        connection.setDistance(dto.getDistance());
+        connection.setSharedInterestsSet(
+                new HashSet<>(dto.getSharedInterestsSet()));
+        connection.setSharedPersonalitiesSet(
+                new HashSet<>(dto.getSharedPersonalitiesSet()));
+
         Connection saved = connectionRepository.save(connection);
 
         return saved;
@@ -142,14 +145,40 @@ public class ConnectionServiceImpl implements ConnectionService {
         return result;
     }
 
-    public List<Connection> getAllIncomingConnections(Long userId) {
+    public Set<UserMatchDetailDTO> getAllIncomingConnections(Long userId) {
+
         List<Connection> A1 = connectionRepository.findByReceiverAndReceiverStatus(userId, ConnectionStatus.PENDING);
-        return A1;
+        Set<UserMatchDetailDTO> incomingConnections = new HashSet<>();
+
+        for (Connection existingConnection : A1) {
+            UserMatchDetailDTO dto = ConnectionMapper.toUserMatchDetailDTO(existingConnection);
+
+            String viewerProfileImageName = userService.getUserProfileImageNameByUserId(dto.getViewerId());
+            String candidateProfileImageName = userService.getUserProfileImageNameByUserId(dto.getCandidateId());
+            dto.setViewerProfileImageName(viewerProfileImageName);
+            dto.setCandidateProfileImageName(candidateProfileImageName);
+
+            incomingConnections.add(dto);
+        }
+        return incomingConnections;
     }
 
-    public List<Connection> getAllOutgoingConnections(Long userId) {
+    public Set<UserMatchDetailDTO> getAllOutgoingConnections(Long userId) {
         List<Connection> O1 = connectionRepository.findBySenderAndSenderStatus(userId, ConnectionStatus.PENDING);
-        return O1;
+        Set<UserMatchDetailDTO> outgoingConnections = new HashSet<>();
+
+        for (Connection existingConnection : O1) {
+            UserMatchDetailDTO dto = ConnectionMapper.toUserMatchDetailDTO(existingConnection);
+
+            String viewerProfileImageName = userService.getUserProfileImageNameByUserId(dto.getViewerId());
+            String candidateProfileImageName = userService.getUserProfileImageNameByUserId(dto.getCandidateId());
+            dto.setViewerProfileImageName(viewerProfileImageName);
+            dto.setCandidateProfileImageName(candidateProfileImageName);
+
+            outgoingConnections.add(dto);
+        }
+
+        return outgoingConnections;
     }
 
     @Override
@@ -335,22 +364,6 @@ public class ConnectionServiceImpl implements ConnectionService {
             validConnectionIds.add(item.getReceiver());
         }
 
-        User currentUser = userService.getUserById(requesterId);
-
-        Optional<MatchingFilter> existingFilter = matchingFilterRepository.findByUserId(currentUser.getId());
-        if (existingFilter.isEmpty()) {
-            throw new IllegalStateException(
-                    "No matching filter found for user ID: " + currentUser.getId());
-        }
-        LocalDate today = LocalDate.now(ZoneId.of("Europe/Tallinn"));
-        List<UserMatchDetailDTO> recommendations = algorithm.findTopMatchingUsers(candidateId, today);
-
-        for (UserMatchDetailDTO userProfile : recommendations) {
-            if (!validConnectionIds.contains(userProfile.getId())) {
-                validConnectionIds.add(userProfile.getId());
-            }
-        }
-        System.out.println("Returning boolean validConnectionIds contains viewingId");
         return validConnectionIds.contains(candidateId);
     }
 }

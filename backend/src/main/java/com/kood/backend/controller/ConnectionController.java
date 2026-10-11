@@ -1,6 +1,8 @@
 package com.kood.backend.controller;
 
 import java.util.List;
+import java.util.Set;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import com.kood.backend.security.UserDetailsImpl;
@@ -10,10 +12,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kood.backend.dto.ConnectionDTOs.FriendConnectionDTO;
+import com.kood.backend.dto.algorithmDTOs.UserMatchDetailDTO;
 import com.kood.backend.entity.ConnectionEntities.Connection;
 import com.kood.backend.entity.ConnectionEntities.ConnectionStatus;
 import com.kood.backend.service.ConnectionService;
@@ -30,10 +34,11 @@ public class ConnectionController {
 
     // CREATE:
 
-    @PostMapping("/create/{receiverId}")
+    @PostMapping("/create")
     public ResponseEntity<Connection> create(@AuthenticationPrincipal UserDetailsImpl sender,
-            @PathVariable Long receiverId) {
-        return ResponseEntity.ok(connectionService.createConnection(sender.getId(), receiverId));
+            @RequestBody UserMatchDetailDTO dto) {
+        System.out.println("DTO viewer and candidate IDs: " + dto.getViewerId() + " and " + dto.getCandidateId());
+        return ResponseEntity.ok(connectionService.createConnection(sender.getId(), dto));
     }
 
     // GET:
@@ -100,12 +105,12 @@ public class ConnectionController {
     }
 
     @GetMapping("/incoming")
-    public ResponseEntity<List<Connection>> getAllIncoming(@AuthenticationPrincipal UserDetailsImpl user) {
+    public ResponseEntity<Set<UserMatchDetailDTO>> getAllIncoming(@AuthenticationPrincipal UserDetailsImpl user) {
         return ResponseEntity.ok(connectionService.getAllIncomingConnections(user.getId()));
     }
 
     @GetMapping("/outgoing")
-    public ResponseEntity<List<Connection>> getAllOutgoing(@AuthenticationPrincipal UserDetailsImpl user) {
+    public ResponseEntity<Set<UserMatchDetailDTO>> getAllOutgoing(@AuthenticationPrincipal UserDetailsImpl user) {
         return ResponseEntity.ok(connectionService.getAllOutgoingConnections(user.getId()));
     }
 

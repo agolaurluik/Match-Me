@@ -8,6 +8,7 @@ import com.kood.backend.dto.algorithmDTOs.UserMatchDetailDTO;
 import com.kood.backend.dto.algorithmDTOs.UserMatchingFilterDTO;
 import com.kood.backend.repository.UserRepository;
 import com.kood.backend.service.UserService;
+import com.kood.backend.service.HelperMethods.MatchSigningUtility;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +17,7 @@ import com.kood.backend.repository.MatchingFilterRepository;
 
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +37,7 @@ public class Algorithm {
         private final MatchingFilterRepository matchingFilterRepository;
         private final UserService userService;
         private final UserMatchingFilterMapperImpl userMatchingFilterMapperImpl;
+        private final MatchSigningUtility matchSigningUtility;
 
         public UserMatchDetailDTO getDetailedMatchInfo(
                         UserLocation currentUserLocation,
@@ -45,6 +48,8 @@ public class Algorithm {
                         Integer personalityScore,
                         Integer nationalityScore,
                         Integer purposeScore) {
+                Long viewerId = viewer.getId();
+                Long candidateId = candidate.getId();
                 Set<String> viewerInterests = viewer.getInterests().stream()
                                 .map(Objects::requireNonNull)
                                 .map(interest -> interest.getName())
@@ -98,16 +103,23 @@ public class Algorithm {
 
                 double matchPercentageDouble = ((double) score / (double) maxScore) * 100;
 
-                int matchPercentageRounded = (int) Math.round(matchPercentageDouble);
+                int matchPercentage = (int) Math.round(matchPercentageDouble);
 
-                String profileImageName = userService.getUserProfileImageNameByUserId(candidate.getId());
-                return new UserMatchDetailDTO(
-                                candidate.getId(),
-                                matchPercentageRounded,
+                String viewerProfileImageName = userService.getUserProfileImageNameByUserId(viewerId);
+                String candidateProfileImageName = userService.getUserProfileImageNameByUserId(candidateId);
+                Instant now = Instant.now();
+                UserMatchDetailDTO dto = new UserMatchDetailDTO(
+                                viewerId,
+                                candidateId,
+                                matchPercentage,
                                 sharedInterests,
                                 sharedPersonalities,
                                 distance,
-                                profileImageName);
+                                viewerProfileImageName,
+                                candidateProfileImageName,
+                                now, null);
+                dto.setSignature(matchSigningUtility.signMatchData(dto));
+                return dto;
         }
 
         public UserMatchingFilterDTO updateMatchingFilter(User user, UserMatchingFilterDTO points) {
@@ -158,15 +170,21 @@ public class Algorithm {
                                         ? null
                                         : ((Number) row[4]).doubleValue();
                         int distance = Math.toIntExact(Math.round(distanceKm));
-                        String profileImageName = userService.getUserProfileImageNameByUserId(candidateId);
+
+                        String viewerProfileImageName = userService.getUserProfileImageNameByUserId(viewerId);
+                        String candidateProfileImageName = userService.getUserProfileImageNameByUserId(candidateId);
+                        Instant now = Instant.now();
                         UserMatchDetailDTO dto = new UserMatchDetailDTO(
+                                        viewerId,
                                         candidateId,
                                         matchPercentage,
                                         sharedInterests,
                                         sharedPersonalities,
                                         distance,
-                                        profileImageName);
-
+                                        viewerProfileImageName,
+                                        candidateProfileImageName,
+                                        now, null);
+                        dto.setSignature(matchSigningUtility.signMatchData(dto));
                         matches.add(dto);
                 }
                 matches.sort(Comparator.comparingDouble((UserMatchDetailDTO dto) -> dto.getMatchPercentage())
