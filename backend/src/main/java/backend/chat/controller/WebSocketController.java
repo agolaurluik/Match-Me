@@ -27,7 +27,6 @@ import backend.connection.dto.ConnectionDetailedDTO;
 import backend.connection.dto.ConnectionUpdateNotification;
 import backend.connection.dto.OnlineStatusCheck;
 import backend.connection.dto.UserStatusCheck;
-import backend.connection.entity.Connection;
 import backend.connection.mapper.ConnectionMapper;
 import backend.connection.service.ConnectionService;
 import backend.utilities.exceptions.NotFoundException;
@@ -46,27 +45,15 @@ public class WebSocketController {
     public void handleMessage(SendMessageDTO dto, Principal principal) {
 
         Long senderId = Long.parseLong(principal.getName());
-        Long receiverId = dto.getReceiverId();
 
-        Connection connection = connectionService
-                .getExistingAcceptedConnection(senderId, receiverId);
-
-        connection.setNumberOfMessages(connection.getNumberOfMessages() + 1);
-
-        ChatMessage messageEntity = new ChatMessage();
-        messageEntity.setSenderId(senderId);
-        messageEntity.setReceiverId(receiverId);
-        messageEntity.setConnection(connection);
-        messageEntity.setContent(dto.getContent());
-
-        ChatMessage saved = chatMessageService.sendMessage(messageEntity);
+        ChatMessage saved = chatMessageService.sendMessage(senderId, dto);
         ChatMessageDTO response = ChatMessageMapper.toDTO(saved);
 
-        messagingTemplate.convertAndSendToUser(Objects.requireNonNull(receiverId.toString()), "/queue/messages",
-                Objects.requireNonNull(response));
         messagingTemplate.convertAndSendToUser(Objects.requireNonNull(senderId.toString()), "/queue/messages",
                 Objects.requireNonNull(response));
-
+        messagingTemplate.convertAndSendToUser(Objects.requireNonNull(dto.getReceiverId().toString()),
+                "/queue/messages",
+                Objects.requireNonNull(response));
     }
 
     @Component

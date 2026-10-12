@@ -8,12 +8,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import backend.chat.dto.ChatMessageDTO;
+import backend.chat.dto.SendMessageDTO;
 import backend.chat.entity.ChatMessage;
 import backend.chat.entity.MessageStatus;
 import backend.chat.mapper.ChatMessageMapper;
 import backend.chat.repository.ChatMessageRepository;
 import backend.connection.entity.Connection;
 import backend.connection.repository.ConnectionRepository;
+import backend.connection.service.ConnectionService;
 import backend.utilities.exceptions.BadRequestException;
 import backend.utilities.exceptions.NotFoundException;
 
@@ -30,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ChatMessageService {
 
+    private final ConnectionService connectionService;
     private final ChatMessageRepository chatMessageRepository;
     private final ConnectionRepository connectionRepository;
 
@@ -95,15 +98,27 @@ public class ChatMessageService {
         }
     }
 
-    public ChatMessage sendMessage(ChatMessage message) {
-        message.setTimestamp(Instant.now());
-        message.setStatus(MessageStatus.SENT);
+    public ChatMessage sendMessage(Long senderId, SendMessageDTO dto) {
 
-        Connection connection = message.getConnection();
-        connection.setLastMessageTimestamp(message.getTimestamp());
+        Long receiverId = dto.getReceiverId();
+
+        Connection connection = connectionService
+                .getExistingAcceptedConnection(senderId, receiverId);
+
+        connection.setNumberOfMessages(connection.getNumberOfMessages() + 1);
+
+        ChatMessage messageEntity = new ChatMessage();
+        messageEntity.setSenderId(senderId);
+        messageEntity.setReceiverId(receiverId);
+        messageEntity.setConnection(connection);
+        messageEntity.setContent(dto.getContent());
+        messageEntity.setTimestamp(Instant.now());
+        messageEntity.setStatus(MessageStatus.SENT);
+
+        connection.setLastMessageTimestamp(messageEntity.getTimestamp());
         connectionRepository.save(connection);
 
-        return chatMessageRepository.save(message);
+        return chatMessageRepository.save(messageEntity);
     }
 
     public Page<ChatMessage> getChatHistory(Connection connection, Pageable pageable) {
