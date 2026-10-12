@@ -82,7 +82,6 @@ public class User {
     @JoinColumn(name = "purpose_id")
     private Purpose purpose;
 
-    @Lob
     @Column(name = "user_description", columnDefinition = "TEXT")
     private String userDescription;
 }

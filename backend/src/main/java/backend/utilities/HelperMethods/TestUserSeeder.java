@@ -115,6 +115,7 @@ public class TestUserSeeder implements CommandLineRunner {
             user.setInterests(getRandomInterests());
             user.setPersonalities(getRandomPersonalities());
             user.setPurpose(getRandomPurpose());
+            user.setUserDescription("About me section for a test user - beep boop");
 
             userRepository.save(user);
 
