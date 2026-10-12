@@ -75,8 +75,8 @@ public class MatchSigningUtility {
             try (DataOutputStream out = new DataOutputStream(buffer)) {
                 writeString(out, "user-match-signature-v1");
 
-                writeLong(out, dto.getViewerId());
-                writeLong(out, dto.getCandidateId());
+                writeLong(out, dto.getSenderId());
+                writeLong(out, dto.getReceiverId());
 
                 out.writeLong(
                         Double.doubleToLongBits(dto.getMatchPercentage()));
@@ -144,19 +144,16 @@ public class MatchSigningUtility {
             throw new IllegalArgumentException("Match data is required");
         }
 
-        if (dto.getViewerId() == null
-                || !dto.getViewerId().equals(authenticatedUserId)) {
-            System.out
-                    .println(
-                            "Dto viewer ID: " + dto.getViewerId() + " and authenticatedUserID: " + authenticatedUserId);
+        if (dto.getSenderId() == null
+                || !dto.getSenderId().equals(authenticatedUserId)) {
             throw new IllegalArgumentException(
-                    "Viewer does not match authenticated user");
+                    "Sender does not match authenticated user");
         }
 
-        if (dto.getCandidateId() == null
-                || dto.getCandidateId().equals(dto.getViewerId())) {
+        if (dto.getReceiverId() == null
+                || dto.getReceiverId().equals(dto.getSenderId())) {
             throw new IllegalArgumentException(
-                    "Invalid candidate");
+                    "Invalid receiver");
         }
 
         if (!Double.isFinite(dto.getMatchPercentage())

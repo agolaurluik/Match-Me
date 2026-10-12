@@ -22,8 +22,8 @@ public class ConnectionMapper {
 
     public static UserMatchDetailDTO toUserMatchDetailDTO(Connection connection) {
         return UserMatchDetailDTO.builder()
-                .viewerId(connection.getSender())
-                .candidateId(connection.getReceiver())
+                .senderId(connection.getSender())
+                .receiverId(connection.getReceiver())
                 .matchPercentage(connection.getMatchPercentage())
                 .sharedInterestsSet(connection.getSharedInterestsSet())
                 .sharedPersonalitiesSet(connection.getSharedPersonalitiesSet())

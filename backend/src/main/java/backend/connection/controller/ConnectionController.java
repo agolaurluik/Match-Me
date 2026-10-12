@@ -35,7 +35,6 @@ public class ConnectionController {
     @PostMapping("/create")
     public ResponseEntity<Connection> create(@AuthenticationPrincipal UserDetailsImpl sender,
             @RequestBody UserMatchDetailDTO dto) {
-        System.out.println("DTO viewer and candidate IDs: " + dto.getViewerId() + " and " + dto.getCandidateId());
         return ResponseEntity.ok(connectionService.createConnection(sender.getId(), dto));
     }
 

@@ -40,7 +40,7 @@ public class ConnectionServiceImpl implements ConnectionService {
     public Connection createConnection(Long senderId, UserMatchDetailDTO dto) {
 
         matchSigningUtility.validateMatchData(senderId, dto);
-        Long receiverId = dto.getCandidateId();
+        Long receiverId = dto.getReceiverId();
 
         if (connectionRepository.findBySenderAndReceiver(senderId, receiverId).isPresent()) {
             throw new IllegalStateException("Friend request already sent");
@@ -154,10 +154,10 @@ public class ConnectionServiceImpl implements ConnectionService {
         for (Connection existingConnection : A1) {
             UserMatchDetailDTO dto = ConnectionMapper.toUserMatchDetailDTO(existingConnection);
 
-            String viewerProfileImageName = userService.getUserProfileImageNameByUserId(dto.getViewerId());
-            String candidateProfileImageName = userService.getUserProfileImageNameByUserId(dto.getCandidateId());
-            dto.setViewerProfileImageName(viewerProfileImageName);
-            dto.setCandidateProfileImageName(candidateProfileImageName);
+            String senderImageName = userService.getUserProfileImageNameByUserId(dto.getSenderId());
+            String receiverProfileImageName = userService.getUserProfileImageNameByUserId(dto.getReceiverId());
+            dto.setSenderProfileImageName(senderImageName);
+            dto.setReceiverProfileImageName(receiverProfileImageName);
 
             incomingConnections.add(dto);
         }
@@ -171,10 +171,10 @@ public class ConnectionServiceImpl implements ConnectionService {
         for (Connection existingConnection : O1) {
             UserMatchDetailDTO dto = ConnectionMapper.toUserMatchDetailDTO(existingConnection);
 
-            String viewerProfileImageName = userService.getUserProfileImageNameByUserId(dto.getViewerId());
-            String candidateProfileImageName = userService.getUserProfileImageNameByUserId(dto.getCandidateId());
-            dto.setViewerProfileImageName(viewerProfileImageName);
-            dto.setCandidateProfileImageName(candidateProfileImageName);
+            String senderImageName = userService.getUserProfileImageNameByUserId(dto.getSenderId());
+            String receiverProfileImageName = userService.getUserProfileImageNameByUserId(dto.getReceiverId());
+            dto.setSenderProfileImageName(senderImageName);
+            dto.setReceiverProfileImageName(receiverProfileImageName);
 
             outgoingConnections.add(dto);
         }
@@ -338,19 +338,19 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
 
     @Override
-    public boolean canView(Long requesterId, Long candidateId) {
+    public boolean canView(Long senderId, Long receiverId) {
 
-        if (requesterId == null || candidateId == null) {
+        if (senderId == null || receiverId == null) {
             return false;
         }
 
-        if (requesterId.equals(candidateId)) {
+        if (senderId.equals(receiverId)) {
             return true;
         }
 
-        List<Connection> acceptedConnections = getConnectionsByStatus(requesterId, ConnectionStatus.ACCEPTED,
+        List<Connection> acceptedConnections = getConnectionsByStatus(senderId, ConnectionStatus.ACCEPTED,
                 true);
-        List<Connection> pendingConnections = getConnectionsByStatus(requesterId, ConnectionStatus.PENDING,
+        List<Connection> pendingConnections = getConnectionsByStatus(senderId, ConnectionStatus.PENDING,
                 true);
 
         Set<Long> validConnectionIds = new HashSet<>();
@@ -365,6 +365,6 @@ public class ConnectionServiceImpl implements ConnectionService {
             validConnectionIds.add(item.getReceiver());
         }
 
-        return validConnectionIds.contains(candidateId);
+        return validConnectionIds.contains(receiverId);
     }
 }

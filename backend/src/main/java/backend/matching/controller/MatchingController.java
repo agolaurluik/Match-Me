@@ -83,12 +83,12 @@ public class MatchingController {
         }
 
         @GetMapping("/getMatchInfoByID/{id}")
-        public ResponseEntity<Map<String, Object>> getMatchInfoByCandidateId(
+        public ResponseEntity<Map<String, Object>> getMatchInfoByReceiverId(
                         @AuthenticationPrincipal UserDetailsImpl userDetails,
                         @PathVariable @NonNull Long id) {
 
                 User currentUser = userService.getUserById(Objects.requireNonNull(userDetails.getId()));
-                User candidate = userService.getUserById(id);
+                User receiver = userService.getUserById(id);
                 MatchingFilter filter = userService.getUserMatchingFilterByUserId(currentUser.getId());
                 Map<String, Object> response = new HashMap<>();
                 if (filter == null) {
@@ -99,13 +99,13 @@ public class MatchingController {
                 }
 
                 UserLocation currentUserLocation = currentUser.getLocation();
-                UserLocation candidateLocation = candidate.getLocation();
+                UserLocation receiverLocation = receiver.getLocation();
 
                 UserMatchDetailDTO matchDetail = algorithm.getDetailedMatchInfo(
                                 currentUserLocation,
-                                candidateLocation,
+                                receiverLocation,
                                 currentUser,
-                                candidate,
+                                receiver,
                                 filter.getInterestScore(),
                                 filter.getPersonalityScore(),
                                 filter.getNationalityScore(),
@@ -113,7 +113,7 @@ public class MatchingController {
 
                 response.put("matchInfo", matchDetail);
                 response.put("message", "Successfully retrieved match info for user id: " + userDetails.getId()
-                                + " and candidate id: " + candidate.getId());
+                                + " and receiver id: " + receiver.getId());
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(response);
         }

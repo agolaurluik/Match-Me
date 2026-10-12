@@ -27,12 +27,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
 
     @Query(value = """
-            WITH viewer_context AS (
+            WITH sender_context AS (
                 SELECT
-                    v.id AS viewer_id,
-                    v.gender_id AS viewer_gender_id,
-                    vg.name AS viewer_gender,
-                    v.birth_date AS viewer_birthdate,
+                    v.id AS sender_id,
+                    v.gender_id AS sender_gender_id,
+                    vg.name AS sender_gender,
+                    v.birth_date AS sender_birthdate,
 
                     mf.gender_preference,
                     mf.lowest_age,
@@ -45,9 +45,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
                     mf.nationality_score,
                     mf.purpose_score,
 
-                    vn.name AS viewer_nationality,
-                    vp.name AS viewer_purpose,
-                    vl.point AS viewer_point
+                    vn.name AS sender_nationality,
+                    vp.name AS sender_purpose,
+                    vl.point AS sender_point
 
                 FROM users v
 
@@ -69,35 +69,35 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 LEFT JOIN location vl
                     ON vl.id = vul.location_id
 
-                WHERE v.id = :viewerId
+                WHERE v.id = :senderId
             ),
 
-            eligible_candidates AS (
+            eligible_receivers AS (
                 SELECT
-                    u.id AS candidate_id,
-                    vc.viewer_id,
+                    u.id AS receiver_id,
+                    vc.sender_id,
 
                     vc.interest_score,
                     vc.personality_score,
                     vc.nationality_score,
                     vc.purpose_score,
 
-                    cmf.interest_score AS candidate_interest_score,
-                    cmf.personality_score AS candidate_personality_score,
-                    cmf.nationality_score AS candidate_nationality_score,
-                    cmf.purpose_score AS candidate_purpose_score,
+                    cmf.interest_score AS receiver_interest_score,
+                    cmf.personality_score AS receiver_personality_score,
+                    cmf.nationality_score AS receiver_nationality_score,
+                    cmf.purpose_score AS receiver_purpose_score,
 
-                    vc.viewer_nationality,
-                    vc.viewer_purpose,
+                    vc.sender_nationality,
+                    vc.sender_purpose,
 
-                    cn.name AS candidate_nationality,
-                    cp.name AS candidate_purpose,
+                    cn.name AS receiver_nationality,
+                    cp.name AS receiver_purpose,
 
                     CASE
-                        WHEN vc.viewer_point IS NOT NULL
+                        WHEN vc.sender_point IS NOT NULL
                             AND cl.point IS NOT NULL
                         THEN ST_Distance(
-                            vc.viewer_point::geography,
+                            vc.sender_point::geography,
                             cl.point::geography
                         ) / 1000.0
                         ELSE NULL
@@ -105,7 +105,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
                 FROM users u
 
-                CROSS JOIN viewer_context vc
+                CROSS JOIN sender_context vc
 
                 JOIN matching_filter cmf
                     ON cmf.user_id = u.id
@@ -126,10 +126,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
                     ON cl.id = cul.location_id
 
                 WHERE
-                    -- Exclude the viewer
-                    u.id <> vc.viewer_id
+                    -- Exclude the sender
+                    u.id <> vc.sender_id
 
-                    -- Candidate satisfies viewer's gender preference
+                    -- receiver satisfies sender's gender preference
                     AND CASE LOWER(vc.gender_preference)
                         WHEN 'lookingformen'
                             THEN LOWER(g.name) = 'male'
@@ -143,21 +143,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
                         ELSE FALSE
                     END
 
-                    -- Viewer satisfies candidate's gender preference
+                    -- sender satisfies receiver's gender preference
                     AND CASE LOWER(cmf.gender_preference)
                         WHEN 'lookingformen'
-                            THEN LOWER(vc.viewer_gender) = 'male'
+                            THEN LOWER(vc.sender_gender) = 'male'
                         WHEN 'lookingforwomen'
-                            THEN LOWER(vc.viewer_gender) = 'female'
+                            THEN LOWER(vc.sender_gender) = 'female'
                         WHEN 'lookingforother'
-                            THEN LOWER(vc.viewer_gender) = 'other'
+                            THEN LOWER(vc.sender_gender) = 'other'
                         WHEN 'lookingforall'
-                            THEN LOWER(vc.viewer_gender)
+                            THEN LOWER(vc.sender_gender)
                                 IN ('male', 'female', 'other')
                         ELSE FALSE
                     END
 
-                    -- Candidate satisfies viewer's age range
+                    -- receiver satisfies sender's age range
                     AND u.birth_date IS NOT NULL
 
                     AND DATE_PART(
@@ -170,42 +170,42 @@ public interface UserRepository extends JpaRepository<User, Long> {
                         AGE(CAST(:today AS date), u.birth_date)
                     ) <= COALESCE(vc.highest_age, 200)
 
-                    -- Viewer satisfies candidate's age range
-                    AND vc.viewer_birthdate IS NOT NULL
+                    -- sender satisfies receiver's age range
+                    AND vc.sender_birthdate IS NOT NULL
 
                     AND DATE_PART(
                         'year',
-                        AGE(CAST(:today AS date), vc.viewer_birthdate)
+                        AGE(CAST(:today AS date), vc.sender_birthdate)
                     ) >= COALESCE(cmf.lowest_age, 0)
 
                     AND DATE_PART(
                         'year',
-                        AGE(CAST(:today AS date), vc.viewer_birthdate)
+                        AGE(CAST(:today AS date), vc.sender_birthdate)
                     ) <= COALESCE(cmf.highest_age, 200)
 
-                    -- Candidate satisfies viewer's radius
+                    -- receiver satisfies sender's radius
                     AND (
                         vc.radius IS NULL
                         OR (
-                            vc.viewer_point IS NOT NULL
+                            vc.sender_point IS NOT NULL
                             AND cl.point IS NOT NULL
                             AND ST_DWithin(
-                                vc.viewer_point::geography,
+                                vc.sender_point::geography,
                                 cl.point::geography,
                                 vc.radius * 1000.0
                             )
                         )
                     )
 
-                    -- Viewer satisfies candidate's radius
+                    -- sender satisfies receiver's radius
                     AND (
                         cmf.radius IS NULL
                         OR (
-                            vc.viewer_point IS NOT NULL
+                            vc.sender_point IS NOT NULL
                             AND cl.point IS NOT NULL
                             AND ST_DWithin(
                                 cl.point::geography,
-                                vc.viewer_point::geography,
+                                vc.sender_point::geography,
                                 cmf.radius * 1000.0
                             )
                         )
@@ -217,18 +217,18 @@ public interface UserRepository extends JpaRepository<User, Long> {
                         FROM connection c
                         WHERE
                             (
-                                c.sender_id = vc.viewer_id
+                                c.sender_id = vc.sender_id
                                 AND c.receiver_id = u.id
                             )
                             OR
                             (
-                                c.receiver_id = vc.viewer_id
+                                c.receiver_id = vc.sender_id
                                 AND c.sender_id = u.id
                             )
                     )
             ),
 
-            scored_candidates AS (
+            scored_receivers AS (
                 SELECT
                     ec.*,
 
@@ -238,46 +238,46 @@ public interface UserRepository extends JpaRepository<User, Long> {
                     personalities.shared_personality_names,
 
                     -- Total available attributes for each user
-                    viewer_interests.total AS viewer_interest_count,
-                    candidate_interests.total AS candidate_interest_count,
+                    sender_interests.total AS sender_interest_count,
+                    receiver_interests.total AS receiver_interest_count,
 
-                    viewer_personalities.total AS viewer_personality_count,
-                    candidate_personalities.total AS candidate_personality_count,
+                    sender_personalities.total AS sender_personality_count,
+                    receiver_personalities.total AS receiver_personality_count,
 
                     -- Calculate the reciprocal match score
                     (
                         interests.shared_interests
                             * (
                                 COALESCE(ec.interest_score, 0)
-                                + COALESCE(ec.candidate_interest_score, 0)
+                                + COALESCE(ec.receiver_interest_score, 0)
                             ) / 2.0
 
                         + personalities.shared_personalities
                             * (
                                 COALESCE(ec.personality_score, 0)
-                                + COALESCE(ec.candidate_personality_score, 0)
+                                + COALESCE(ec.receiver_personality_score, 0)
                             ) / 2.0
 
                         + CASE
-                            WHEN ec.viewer_nationality IS NOT NULL
-                                AND ec.candidate_nationality IS NOT NULL
-                                AND LOWER(ec.viewer_nationality)
-                                    = LOWER(ec.candidate_nationality)
+                            WHEN ec.sender_nationality IS NOT NULL
+                                AND ec.receiver_nationality IS NOT NULL
+                                AND LOWER(ec.sender_nationality)
+                                    = LOWER(ec.receiver_nationality)
                             THEN (
                                 COALESCE(ec.nationality_score, 0)
-                                + COALESCE(ec.candidate_nationality_score, 0)
+                                + COALESCE(ec.receiver_nationality_score, 0)
                             ) / 2.0
                             ELSE 0
                         END
 
                         + CASE
-                            WHEN ec.viewer_purpose IS NOT NULL
-                                AND ec.candidate_purpose IS NOT NULL
-                                AND LOWER(ec.viewer_purpose)
-                                    = LOWER(ec.candidate_purpose)
+                            WHEN ec.sender_purpose IS NOT NULL
+                                AND ec.receiver_purpose IS NOT NULL
+                                AND LOWER(ec.sender_purpose)
+                                    = LOWER(ec.receiver_purpose)
                             THEN (
                                 COALESCE(ec.purpose_score, 0)
-                                + COALESCE(ec.candidate_purpose_score, 0)
+                                + COALESCE(ec.receiver_purpose_score, 0)
                             ) / 2.0
                             ELSE 0
                         END
@@ -286,43 +286,43 @@ public interface UserRepository extends JpaRepository<User, Long> {
                     -- Calculate the maximum possible score for this pair
                     (
                         LEAST(
-                            viewer_interests.total,
-                            candidate_interests.total
+                            sender_interests.total,
+                            receiver_interests.total
                         ) * (
                             COALESCE(ec.interest_score, 0)
-                            + COALESCE(ec.candidate_interest_score, 0)
+                            + COALESCE(ec.receiver_interest_score, 0)
                         ) / 2.0
 
                         + LEAST(
-                            viewer_personalities.total,
-                            candidate_personalities.total
+                            sender_personalities.total,
+                            receiver_personalities.total
                         ) * (
                             COALESCE(ec.personality_score, 0)
-                            + COALESCE(ec.candidate_personality_score, 0)
+                            + COALESCE(ec.receiver_personality_score, 0)
                         ) / 2.0
 
                         + CASE
-                            WHEN ec.viewer_nationality IS NOT NULL
-                                AND ec.candidate_nationality IS NOT NULL
+                            WHEN ec.sender_nationality IS NOT NULL
+                                AND ec.receiver_nationality IS NOT NULL
                             THEN (
                                 COALESCE(ec.nationality_score, 0)
-                                + COALESCE(ec.candidate_nationality_score, 0)
+                                + COALESCE(ec.receiver_nationality_score, 0)
                             ) / 2.0
                             ELSE 0
                         END
 
                         + CASE
-                            WHEN ec.viewer_purpose IS NOT NULL
-                                AND ec.candidate_purpose IS NOT NULL
+                            WHEN ec.sender_purpose IS NOT NULL
+                                AND ec.receiver_purpose IS NOT NULL
                             THEN (
                                 COALESCE(ec.purpose_score, 0)
-                                + COALESCE(ec.candidate_purpose_score, 0)
+                                + COALESCE(ec.receiver_purpose_score, 0)
                             ) / 2.0
                             ELSE 0
                         END
                     ) AS max_possible_score
 
-                FROM eligible_candidates ec
+                FROM eligible_receivers ec
 
                 -- Count shared interests
                 CROSS JOIN LATERAL (
@@ -338,8 +338,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
                         ON ci.interest_id = vi.interest_id
                     JOIN interest i
                         ON i.id = vi.interest_id
-                    WHERE vi.user_id = ec.viewer_id
-                    AND ci.user_id = ec.candidate_id
+                    WHERE vi.user_id = ec.sender_id
+                    AND ci.user_id = ec.receiver_id
                 ) interests
 
                 -- Count shared personalities
@@ -356,42 +356,42 @@ public interface UserRepository extends JpaRepository<User, Long> {
                         ON cp.personality_id = vp.personality_id
                     JOIN personality p
                         ON p.id = vp.personality_id
-                    WHERE vp.user_id = ec.viewer_id
-                    AND cp.user_id = ec.candidate_id
+                    WHERE vp.user_id = ec.sender_id
+                    AND cp.user_id = ec.receiver_id
                 ) personalities
 
-                -- Count all viewer interests
+                -- Count all sender interests
                 CROSS JOIN LATERAL (
                     SELECT COUNT(DISTINCT interest_id)::integer AS total
                     FROM user_interest
-                    WHERE user_id = ec.viewer_id
-                ) viewer_interests
+                    WHERE user_id = ec.sender_id
+                ) sender_interests
 
-                -- Count all candidate interests
+                -- Count all receiver interests
                 CROSS JOIN LATERAL (
                     SELECT COUNT(DISTINCT interest_id)::integer AS total
                     FROM user_interest
-                    WHERE user_id = ec.candidate_id
-                ) candidate_interests
+                    WHERE user_id = ec.receiver_id
+                ) receiver_interests
 
-                -- Count all viewer personality traits
+                -- Count all sender personality traits
                 CROSS JOIN LATERAL (
                     SELECT COUNT(DISTINCT personality_id)::integer AS total
                     FROM user_personality
-                    WHERE user_id = ec.viewer_id
-                ) viewer_personalities
+                    WHERE user_id = ec.sender_id
+                ) sender_personalities
 
-                -- Count all candidate personality traits
+                -- Count all receiver personality traits
                 CROSS JOIN LATERAL (
                     SELECT COUNT(DISTINCT personality_id)::integer AS total
                     FROM user_personality
-                    WHERE user_id = ec.candidate_id
-                ) candidate_personalities
+                    WHERE user_id = ec.receiver_id
+                ) receiver_personalities
             )
 
-            -- Return the highest-scoring reciprocal candidates
+            -- Return the highest-scoring reciprocal receivers
             SELECT
-                candidate_id,
+                receiver_id,
                 ROUND(
                     100.0 * match_score
                     / NULLIF(max_possible_score, 0)
@@ -401,21 +401,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 shared_personality_names,
                 distance_km
 
-            FROM scored_candidates
+            FROM scored_receivers
 
             WHERE match_score >= 1
 
             ORDER BY
                 match_score DESC,
-                candidate_id ASC
+                receiver_id ASC
 
             LIMIT (
                 SELECT match_limit
-                FROM viewer_context
+                FROM sender_context
             )
             """, nativeQuery = true)
     List<Object[]> findTopMatchingUsers(
-            @Param("viewerId") Long viewerId,
+            @Param("senderId") Long senderId,
             @Param("today") LocalDate today);
 
 }

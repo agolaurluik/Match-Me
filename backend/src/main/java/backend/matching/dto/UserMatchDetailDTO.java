@@ -20,10 +20,10 @@ import lombok.NoArgsConstructor;
 public class UserMatchDetailDTO {
 
     @NotNull
-    private Long viewerId;
+    private Long senderId;
 
     @NotNull
-    private Long candidateId;
+    private Long receiverId;
 
     @DecimalMin("0.0")
     @DecimalMax("100.0")
@@ -38,8 +38,8 @@ public class UserMatchDetailDTO {
     @PositiveOrZero
     private double distance;
 
-    private String viewerProfileImageName;
-    private String candidateProfileImageName;
+    private String senderProfileImageName;
+    private String receiverProfileImageName;
 
     @NotNull
     private Instant createdAt;

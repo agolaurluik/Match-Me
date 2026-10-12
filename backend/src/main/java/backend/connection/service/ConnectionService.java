@@ -26,17 +26,17 @@ public interface ConnectionService {
 
     Set<UserMatchDetailDTO> getAllOutgoingConnections(Long userId);
 
-    Connection acceptConnection(Long userId, Long candidateId);
+    Connection acceptConnection(Long userId, Long receiverId);
 
-    Connection blockConnection(Long userId, Long candidateId);
+    Connection blockConnection(Long userId, Long receiverId);
 
-    Connection unblockConnection(Long userId, Long candidateId);
+    Connection unblockConnection(Long userId, Long receiverId);
 
-    Connection rejectConnection(Long userId, Long candidateId);
+    Connection rejectConnection(Long userId, Long receiverId);
 
-    void deleteConnectionIfNoMessages(Long userId, Long candidateId);
+    void deleteConnectionIfNoMessages(Long userId, Long receiverId);
 
-    void forceDeleteConnection(Long userId, Long candidateId);
+    void forceDeleteConnection(Long userId, Long receiverId);
 
     public Connection getExistingAcceptedConnection(Long senderId, Long receiverId);
 

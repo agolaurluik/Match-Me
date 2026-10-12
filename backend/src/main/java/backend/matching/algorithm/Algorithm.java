@@ -40,54 +40,54 @@ public class Algorithm {
 
         public UserMatchDetailDTO getDetailedMatchInfo(
                         UserLocation currentUserLocation,
-                        UserLocation candidateLocation,
-                        User viewer,
-                        User candidate,
+                        UserLocation receiverLocation,
+                        User sender,
+                        User receiver,
                         Integer interestScore,
                         Integer personalityScore,
                         Integer nationalityScore,
                         Integer purposeScore) {
-                Long viewerId = viewer.getId();
-                Long candidateId = candidate.getId();
-                Set<String> viewerInterests = viewer.getInterests().stream()
+                Long senderId = sender.getId();
+                Long receiverId = receiver.getId();
+                Set<String> senderInterests = sender.getInterests().stream()
                                 .map(Objects::requireNonNull)
                                 .map(interest -> interest.getName())
                                 .collect(Collectors.toSet());
-                Set<String> viewerPersonalities = viewer.getPersonalities().stream()
+                Set<String> senderPersonalities = sender.getPersonalities().stream()
                                 .map(Objects::requireNonNull)
                                 .map(personality -> personality.getName())
                                 .collect(Collectors.toSet());
 
-                Set<String> candidateInterests = candidate.getInterests().stream()
+                Set<String> receiverInterests = receiver.getInterests().stream()
                                 .map(Objects::requireNonNull)
                                 .map(interest -> interest.getName())
                                 .collect(Collectors.toSet());
-                Set<String> candidatePersonalities = candidate.getPersonalities().stream()
+                Set<String> receiverPersonalities = receiver.getPersonalities().stream()
                                 .map(Objects::requireNonNull)
                                 .map(personality -> personality.getName())
                                 .collect(Collectors.toSet());
 
-                Set<String> sharedInterests = new HashSet<>(viewerInterests);
-                sharedInterests.retainAll(candidateInterests);
+                Set<String> sharedInterests = new HashSet<>(senderInterests);
+                sharedInterests.retainAll(receiverInterests);
 
-                Set<String> sharedPersonalities = new HashSet<>(viewerPersonalities);
-                sharedPersonalities.retainAll(candidatePersonalities);
+                Set<String> sharedPersonalities = new HashSet<>(senderPersonalities);
+                sharedPersonalities.retainAll(receiverPersonalities);
 
                 int sharedNationalityScore = 0;
-                if (viewer.getNationality() != null && candidate.getNationality() != null
-                                && viewer.getNationality().getName().equalsIgnoreCase(
-                                                candidate.getNationality().getName())) {
+                if (sender.getNationality() != null && receiver.getNationality() != null
+                                && sender.getNationality().getName().equalsIgnoreCase(
+                                                receiver.getNationality().getName())) {
                         sharedNationalityScore = nationalityScore;
                 }
 
                 int sharedPurposeScore = 0;
-                if (viewer.getPurpose() != null && candidate.getPurpose() != null
-                                && viewer.getPurpose().getName().equalsIgnoreCase(candidate.getPurpose().getName())) {
+                if (sender.getPurpose() != null && receiver.getPurpose() != null
+                                && sender.getPurpose().getName().equalsIgnoreCase(receiver.getPurpose().getName())) {
                         sharedPurposeScore = purposeScore;
                 }
 
                 Double distanceInMeters = locationRepository
-                                .calculateDistanceBetween(currentUserLocation.getId(), candidateLocation.getId())
+                                .calculateDistanceBetween(currentUserLocation.getId(), receiverLocation.getId())
                                 .orElse(null);
 
                 double distanceA = distanceInMeters / 1000.0;
@@ -96,26 +96,26 @@ public class Algorithm {
                 int score = (sharedInterests.size() * interestScore) +
                                 (sharedPersonalities.size() * personalityScore) +
                                 sharedPurposeScore + sharedNationalityScore;
-                int maxScore = (viewer.getInterests().size() * interestScore)
-                                + (viewer.getPersonalities().size() * personalityScore) +
+                int maxScore = (sender.getInterests().size() * interestScore)
+                                + (sender.getPersonalities().size() * personalityScore) +
                                 sharedPurposeScore + sharedNationalityScore;
 
                 double matchPercentageDouble = ((double) score / (double) maxScore) * 100;
 
                 int matchPercentage = (int) Math.round(matchPercentageDouble);
 
-                String viewerProfileImageName = userService.getUserProfileImageNameByUserId(viewerId);
-                String candidateProfileImageName = userService.getUserProfileImageNameByUserId(candidateId);
+                String senderProfileImageName = userService.getUserProfileImageNameByUserId(senderId);
+                String receiverProfileImageName = userService.getUserProfileImageNameByUserId(receiverId);
                 Instant now = Instant.now();
                 UserMatchDetailDTO dto = new UserMatchDetailDTO(
-                                viewerId,
-                                candidateId,
+                                senderId,
+                                receiverId,
                                 matchPercentage,
                                 sharedInterests,
                                 sharedPersonalities,
                                 distance,
-                                viewerProfileImageName,
-                                candidateProfileImageName,
+                                senderProfileImageName,
+                                receiverProfileImageName,
                                 now, null);
                 dto.setSignature(matchSigningUtility.signMatchData(dto));
                 return dto;
@@ -145,17 +145,17 @@ public class Algorithm {
         }
 
         public List<UserMatchDetailDTO> findTopMatchingUsers(
-                        Long viewerId,
+                        Long senderId,
                         LocalDate today) {
 
                 List<Object[]> rows = userRepository.findTopMatchingUsers(
-                                viewerId,
+                                senderId,
                                 today);
 
                 List<UserMatchDetailDTO> matches = new ArrayList<>();
 
                 for (Object[] row : rows) {
-                        Long candidateId = ((Number) row[0]).longValue();
+                        Long receiverId = ((Number) row[0]).longValue();
                         double matchPercentage = ((Number) row[1]).doubleValue();
                         Set<String> sharedInterests = row[2] == null
                                         ? new HashSet<>()
@@ -170,18 +170,18 @@ public class Algorithm {
                                         : ((Number) row[4]).doubleValue();
                         int distance = Math.toIntExact(Math.round(distanceKm));
 
-                        String viewerProfileImageName = userService.getUserProfileImageNameByUserId(viewerId);
-                        String candidateProfileImageName = userService.getUserProfileImageNameByUserId(candidateId);
+                        String senderProfileImageName = userService.getUserProfileImageNameByUserId(senderId);
+                        String receiverProfileImageName = userService.getUserProfileImageNameByUserId(receiverId);
                         Instant now = Instant.now();
                         UserMatchDetailDTO dto = new UserMatchDetailDTO(
-                                        viewerId,
-                                        candidateId,
+                                        senderId,
+                                        receiverId,
                                         matchPercentage,
                                         sharedInterests,
                                         sharedPersonalities,
                                         distance,
-                                        viewerProfileImageName,
-                                        candidateProfileImageName,
+                                        senderProfileImageName,
+                                        receiverProfileImageName,
                                         now, null);
                         dto.setSignature(matchSigningUtility.signMatchData(dto));
                         matches.add(dto);
