@@ -54,8 +54,8 @@ public class WebSocketController {
         connection.setNumberOfMessages(connection.getNumberOfMessages() + 1);
 
         ChatMessage messageEntity = new ChatMessage();
-        messageEntity.setSender(senderId);
-        messageEntity.setReceiver(receiverId);
+        messageEntity.setSenderId(senderId);
+        messageEntity.setReceiverId(receiverId);
         messageEntity.setConnection(connection);
         messageEntity.setContent(dto.getContent());
 
