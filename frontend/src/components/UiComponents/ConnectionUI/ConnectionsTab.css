@@ -161,18 +161,27 @@
 
 @media (max-width: 800px) {
 
-    .connections-tab-grid-container {
-        grid-template-columns: repeat(
-            auto-fill,
-            minmax(220px, 280px)
-        );
+    .connections-tab-profile-image {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
 
-        gap: 1.25rem;
-        padding: 1rem;
+        width: 54px;
+        height: 54px;
+
+        margin: 0;
+        object-fit: cover;
     }
 
     .connections-tab-profile-image {
+        position: static;
+        display: block;
+
+        width: 165px;
         height: 165px;
+
+        margin: 0 auto 0.8rem;
+        object-fit: cover;
     }
 }
 
@@ -199,9 +208,7 @@
         gap: 1rem;
 
         padding:
-            0.75rem
-            0.75rem
-            7rem;
+            0.75rem 0.75rem 7rem;
     }
 
     .connections-tab-profile-card {
@@ -212,9 +219,17 @@
         border-radius: 14px;
     }
 
+
     .connections-tab-profile-image {
-        height: 200px;
-        margin-bottom: 0.8rem;
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+
+        width: 165px;
+        height: 165px;
+
+        margin: 0;
+        object-fit: cover;
     }
 
     .connections-tab-profile-name {
