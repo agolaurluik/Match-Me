@@ -9,7 +9,7 @@ import backend.matching.dto.UserMatchDetailDTO;
 
 public class ConnectionMapper {
 
-    public static ConnectionDetailedDTO toDetailedDTO(Connection connection, String lastMessagePreview) {
+    public static ConnectionDetailedDTO toDetailedDTO(Connection connection) {
         return ConnectionDetailedDTO.builder()
                 .id(connection.getId())
                 .senderId(connection.getSender())

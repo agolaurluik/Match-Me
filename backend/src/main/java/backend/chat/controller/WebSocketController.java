@@ -23,6 +23,7 @@ import backend.chat.dto.TypingStatus;
 import backend.chat.entity.ChatMessage;
 import backend.chat.mapper.ChatMessageMapper;
 import backend.chat.service.ChatMessageService;
+import backend.connection.dto.ConnectionDetailedDTO;
 import backend.connection.dto.ConnectionUpdateNotification;
 import backend.connection.dto.OnlineStatusCheck;
 import backend.connection.dto.UserStatusCheck;
@@ -147,9 +148,9 @@ public class WebSocketController {
         if (check.getMeId() == null || check.getUserId() == null) {
             return; // Handle empty list gracefully
         }
-        Connection connection = connectionService.getConnection(check.getMeId(), check.getUserId());
+        ConnectionDetailedDTO dto = connectionService.getConnection(check.getMeId(), check.getUserId());
 
-        if (connection == null) {
+        if (dto == null) {
             throw new NotFoundException(
                     "Connection not found between users: " + check.getMeId() + " and " + check.getUserId());
         }
