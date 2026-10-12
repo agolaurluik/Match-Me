@@ -1,0 +1,68 @@
+package backend.matching.mapper;
+
+import org.springframework.stereotype.Component;
+
+import backend.matching.dto.UserMatchingFilterDTO;
+import backend.matching.entity.MatchingFilter;
+import backend.users.repository.UserRepository;
+import backend.utilities.exceptions.BadRequestException;
+import lombok.RequiredArgsConstructor;
+
+@Component
+@RequiredArgsConstructor
+public class UserMatchingFilterMapperImpl implements UserMatchingFilterMapper {
+
+    private final UserRepository userRepository;
+
+    @Override
+    public UserMatchingFilterDTO toDTO(MatchingFilter entity) {
+        if (entity == null)
+            return null;
+
+        return UserMatchingFilterDTO.builder()
+                .id(entity.getId())
+                .userId(entity.getUserId())
+                .match_limit(entity.getMatch_limit())
+                .genderPreference(entity.getGenderPreference())
+                .interestScore(entity.getInterestScore())
+                .nationalityScore(entity.getNationalityScore())
+                .personalityScore(entity.getPersonalityScore())
+                .purposeScore(entity.getPurposeScore())
+                .lowestAge(entity.getLowestAge())
+                .highestAge(entity.getHighestAge())
+                .radius(entity.getRadius())
+                .build();
+    }
+
+    @Override
+    public MatchingFilter toEntity(UserMatchingFilterDTO dto) {
+        if (dto == null)
+            return null;
+
+        MatchingFilter filter = new MatchingFilter();
+        filter.setId(dto.getId());
+        filter.setMatch_limit(dto.getMatch_limit());
+        filter.setGenderPreference(dto.getGenderPreference());
+        filter.setInterestScore(dto.getInterestScore());
+        filter.setNationalityScore(dto.getNationalityScore());
+        filter.setPersonalityScore(dto.getPersonalityScore());
+        filter.setPurposeScore(dto.getPurposeScore());
+        filter.setLowestAge(dto.getLowestAge());
+        filter.setHighestAge(dto.getHighestAge());
+        filter.setRadius(dto.getRadius());
+
+        Long userDtoId = dto.getUserId();
+        if (userDtoId == null) {
+            throw new BadRequestException("Failed to retrieve userId from dto during conversion");
+        }
+        userRepository.findById(userDtoId)
+                .ifPresentOrElse(
+                        userId -> filter.setUserId(dto.getUserId()),
+                        () -> {
+                            throw new BadRequestException("User not found with id: " + dto.getUserId());
+                        });
+
+        return filter;
+    }
+
+}

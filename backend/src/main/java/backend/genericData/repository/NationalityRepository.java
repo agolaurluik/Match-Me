@@ -1,0 +1,12 @@
+package backend.genericData.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
+
+import backend.genericData.entity.Nationality;
+
+public interface NationalityRepository extends JpaRepository<Nationality, Long> {
+    Optional<Nationality> findByName(@Param("name") String name);
+}

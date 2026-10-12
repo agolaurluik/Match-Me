@@ -1,0 +1,12 @@
+package backend.genericData.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
+
+import backend.genericData.entity.Gender;
+
+public interface GenderRepository extends JpaRepository<Gender, Long> {
+    Optional<Gender> findByName(@Param("name") String name);
+}

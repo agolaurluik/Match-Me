@@ -11,7 +11,7 @@
     </parent>
     <groupId>com.kood</groupId>
     <artifactId>match-me</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.8</version>
     <name>match-me</name>
     <description>social network project</description>
     <url />
