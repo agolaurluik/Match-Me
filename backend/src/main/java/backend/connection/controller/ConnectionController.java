@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import backend.connection.dto.FriendConnectionDTO;
-import backend.connection.entity.Connection;
+import backend.connection.dto.ConnectionDetailedDTO;
 import backend.connection.entity.ConnectionStatus;
 import backend.connection.service.ConnectionService;
 import backend.matching.dto.UserMatchDetailDTO;
@@ -33,7 +32,7 @@ public class ConnectionController {
     // CREATE:
 
     @PostMapping("/create")
-    public ResponseEntity<Connection> create(@AuthenticationPrincipal UserDetailsImpl sender,
+    public ResponseEntity<ConnectionDetailedDTO> create(@AuthenticationPrincipal UserDetailsImpl sender,
             @RequestBody UserMatchDetailDTO dto) {
         return ResponseEntity.ok(connectionService.createConnection(sender.getId(), dto));
     }
@@ -46,12 +45,11 @@ public class ConnectionController {
 
     // Get connection involving the logged-in user regardless of status
     @GetMapping("/{userId}")
-    public ResponseEntity<FriendConnectionDTO> getFriendConnection(
+    public ResponseEntity<ConnectionDetailedDTO> getFriendConnection(
             @AuthenticationPrincipal UserDetailsImpl user,
             @PathVariable Long userId) {
-        Connection connection = connectionService.getConnection(user.getId(), userId);
-        FriendConnectionDTO connectionDTO = new FriendConnectionDTO(connection, user.getId());
-        return ResponseEntity.ok(connectionDTO);
+        ConnectionDetailedDTO dto = connectionService.getConnection(user.getId(), userId);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping
@@ -63,18 +61,17 @@ public class ConnectionController {
     // That is, those users who have a connection with the logged-in user, and the
     // connection has the status ACCEPTED
     @GetMapping("/friend-liszt")
-    public ResponseEntity<List<FriendConnectionDTO>> getFriendConnections(
+    public ResponseEntity<List<ConnectionDetailedDTO>> getFriendConnections(
             @AuthenticationPrincipal UserDetailsImpl user) {
-        List<Connection> acceptedConnections = connectionService.getConnectionsByStatus(user.getId(),
+        List<ConnectionDetailedDTO> acceptedConnections = connectionService.getConnectionsByStatus(user.getId(),
                 ConnectionStatus.ACCEPTED, true);
-        List<FriendConnectionDTO> dtoLiszt = acceptedConnections.stream()
-                .map(connection -> new FriendConnectionDTO(connection, user.getId())).toList();
-        return ResponseEntity.ok(dtoLiszt);
+
+        return ResponseEntity.ok(acceptedConnections);
     }
 
     // Get all accepted connections for the logged-in user
     @GetMapping("/accepted")
-    public ResponseEntity<List<Connection>> getAllAccepted(@AuthenticationPrincipal UserDetailsImpl user) {
+    public ResponseEntity<List<ConnectionDetailedDTO>> getAllAccepted(@AuthenticationPrincipal UserDetailsImpl user) {
         return ResponseEntity
                 .ok(connectionService.getConnectionsByStatus(user.getId(), ConnectionStatus.ACCEPTED, true));
     }
@@ -82,21 +79,21 @@ public class ConnectionController {
     // Get all pending connections for the logged-in user --- only really useful for
     // counting total connections in waiting
     @GetMapping("/pending")
-    public ResponseEntity<List<Connection>> getAllPending(@AuthenticationPrincipal UserDetailsImpl user) {
+    public ResponseEntity<List<ConnectionDetailedDTO>> getAllPending(@AuthenticationPrincipal UserDetailsImpl user) {
         return ResponseEntity
                 .ok(connectionService.getConnectionsByStatus(user.getId(), ConnectionStatus.PENDING, false));
     }
 
     // Get all blocked connections for the logged-in user (where they block others)
     @GetMapping("/blocked")
-    public ResponseEntity<List<Connection>> getAllBlocked(@AuthenticationPrincipal UserDetailsImpl user) {
+    public ResponseEntity<List<ConnectionDetailedDTO>> getAllBlocked(@AuthenticationPrincipal UserDetailsImpl user) {
         return ResponseEntity
                 .ok(connectionService.getConnectionsByStatus(user.getId(), ConnectionStatus.BLOCKED, false));
     }
 
     // Get all rejected connections for the logged-in user
     @GetMapping("/rejected")
-    public ResponseEntity<List<Connection>> getAllRejected(@AuthenticationPrincipal UserDetailsImpl user) {
+    public ResponseEntity<List<ConnectionDetailedDTO>> getAllRejected(@AuthenticationPrincipal UserDetailsImpl user) {
         return ResponseEntity
                 .ok(connectionService.getConnectionsByStatus(user.getId(), ConnectionStatus.REJECTED, false));
     }
@@ -114,14 +111,14 @@ public class ConnectionController {
     // Accept a friend request if the logged-in user is the receiver of the
     // connection
     @PostMapping("/{userId}/accept")
-    public ResponseEntity<Connection> accept(@AuthenticationPrincipal UserDetailsImpl user,
+    public ResponseEntity<ConnectionDetailedDTO> accept(@AuthenticationPrincipal UserDetailsImpl user,
             @PathVariable Long userId) {
         return ResponseEntity.ok(connectionService.acceptConnection(user.getId(), userId));
     }
 
     // Block a user in a connection if the logged-in user is part of that connection
     @PostMapping("/{userId}/block")
-    public ResponseEntity<Connection> block(@AuthenticationPrincipal UserDetailsImpl user,
+    public ResponseEntity<ConnectionDetailedDTO> block(@AuthenticationPrincipal UserDetailsImpl user,
             @PathVariable Long userId) {
         return ResponseEntity.ok(connectionService.blockConnection(user.getId(), userId));
     }
@@ -129,7 +126,7 @@ public class ConnectionController {
     // Unblock the current user by setting their side to ACCEPTED, the other remains
     // whatever it was before
     @PostMapping("/{userId}/unblock")
-    public ResponseEntity<Connection> unblock(@AuthenticationPrincipal UserDetailsImpl user,
+    public ResponseEntity<ConnectionDetailedDTO> unblock(@AuthenticationPrincipal UserDetailsImpl user,
             @PathVariable Long userId) {
         return ResponseEntity.ok(connectionService.unblockConnection(user.getId(), userId));
     }
@@ -137,7 +134,7 @@ public class ConnectionController {
     // Reject a user in a connection if the logged-in user is part of that
     // connection
     @PostMapping("/{userId}/reject")
-    public ResponseEntity<Connection> reject(@AuthenticationPrincipal UserDetailsImpl user,
+    public ResponseEntity<ConnectionDetailedDTO> reject(@AuthenticationPrincipal UserDetailsImpl user,
             @PathVariable Long userId) {
         return ResponseEntity.ok(connectionService.rejectConnection(user.getId(), userId));
     }

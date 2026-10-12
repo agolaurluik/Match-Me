@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import backend.chat.repository.ChatMessageRepository;
+import backend.connection.dto.ConnectionDetailedDTO;
 import backend.connection.entity.Connection;
 import backend.connection.entity.ConnectionStatus;
 import backend.connection.mapper.ConnectionMapper;
@@ -37,7 +38,7 @@ public class ConnectionServiceImpl implements ConnectionService {
     // CREATE
 
     @Override
-    public Connection createConnection(Long senderId, UserMatchDetailDTO dto) {
+    public ConnectionDetailedDTO createConnection(Long senderId, UserMatchDetailDTO dto) {
 
         matchSigningUtility.validateMatchData(senderId, dto);
         Long receiverId = dto.getReceiverId();
@@ -69,18 +70,20 @@ public class ConnectionServiceImpl implements ConnectionService {
 
         Connection saved = connectionRepository.save(connection);
 
-        return saved;
+        ConnectionDetailedDTO savedDto = ConnectionMapper.toDetailedDTO(saved);
+        return savedDto;
     }
 
     // GET
     @Override
-    public Connection getConnection(Long meId, Long userId) {
+    public ConnectionDetailedDTO getConnection(Long meId, Long userId) {
         Connection connection = connectionRepository.findBySenderAndReceiver(meId, userId)
                 .or(() -> connectionRepository.findBySenderAndReceiver(userId, meId))
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Connection does not exist between these users, unable to proceed."));
 
-        return connection;
+        ConnectionDetailedDTO dto = ConnectionMapper.toDetailedDTO(connection);
+        return dto;
     }
 
     @Override
@@ -111,28 +114,29 @@ public class ConnectionServiceImpl implements ConnectionService {
 
     @Override
     public ArrayList<Long> getConnections(Long userId) {
-        List<Connection> acceptedConnections = getConnectionsByStatus(userId,
+        List<ConnectionDetailedDTO> acceptedConnections = getConnectionsByStatus(userId,
                 ConnectionStatus.ACCEPTED, true);
-        List<Connection> blockedConnections = getConnectionsByStatus(userId,
+        List<ConnectionDetailedDTO> blockedConnections = getConnectionsByStatus(userId,
                 ConnectionStatus.BLOCKED, true);
-        List<Connection> connections = new ArrayList<>();
+        List<ConnectionDetailedDTO> connections = new ArrayList<>();
         connections.addAll(acceptedConnections);
         connections.addAll(blockedConnections);
 
         ArrayList<Long> otherUserIdsList = new ArrayList<>();
 
-        for (Connection conn : connections) {
-            if (conn.getReceiver().equals(userId)) {
-                otherUserIdsList.add(conn.getSender());
-            } else if (conn.getSender().equals(userId)) {
-                otherUserIdsList.add(conn.getReceiver());
+        for (ConnectionDetailedDTO conn : connections) {
+            if (conn.getReceiverId().equals(userId)) {
+                otherUserIdsList.add(conn.getSenderId());
+            } else if (conn.getSenderId().equals(userId)) {
+                otherUserIdsList.add(conn.getReceiverId());
             }
         }
         return otherUserIdsList;
     }
 
     @Override
-    public List<Connection> getConnectionsByStatus(Long userId, ConnectionStatus status, boolean acceptedView) {
+    public List<ConnectionDetailedDTO> getConnectionsByStatus(Long userId, ConnectionStatus status,
+            boolean acceptedView) {
         List<Connection> result = new ArrayList<>();
         if (acceptedView) {
             result.addAll(connectionRepository.findByReceiverAndReceiverStatus(userId, status));
@@ -143,7 +147,12 @@ public class ConnectionServiceImpl implements ConnectionService {
 
         result.removeIf(conn -> conn.getSender().equals(userId) && conn.getReceiver().equals(userId));
 
-        return result;
+        List<ConnectionDetailedDTO> filteredConnectionDTOs = new ArrayList<>();
+        for (Connection existingConnection : result) {
+            ConnectionDetailedDTO dto = ConnectionMapper.toDetailedDTO(existingConnection);
+            filteredConnectionDTOs.add(dto);
+        }
+        return filteredConnectionDTOs;
     }
 
     public Set<UserMatchDetailDTO> getAllIncomingConnections(Long userId) {
@@ -183,7 +192,7 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
 
     @Override
-    public Connection acceptConnection(Long receiverId, Long senderId) {
+    public ConnectionDetailedDTO acceptConnection(Long receiverId, Long senderId) {
         Connection connection = connectionRepository.findBySenderAndReceiver(senderId, receiverId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "No connection found where the user is receiver and pending"));
@@ -194,10 +203,13 @@ public class ConnectionServiceImpl implements ConnectionService {
 
         connection.setSenderStatus(ConnectionStatus.ACCEPTED);
         connection.setReceiverStatus(ConnectionStatus.ACCEPTED);
-        return connectionRepository.save(connection);
+        connectionRepository.save(connection);
+
+        ConnectionDetailedDTO dto = ConnectionMapper.toDetailedDTO(connection);
+        return dto;
     }
 
-    public Connection rejectConnection(Long meId, Long userId) {
+    public ConnectionDetailedDTO rejectConnection(Long meId, Long userId) {
 
         Connection connection = connectionRepository.findBySenderAndReceiver(meId, userId)
                 .or(() -> connectionRepository.findBySenderAndReceiver(userId, meId))
@@ -222,11 +234,14 @@ public class ConnectionServiceImpl implements ConnectionService {
                 connection.setSenderStatus(ConnectionStatus.REJECTED);
             }
         }
-        return connectionRepository.save(connection);
+        connectionRepository.save(connection);
+
+        ConnectionDetailedDTO dto = ConnectionMapper.toDetailedDTO(connection);
+        return dto;
     }
 
     @Override
-    public Connection blockConnection(Long meId, Long userId) {
+    public ConnectionDetailedDTO blockConnection(Long meId, Long userId) {
         Connection connection = connectionRepository.findBySenderAndReceiver(meId, userId)
                 .or(() -> connectionRepository.findBySenderAndReceiver(userId, meId))
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -244,11 +259,13 @@ public class ConnectionServiceImpl implements ConnectionService {
             }
         }
 
-        return connectionRepository.save(connection);
+        connectionRepository.save(connection);
+        ConnectionDetailedDTO dto = ConnectionMapper.toDetailedDTO(connection);
+        return dto;
     }
 
     @Override
-    public Connection unblockConnection(Long meId, Long userId) {
+    public ConnectionDetailedDTO unblockConnection(Long meId, Long userId) {
         Connection connection = connectionRepository.findBySenderAndReceiver(meId, userId)
                 .or(() -> connectionRepository.findBySenderAndReceiver(userId, meId))
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -259,7 +276,9 @@ public class ConnectionServiceImpl implements ConnectionService {
         } else if (connection.getReceiver().equals(meId)) {
             connection.setReceiverStatus(ConnectionStatus.ACCEPTED);
         }
-        return connectionRepository.save(connection);
+        connectionRepository.save(connection);
+        ConnectionDetailedDTO dto = ConnectionMapper.toDetailedDTO(connection);
+        return dto;
     }
 
     @Override
@@ -318,10 +337,12 @@ public class ConnectionServiceImpl implements ConnectionService {
         connectionRepository.delete(existingConnection);
     }
 
+    // For chat messages mainly
     @Override
     public Connection getExistingAcceptedConnection(Long senderId, Long receiverId) {
-        return connectionRepository.findByAcceptedParticipants(senderId, receiverId)
+        Connection foundConnection = connectionRepository.findByAcceptedParticipants(senderId, receiverId)
                 .orElseThrow(() -> new EntityNotFoundException("No accepted connection found between users"));
+        return foundConnection;
     }
 
     @Override
@@ -348,21 +369,21 @@ public class ConnectionServiceImpl implements ConnectionService {
             return true;
         }
 
-        List<Connection> acceptedConnections = getConnectionsByStatus(senderId, ConnectionStatus.ACCEPTED,
+        List<ConnectionDetailedDTO> acceptedConnections = getConnectionsByStatus(senderId, ConnectionStatus.ACCEPTED,
                 true);
-        List<Connection> pendingConnections = getConnectionsByStatus(senderId, ConnectionStatus.PENDING,
+        List<ConnectionDetailedDTO> pendingConnections = getConnectionsByStatus(senderId, ConnectionStatus.PENDING,
                 true);
 
         Set<Long> validConnectionIds = new HashSet<>();
 
-        for (Connection item : acceptedConnections) {
-            validConnectionIds.add(item.getSender());
-            validConnectionIds.add(item.getReceiver());
+        for (ConnectionDetailedDTO item : acceptedConnections) {
+            validConnectionIds.add(item.getSenderId());
+            validConnectionIds.add(item.getReceiverId());
         }
 
-        for (Connection item : pendingConnections) {
-            validConnectionIds.add(item.getSender());
-            validConnectionIds.add(item.getReceiver());
+        for (ConnectionDetailedDTO item : pendingConnections) {
+            validConnectionIds.add(item.getSenderId());
+            validConnectionIds.add(item.getReceiverId());
         }
 
         return validConnectionIds.contains(receiverId);

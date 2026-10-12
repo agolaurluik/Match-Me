@@ -2,6 +2,7 @@ package backend.connection.service;
 
 import org.springframework.stereotype.Service;
 
+import backend.connection.dto.ConnectionDetailedDTO;
 import backend.connection.entity.Connection;
 import backend.connection.entity.ConnectionStatus;
 import backend.matching.dto.UserMatchDetailDTO;
@@ -12,27 +13,27 @@ import java.util.Set;
 @Service
 public interface ConnectionService {
 
-    Connection createConnection(Long senderId, UserMatchDetailDTO dto);
+    ConnectionDetailedDTO createConnection(Long senderId, UserMatchDetailDTO dto);
 
     List<Long> getAllConnections(Long userId);
 
     List<Long> getConnections(Long userId);
 
-    Connection getConnection(Long meId, Long userId);
+    ConnectionDetailedDTO getConnection(Long meId, Long userId);
 
-    List<Connection> getConnectionsByStatus(Long userId, ConnectionStatus status, boolean acceptedView);
+    List<ConnectionDetailedDTO> getConnectionsByStatus(Long userId, ConnectionStatus status, boolean acceptedView);
 
     Set<UserMatchDetailDTO> getAllIncomingConnections(Long userId);
 
     Set<UserMatchDetailDTO> getAllOutgoingConnections(Long userId);
 
-    Connection acceptConnection(Long userId, Long receiverId);
+    ConnectionDetailedDTO acceptConnection(Long userId, Long receiverId);
 
-    Connection blockConnection(Long userId, Long receiverId);
+    ConnectionDetailedDTO blockConnection(Long userId, Long receiverId);
 
-    Connection unblockConnection(Long userId, Long receiverId);
+    ConnectionDetailedDTO unblockConnection(Long userId, Long receiverId);
 
-    Connection rejectConnection(Long userId, Long receiverId);
+    ConnectionDetailedDTO rejectConnection(Long userId, Long receiverId);
 
     void deleteConnectionIfNoMessages(Long userId, Long receiverId);
 
