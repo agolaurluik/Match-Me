@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,8 +32,11 @@ public class ChatMessageController {
                         @AuthenticationPrincipal UserDetailsImpl userDetails,
                         @RequestParam Long connectionId,
                         @RequestParam int page,
-                        @RequestParam int size) {
+                        @RequestParam int size) throws BadRequestException {
 
+                if (connectionId.equals(null)) {
+                        throw new BadRequestException("Could not retrieve chat history - connectionId is null");
+                }
                 Connection connection = connectionService.getConnectionById(connectionId);
 
                 Page<ChatMessage> messagesPage = chatMessageService.getChatHistory(connection, page, size);
@@ -42,8 +46,15 @@ public class ChatMessageController {
 
         @PatchMapping("/read")
         public ResponseEntity<Map<String, String>> markMessagesAsRead(
-                        @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam Long connectionId) {
+                        @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam Long connectionId)
+                        throws BadRequestException {
+
+                if (connectionId.equals(null)) {
+                        throw new BadRequestException("Could not retrieve chat history - connectionId is null");
+                }
+
                 Connection connection = connectionService.getConnectionById(connectionId);
+
                 chatMessageService.markMessagesAsRead(connection, userDetails.getId());
 
                 Map<String, String> response = new HashMap<>();

@@ -37,8 +37,8 @@ public class ChatMessageService {
     public ChatMessage createChatMessage(ChatMessageDTO newChatMessage) {
         if (newChatMessage != null) {
             ChatMessage createdChatMessage = new ChatMessage();
-            createdChatMessage.setSender(newChatMessage.getSender());
-            createdChatMessage.setReceiver(newChatMessage.getReceiver());
+            createdChatMessage.setSenderId(newChatMessage.getSenderId());
+            createdChatMessage.setReceiverId(newChatMessage.getReceiverId());
             createdChatMessage.setContent(newChatMessage.getContent());
             createdChatMessage.setTimestamp(newChatMessage.getTimestamp());
             chatMessageRepository.save(createdChatMessage);
@@ -67,7 +67,7 @@ public class ChatMessageService {
 
     @Transactional
     public ChatMessageDTO updateChatMessage(ChatMessageDTO incomingChatMessage) {
-        Long incomindChatMessageId = incomingChatMessage.getId();
+        Long incomindChatMessageId = incomingChatMessage.getMessageId();
         if (incomindChatMessageId != null) {
             Optional<ChatMessage> existingChatMessage = chatMessageRepository.findById(incomindChatMessageId);
             if (existingChatMessage.isPresent()) {
@@ -111,7 +111,7 @@ public class ChatMessageService {
     }
 
     public List<ChatMessage> getUnreadMessages(Connection connection, Long receiverId) {
-        return chatMessageRepository.findByConnectionAndReceiverAndStatus(
+        return chatMessageRepository.findByConnectionAndReceiverIdAndStatus(
                 connection, receiverId, MessageStatus.SENT);
     }
 
@@ -125,13 +125,13 @@ public class ChatMessageService {
     }
 
     public Long countUnreadMessages(Long userId) {
-        return chatMessageRepository.countByReceiverAndStatus(userId, MessageStatus.SENT);
+        return chatMessageRepository.countByReceiverIdAndStatus(userId, MessageStatus.SENT);
     }
 
     public String getLastMessagePreview(Long connectionId, Long currentUserId) {
         return chatMessageRepository.findTopByConnectionIdOrderByTimestampDesc(connectionId)
                 .map(message -> {
-                    boolean sentByCurrentUser = message.getSender().equals(currentUserId);
+                    boolean sentByCurrentUser = message.getSenderId().equals(currentUserId);
                     String prefix = sentByCurrentUser ? "You: " : "Them: ";
                     return prefix + message.getContent();
                 })
@@ -139,7 +139,7 @@ public class ChatMessageService {
     }
 
     public Long countUnreadMessagesInConnection(Connection connection, Long receiverId) {
-        return chatMessageRepository.countByConnectionAndReceiverAndStatus(
+        return chatMessageRepository.countByConnectionAndReceiverIdAndStatus(
                 connection,
                 receiverId,
                 MessageStatus.SENT);

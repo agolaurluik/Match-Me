@@ -14,13 +14,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChatMessageDTO {
 
-    private Long id;
+    private Long messageId;
 
     private Long connectionId;
 
-    private Long sender;
+    private Long senderId;
 
-    private Long receiver;
+    private Long receiverId;
     @Lob
     private String content;
 

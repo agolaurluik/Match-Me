@@ -11,7 +11,7 @@ public class ConnectionMapper {
 
     public static ConnectionDetailedDTO toDetailedDTO(Connection connection) {
         return ConnectionDetailedDTO.builder()
-                .id(connection.getId())
+                .connectionId(connection.getId())
                 .senderId(connection.getSender())
                 .receiverId(connection.getReceiver())
                 .senderStatus(connection.getSenderStatus())
@@ -48,7 +48,7 @@ public class ConnectionMapper {
             return null;
         }
         Connection connection = new Connection();
-        connection.setId(connectionDTO.getId());
+        connection.setId(connectionDTO.getConnectionId());
         connection.setSender(connectionDTO.getSenderId());
         connection.setReceiver(connectionDTO.getReceiverId());
         connection.setLastMessageTimestamp(connectionDTO.getLastMessageTimestamp());

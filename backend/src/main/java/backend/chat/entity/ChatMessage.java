@@ -23,9 +23,9 @@ public class ChatMessage {
     @JoinColumn(name = "connection_id")
     private Connection connection;
 
-    private Long sender;
+    private Long senderId;
 
-    private Long receiver;
+    private Long receiverId;
 
     private String content;
 

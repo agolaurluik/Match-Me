@@ -7,10 +7,10 @@ public class ChatMessageMapper {
 
     public static ChatMessageDTO toDTO(ChatMessage message) {
         return ChatMessageDTO.builder()
-                .id(message.getId())
+                .messageId(message.getId())
                 .connectionId(message.getConnection().getId())
-                .sender(message.getSender())
-                .receiver(message.getReceiver())
+                .senderId(message.getSenderId())
+                .receiverId(message.getReceiverId())
                 .content(message.getContent())
                 .status(message.getStatus().name())
                 .timestamp(message.getTimestamp())
@@ -22,10 +22,10 @@ public class ChatMessageMapper {
             return null;
         }
         ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setId(chatMessageDTO.getId());
+        chatMessage.setId(chatMessageDTO.getMessageId());
         chatMessage.setTimestamp(chatMessageDTO.getTimestamp());
-        chatMessage.setSender(chatMessageDTO.getSender());
-        chatMessage.setReceiver(chatMessage.getReceiver());
+        chatMessage.setSenderId(chatMessageDTO.getSenderId());
+        chatMessage.setReceiverId(chatMessageDTO.getReceiverId());
         chatMessage.setContent(chatMessageDTO.getContent());
         return chatMessage;
     }

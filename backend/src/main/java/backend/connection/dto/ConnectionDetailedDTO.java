@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConnectionDetailedDTO {
-    private Long id;
+    private Long connectionId;
     private Long senderId;
     private Long receiverId;
     private Instant createdAt;

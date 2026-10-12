@@ -15,14 +15,14 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
 
     Page<ChatMessage> findByConnectionOrderByTimestampDesc(Connection connection, Pageable pageable);
 
-    List<ChatMessage> findByConnectionAndReceiverAndStatus(Connection connection, Long receiverId,
+    List<ChatMessage> findByConnectionAndReceiverIdAndStatus(Connection connection, Long receiverId,
             MessageStatus status);
 
-    Long countByReceiverAndStatus(Long receiverId, MessageStatus status);
+    Long countByReceiverIdAndStatus(Long receiverId, MessageStatus status);
 
     Optional<ChatMessage> findTopByConnectionIdOrderByTimestampDesc(Long connectionId);
 
-    Long countByConnectionAndReceiverAndStatus(Connection connection, Long receiverId, MessageStatus status);
+    Long countByConnectionAndReceiverIdAndStatus(Connection connection, Long receiverId, MessageStatus status);
 
     Page<ChatMessage> findByConnection(Connection connection, Pageable pageable);
 
