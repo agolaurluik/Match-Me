@@ -37,12 +37,6 @@ public class ConnectionController {
         return ResponseEntity.ok(connectionService.createConnection(sender.getId(), dto));
     }
 
-    // GET:
-    @GetMapping("/all")
-    public ResponseEntity<List<Long>> getAll(@AuthenticationPrincipal UserDetailsImpl user) {
-        return ResponseEntity.ok(connectionService.getAllConnections(user.getId()));
-    }
-
     // Get connection involving the logged-in user regardless of status
     @GetMapping("/{userId}")
     public ResponseEntity<ConnectionDetailedDTO> getFriendConnection(
@@ -53,20 +47,8 @@ public class ConnectionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Long>> getConnections(@AuthenticationPrincipal UserDetailsImpl user) {
+    public ResponseEntity<List<ConnectionDetailedDTO>> getConnections(@AuthenticationPrincipal UserDetailsImpl user) {
         return ResponseEntity.ok(connectionService.getConnections(user.getId()));
-    }
-
-    // A Liszt to return Friends for Chat window
-    // That is, those users who have a connection with the logged-in user, and the
-    // connection has the status ACCEPTED
-    @GetMapping("/friend-liszt")
-    public ResponseEntity<List<ConnectionDetailedDTO>> getFriendConnections(
-            @AuthenticationPrincipal UserDetailsImpl user) {
-        List<ConnectionDetailedDTO> acceptedConnections = connectionService.getConnectionsByStatus(user.getId(),
-                ConnectionStatus.ACCEPTED, true);
-
-        return ResponseEntity.ok(acceptedConnections);
     }
 
     // Get all accepted connections for the logged-in user

@@ -113,7 +113,7 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
 
     @Override
-    public ArrayList<Long> getConnections(Long userId) {
+    public List<ConnectionDetailedDTO> getConnections(Long userId) {
         List<ConnectionDetailedDTO> acceptedConnections = getConnectionsByStatus(userId,
                 ConnectionStatus.ACCEPTED, true);
         List<ConnectionDetailedDTO> blockedConnections = getConnectionsByStatus(userId,
@@ -131,7 +131,7 @@ public class ConnectionServiceImpl implements ConnectionService {
                 otherUserIdsList.add(conn.getReceiverId());
             }
         }
-        return otherUserIdsList;
+        return connections;
     }
 
     @Override
@@ -346,7 +346,7 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
 
     @Override
-    public Connection getConnectionById(Long connectionId) {
+    public Connection getConnectionByConnectionId(Long connectionId) {
         if (connectionId == null)
             throw new BadRequestException("ConnectionId provided is null");
         return connectionRepository.findById(connectionId)

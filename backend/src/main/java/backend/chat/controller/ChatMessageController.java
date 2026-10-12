@@ -37,7 +37,7 @@ public class ChatMessageController {
                 if (connectionId.equals(null)) {
                         throw new BadRequestException("Could not retrieve chat history - connectionId is null");
                 }
-                Connection connection = connectionService.getConnectionById(connectionId);
+                Connection connection = connectionService.getConnectionByConnectionId(connectionId);
 
                 Page<ChatMessage> messagesPage = chatMessageService.getChatHistory(connection, page, size);
 
@@ -53,7 +53,7 @@ public class ChatMessageController {
                         throw new BadRequestException("Could not retrieve chat history - connectionId is null");
                 }
 
-                Connection connection = connectionService.getConnectionById(connectionId);
+                Connection connection = connectionService.getConnectionByConnectionId(connectionId);
 
                 chatMessageService.markMessagesAsRead(connection, userDetails.getId());
 

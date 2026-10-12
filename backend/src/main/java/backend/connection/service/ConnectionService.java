@@ -17,7 +17,7 @@ public interface ConnectionService {
 
     List<Long> getAllConnections(Long userId);
 
-    List<Long> getConnections(Long userId);
+    List<ConnectionDetailedDTO> getConnections(Long userId);
 
     ConnectionDetailedDTO getConnection(Long meId, Long userId);
 
@@ -41,7 +41,7 @@ public interface ConnectionService {
 
     public Connection getExistingAcceptedConnection(Long senderId, Long receiverId);
 
-    Connection getConnectionById(Long connectionId);
+    Connection getConnectionByConnectionId(Long connectionId);
 
     boolean canView(Long requesterId, Long viewingId);
 }
