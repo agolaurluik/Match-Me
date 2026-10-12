@@ -122,15 +122,6 @@ public class ConnectionServiceImpl implements ConnectionService {
         connections.addAll(acceptedConnections);
         connections.addAll(blockedConnections);
 
-        ArrayList<Long> otherUserIdsList = new ArrayList<>();
-
-        for (ConnectionDetailedDTO conn : connections) {
-            if (conn.getReceiverId().equals(userId)) {
-                otherUserIdsList.add(conn.getSenderId());
-            } else if (conn.getSenderId().equals(userId)) {
-                otherUserIdsList.add(conn.getReceiverId());
-            }
-        }
         return connections;
     }
 
