@@ -136,169 +136,171 @@ const ProfileModal = ({ user, onClose, classPrefix, modalPrefix, onUserRemoved, 
     return (
         <div className="connections-tab-profile-modal-overlay" onClick={onClose}>
             <div className="connections-tab-profile-modal-content" onClick={(e) => e.stopPropagation()}>
-                <button className="connections-tab-profile-modal-close" onClick={onClose}>×</button>
-                <div className="connections-tab-profile-modal-image-container">
-                    <img
-                        src={profileSecureImageUrl}
-                        alt={user.name}
-                        className="connections-tab-profile-modal-image"
-                    />
+                <div className="connections-tab-profile-modal-scroll">
+                    <button className="connections-tab-profile-modal-close" onClick={onClose}>×</button>
+                    <div className="connections-tab-profile-modal-image-container">
+                        <img
+                            src={profileSecureImageUrl}
+                            alt={user.name}
+                            className="connections-tab-profile-modal-image"
+                        />
 
-                    <div className="connections-tab-profile-header-info">
-                        <h2>{user.username}</h2>
+                        <div className="connections-tab-profile-header-info">
+                            <h2>{user.username}</h2>
 
-                        {isChatTab && (
-                            <div className="connections-tab-profile-about-me">
-                                <h3>About Me</h3>
-                                <p>{user.aboutMe || "No description provided."}</p>
+                            {isChatTab && (
+                                <div className="connections-tab-profile-about-me">
+                                    <h3>About Me</h3>
+                                    <p>{user.aboutMe || "No description provided."}</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <section className="profile-modal-section">
+                        <h3>Basic information</h3>
+
+                        <div className="profile-modal-info-grid">
+                            <div className="profile-modal-info-item">
+                                <span>Age</span>
+                                <strong>{user.bio.age}</strong>
                             </div>
-                        )}
-                    </div>
-                </div>
 
-                <section className="profile-modal-section">
-                    <h3>Basic information</h3>
+                            <div className="profile-modal-info-item">
+                                <span>Gender</span>
+                                <strong>{user.bio.gender}</strong>
+                            </div>
 
-                    <div className="profile-modal-info-grid">
-                        <div className="profile-modal-info-item">
-                            <span>Age</span>
-                            <strong>{user.bio.age}</strong>
-                        </div>
+                            <div className="profile-modal-info-item">
+                                <span>Purpose</span>
+                                <strong>{user.bio.purpose}</strong>
+                            </div>
 
-                        <div className="profile-modal-info-item">
-                            <span>Gender</span>
-                            <strong>{user.bio.gender}</strong>
-                        </div>
-
-                        <div className="profile-modal-info-item">
-                            <span>Purpose</span>
-                            <strong>{user.bio.purpose}</strong>
-                        </div>
-
-                        <div className="profile-modal-info-item">
-                            <span>Nationality</span>
-                            <strong>{user.bio.nationality}</strong>
-                        </div>
-                    </div>
-                </section>
-
-                <section className="profile-modal-section">
-                    <h3>Interests & personality</h3>
-
-                    <div className="profile-modal-tag-group">
-                        <div>
-                            <span className="profile-modal-label">Interests</span>
-
-                            <div className="profile-modal-tags">
-                                {user.bio.interests.map((interest, index) => {
-                                    const isShared = user.bio.sharedInterests?.includes(interest);
-
-                                    return (
-                                        <span
-                                            key={index}
-                                            className={`profile-modal-tag ${isShared ? 'shared' : ''}`}
-                                        >
-                                            {interest}
-                                        </span>
-                                    );
-                                })}
+                            <div className="profile-modal-info-item">
+                                <span>Nationality</span>
+                                <strong>{user.bio.nationality}</strong>
                             </div>
                         </div>
+                    </section>
 
-                        <div>
-                            <span className="profile-modal-label">Personality</span>
+                    <section className="profile-modal-section">
+                        <h3>Interests & personality</h3>
 
-                            <div className="profile-modal-tags">
-                                {user.bio.personalities.map((personality, index) => {
-                                    const isShared =
-                                        user.bio.sharedPersonalities?.includes(personality);
+                        <div className="profile-modal-tag-group">
+                            <div>
+                                <span className="profile-modal-label">Interests</span>
 
-                                    return (
-                                        <span
-                                            key={index}
-                                            className={`profile-modal-tag ${isShared ? 'shared' : ''}`}
-                                        >
-                                            {personality}
-                                        </span>
-                                    );
-                                })}
+                                <div className="profile-modal-tags">
+                                    {user.bio.interests.map((interest, index) => {
+                                        const isShared = user.bio.sharedInterests?.includes(interest);
+
+                                        return (
+                                            <span
+                                                key={index}
+                                                className={`profile-modal-tag ${isShared ? 'shared' : ''}`}
+                                            >
+                                                {interest}
+                                            </span>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            <div>
+                                <span className="profile-modal-label">Personality</span>
+
+                                <div className="profile-modal-tags">
+                                    {user.bio.personalities.map((personality, index) => {
+                                        const isShared =
+                                            user.bio.sharedPersonalities?.includes(personality);
+
+                                        return (
+                                            <span
+                                                key={index}
+                                                className={`profile-modal-tag ${isShared ? 'shared' : ''}`}
+                                            >
+                                                {personality}
+                                            </span>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                <section className="profile-modal-section profile-modal-matching">
-                    <h3>Matching</h3>
+                    <section className="profile-modal-section profile-modal-matching">
+                        <h3>Matching</h3>
 
-                    <div className="profile-modal-match-grid">
-                        <div className="profile-modal-match-item">
-                            <span>Distance</span>
-                            <strong>
-                                {user.bio?.distance ?? 'N/A'} km
-                            </strong>
+                        <div className="profile-modal-match-grid">
+                            <div className="profile-modal-match-item">
+                                <span>Distance</span>
+                                <strong>
+                                    {user.bio?.distance ?? 'N/A'} km
+                                </strong>
+                            </div>
+
+                            <div className="profile-modal-match-item">
+                                <span>Matching score</span>
+                                <strong>
+                                    {user.bio?.score != null
+                                        ? `${"⭐".repeat(Math.ceil(user.bio.score / 20))} ${user.bio.score}%`
+                                        : 'N/A'}
+                                </strong>
+                            </div>
                         </div>
+                    </section>
 
-                        <div className="profile-modal-match-item">
-                            <span>Matching score</span>
-                            <strong>
-                                {user.bio?.score != null
-                                    ? `${"⭐".repeat(Math.ceil(user.bio.score / 20))} ${user.bio.score}%`
-                                    : 'N/A'}
-                            </strong>
-                        </div>
-                    </div>
-                </section>
-
-                <div className="connections-tab-profile-modal-actions">
-                    {!isPendingTab && !isChatTab && (
-                        <button className="connections-tab-match-button" onClick={handleMatch}>
-                            Match ✅
-                        </button>
-                    )}
-
-
-                    {isChatTab && isDeletedConnection && (
-                        <button
-                            className="connections-tab-delete-button"
-                            onClick={handleReject}
-                        >
-                            Delete 🗑️
-                        </button>
-                    )}
-
-                    {isChatTab && bothAccepted && (
-                        <>
-                            <button className="connections-tab-reject-button" onClick={handleBlock}>
-                                {isBlockedByMe ? "Unblock 🔓" : "Block ❌"}
+                    <div className="connections-tab-profile-modal-actions">
+                        {!isPendingTab && !isChatTab && (
+                            <button className="connections-tab-match-button" onClick={handleMatch}>
+                                Match ✅
                             </button>
+                        )}
+
+
+                        {isChatTab && isDeletedConnection && (
                             <button
                                 className="connections-tab-delete-button"
                                 onClick={handleReject}
                             >
                                 Delete 🗑️
                             </button>
-                        </>
-                    )}
+                        )}
+
+                        {isChatTab && bothAccepted && (
+                            <>
+                                <button className="connections-tab-reject-button" onClick={handleBlock}>
+                                    {isBlockedByMe ? "Unblock 🔓" : "Block ❌"}
+                                </button>
+                                <button
+                                    className="connections-tab-delete-button"
+                                    onClick={handleReject}
+                                >
+                                    Delete 🗑️
+                                </button>
+                            </>
+                        )}
 
 
-                    {isChatTab && !isDeletedConnection && !bothAccepted && (
-                        <button className="connections-tab-reject-button" onClick={handleBlock}>
-                            {isBlockedByMe ? "Unblock 🔓" : "Block ❌"}
-                        </button>
-                    )}
+                        {isChatTab && !isDeletedConnection && !bothAccepted && (
+                            <button className="connections-tab-reject-button" onClick={handleBlock}>
+                                {isBlockedByMe ? "Unblock 🔓" : "Block ❌"}
+                            </button>
+                        )}
 
-                    {isPendingTab && (
-                        <button className="connections-tab-reject-button" onClick={handleCancel}>
-                            Cancel ❌
-                        </button>
-                    )}
+                        {isPendingTab && (
+                            <button className="connections-tab-reject-button" onClick={handleCancel}>
+                                Cancel ❌
+                            </button>
+                        )}
 
-                    {!isPendingTab && !isChatTab && (
-                        <button className="connections-tab-reject-button" onClick={handleReject}>
-                            Reject ❌
-                        </button>
-                    )}
+                        {!isPendingTab && !isChatTab && (
+                            <button className="connections-tab-reject-button" onClick={handleReject}>
+                                Reject ❌
+                            </button>
+                        )}
 
+                    </div>
                 </div>
             </div>
         </div>

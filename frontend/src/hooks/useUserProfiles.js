@@ -94,13 +94,18 @@ export function useUserProfiles({
               // Recommendations use id; connections use sender/receiver.
               const userId =
                 connectionDirection === 'outgoing'
-                  ? profile.receiver ?? profile.candidateId ?? profile.id
+                  ? profile.receiverId
                   : connectionDirection === 'incoming'
-                    ? profile.sender ?? profile.viewerId ?? profile.id
-                    : profile.candidateId ?? profile.userId ?? profile.id;
+                    ? profile.senderId
+                    : profile.userId ?? profile.id ?? profile.receiverId;
 
               if (userId == null) {
-                console.error('Could not resolve user ID from profile:', profile);
+                console.error(
+                  'Could not resolve user ID from profile:',
+                  profile,
+                  'connectionDirection:',
+                  connectionDirection
+                );
                 return null;
               }
 
@@ -122,14 +127,15 @@ export function useUserProfiles({
                 id: user.id,
 
                 // Preserve the connection ID separately for future use.
-                connectionId: profile.sender != null || profile.receiver != null
-                  ? profile.id
-                  : null,
+                connectionId:
+                  profile.senderId != null || profile.receiverId != null
+                    ? profile.id
+                    : profile.connectionId ?? null,
 
                 username: user.username,
 
                 profilePicture:
-                  profile.candidateProfileImageName ||
+                  profile.receiverProfileImageName ||
                   profile.profileImage ||
                   user.profileImageName ||
                   'no picture',
@@ -180,20 +186,20 @@ export function useUserProfiles({
                 },
 
                 matchData: {
-                  viewerId: profile.viewerId,
-                  candidateId: profile.candidateId,
+                  senderId: profile.senderId,
+                  receiverId: profile.receiverId,
                   matchPercentage: profile.matchPercentage,
                   sharedInterestsSet: profile.sharedInterestsSet,
                   sharedPersonalitiesSet: profile.sharedPersonalitiesSet,
                   distance: profile.distance,
-                  viewerProfileImageName: profile.viewerProfileImageName,
-                  candidateProfileImageName: profile.candidateProfileImageName,
+                  senderProfileImageName: profile.senderProfileImageName,
+                  receiverProfileImageName: profile.receiverProfileImageName,
                   createdAt: profile.createdAt,
                   signature: profile.signature
                 },
 
-                sender: profile.sender,
-                receiver: profile.receiver,
+                senderId: profile.senderId,
+                receiverId: profile.receiverId,
                 senderStatus: profile.senderStatus,
                 receiverStatus: profile.receiverStatus
 

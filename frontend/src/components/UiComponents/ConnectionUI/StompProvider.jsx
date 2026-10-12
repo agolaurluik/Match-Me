@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
-import { createStompClient } from '../../../hooks/stompClient';
+import { createStompClient } from '../../../socket/stompClient';
 
 export const StompContext = createContext();
 

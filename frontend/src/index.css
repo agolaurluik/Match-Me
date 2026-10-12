@@ -2,3 +2,33 @@ html, body, #root {
   height: 100%;
   margin: 0;
 }
+
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: orange #102d16;
+}
+
+/* Chrome, Edge, Brave, Safari */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #102d16;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: orange;
+  border-radius: 10px;
+  border: 2px solid #102d16;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: orange;
+}
+
+*::-webkit-scrollbar-corner {
+  background: #102d16;
+}
