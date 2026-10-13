@@ -16,6 +16,8 @@ public class ConnectionMapper {
                 .receiverId(connection.getReceiver())
                 .senderStatus(connection.getSenderStatus())
                 .receiverStatus(connection.getReceiverStatus())
+                .lastMessageTimestamp(connection.getLastMessageTimestamp())
+                .numberOfMessages(connection.getNumberOfMessages())
                 .createdAt(connection.getCreatedAt())
                 .build();
     }
