@@ -21,6 +21,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Index;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +32,12 @@ import lombok.NoArgsConstructor;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
+@Table(name = "users", indexes = {
+        @Index(name = "idx_users_location_id", columnList = "location_id"),
+        @Index(name = "idx_users_gender_id", columnList = "gender_id"),
+        @Index(name = "idx_users_nationality_id", columnList = "nationality_id"),
+        @Index(name = "idx_users_purpose_id", columnList = "purpose_id")
+})
 public class User {
 
     @Id

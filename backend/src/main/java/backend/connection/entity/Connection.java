@@ -16,6 +16,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "connection", indexes = {
+        @Index(name = "idx_connection_sender_receiver", columnList = "sender_id, receiver_id"),
+        @Index(name = "idx_connection_receiver_sender", columnList = "receiver_id, sender_id")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -33,7 +37,7 @@ public class Connection {
     private Long receiver;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    @CreationTimestamp // What is this? Does this do the onCreate by itself?
+    @CreationTimestamp
     private Instant createdAt;
 
     private Instant lastMessageTimestamp;
@@ -45,11 +49,6 @@ public class Connection {
 
     @Enumerated(EnumType.STRING)
     private ConnectionStatus receiverStatus;
-
-    @PrePersist // Runs before persisting(saving) to the database
-    protected void onCreate() {
-        createdAt = Instant.now();
-    }
 
     @NotNull
     @DecimalMin("0.0")
