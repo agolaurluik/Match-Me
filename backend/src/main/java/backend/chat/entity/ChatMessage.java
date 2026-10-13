@@ -26,7 +26,7 @@ public class ChatMessage {
     private Long senderId;
 
     private Long receiverId;
-
+    @Column(length = 200)
     private String content;
 
     private Instant timestamp;

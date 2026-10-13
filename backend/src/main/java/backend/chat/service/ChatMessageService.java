@@ -101,7 +101,9 @@ public class ChatMessageService {
     public ChatMessage sendMessage(Long senderId, SendMessageDTO dto) {
 
         Long receiverId = dto.getReceiverId();
-
+        if (dto.getContent().length() > 200) {
+            throw new BadRequestException("Message is too long (above 200 characters)");
+        }
         Connection connection = connectionService
                 .getExistingAcceptedConnection(senderId, receiverId);
 

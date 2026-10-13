@@ -2,7 +2,7 @@ package backend.chat.dto;
 
 import java.time.Instant;
 
-import jakarta.persistence.Lob;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +21,7 @@ public class ChatMessageDTO {
     private Long senderId;
 
     private Long receiverId;
-    @Lob
+
     private String content;
 
     private String status; // SENT, READ

@@ -29,7 +29,9 @@ import backend.connection.dto.OnlineStatusCheck;
 import backend.connection.dto.UserStatusCheck;
 import backend.connection.mapper.ConnectionMapper;
 import backend.connection.service.ConnectionService;
+import backend.utilities.exceptions.BadRequestException;
 import backend.utilities.exceptions.NotFoundException;
+import jakarta.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
@@ -42,18 +44,30 @@ public class WebSocketController {
     private final Map<String, String> onlineUsers = new ConcurrentHashMap<>();
 
     @MessageMapping("/messages")
-    public void handleMessage(SendMessageDTO dto, Principal principal) {
+    public void handleMessage(@Valid SendMessageDTO dto, Principal principal) {
 
         Long senderId = Long.parseLong(principal.getName());
+        try {
+            ChatMessage saved = chatMessageService.sendMessage(senderId, dto);
+            ChatMessageDTO response = ChatMessageMapper.toDTO(saved);
 
-        ChatMessage saved = chatMessageService.sendMessage(senderId, dto);
-        ChatMessageDTO response = ChatMessageMapper.toDTO(saved);
+            messagingTemplate.convertAndSendToUser(Objects.requireNonNull(senderId.toString()), "/queue/messages",
+                    Objects.requireNonNull(response));
+            messagingTemplate.convertAndSendToUser(Objects.requireNonNull(dto.getReceiverId().toString()),
+                    "/queue/messages",
+                    Objects.requireNonNull(response));
+        } catch (BadRequestException e) {
+            messagingTemplate.convertAndSendToUser(
+                    Objects.requireNonNull(senderId.toString()),
+                    "/queue/errors",
+                    Objects.requireNonNull(Map.of("message", "Message must not exceed 200 characters")));
+        } catch (Exception e) {
+            messagingTemplate.convertAndSendToUser(
+                    Objects.requireNonNull(senderId.toString()),
+                    "/queue/errors",
+                    Objects.requireNonNull(Map.of("message", "Something went wrong")));
+        }
 
-        messagingTemplate.convertAndSendToUser(Objects.requireNonNull(senderId.toString()), "/queue/messages",
-                Objects.requireNonNull(response));
-        messagingTemplate.convertAndSendToUser(Objects.requireNonNull(dto.getReceiverId().toString()),
-                "/queue/messages",
-                Objects.requireNonNull(response));
     }
 
     @Component
