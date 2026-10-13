@@ -51,6 +51,8 @@ const ChatTab = () => { //Renders usersgrid and chatbox
     sendMessage: stompSendMessage,
     sendTypingStatus: stompSendTypingStatus,
     sendOnlineStatusRequest,
+    errorMessage,
+    clearErrorMessage,
   } = useStomp();
 
   // -----------------------------------------------------------------------------
@@ -264,6 +266,20 @@ const ChatTab = () => { //Renders usersgrid and chatbox
   return (
     <>
       {showNavLinks && <NavLinksWindow />}
+
+      {errorMessage && (
+        <div className="chat-error" role="alert">
+          <span>{errorMessage}</span>
+
+          <button
+            type="button"
+            onClick={clearErrorMessage}
+            aria-label="Dismiss error"
+          >
+            ×
+          </button>
+        </div>
+      )}
       <div
         className={`page-grid ${activeChatUser == null ? "no-chat-open" : "chat-open"}`}
       >

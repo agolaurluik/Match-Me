@@ -13,6 +13,7 @@ export const StompProvider = ({ children }) => {
   const [typingStatus, setTypingStatus] = useState({});
   const typingTimeouts = useRef({});
   const [isConnected, setIsConnected] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const storedToken = localStorage.getItem('Authorization');
@@ -104,6 +105,22 @@ export const StompProvider = ({ children }) => {
         // console.log("Received update signal from userID: " + otherUserId);
         refreshConnectionStatusFn?.(otherUserId);
       });
+
+      client.subscribe('/user/queue/errors', (frame) => {
+        console.log('[STOMP] Received error:', frame.body);
+
+        try {
+          const error = JSON.parse(frame.body);
+          console.log('[STOMP] Parsed error:', error);
+
+          setErrorMessage(error.message || 'Something went wrong.');
+        } catch (err) {
+          console.error('[STOMP] Failed to parse error:', err);
+          setErrorMessage('An unexpected chat error occurred.');
+        }
+      });
+
+
     };
 
     client.onWebSocketError = (error) => {
@@ -111,7 +128,11 @@ export const StompProvider = ({ children }) => {
     };
 
     client.onStompError = (frame) => {
-      console.error('[STOMP] Broker reported error:', frame.headers['message']);
+      const message =
+        frame.headers?.message || 'A connection error occurred.';
+
+      console.error('[STOMP] Broker reported error:', message);
+      setErrorMessage(message);
     };
 
     client.onWebSocketClose = () => {
@@ -186,6 +207,10 @@ export const StompProvider = ({ children }) => {
     }
   };
 
+  const clearErrorMessage = () => {
+    setErrorMessage('');
+  };
+
   const sendOnlineStatusRequest = (userId, connections) => {
     const client = clientRef.current;
     const friendIds = connections;
@@ -233,7 +258,9 @@ export const StompProvider = ({ children }) => {
         sendOnlineStatusRequest,
         sendConnectionStatusUpdate,
         setRefreshConnectionStatusFn,
-        isConnected, // optional for consumers
+        isConnected,
+        errorMessage,
+        clearErrorMessage,
       }}
     >
       {children}
