@@ -177,8 +177,8 @@
         position: static;
         display: block;
 
-        width: 165px;
-        height: 165px;
+        width: 100px;
+        height: 100px;
 
         margin: 0 auto 0.8rem;
         object-fit: cover;
@@ -225,8 +225,8 @@
         top: 0.75rem;
         right: 0.75rem;
 
-        width: 165px;
-        height: 165px;
+        width: 100px;
+        height: 100px;
 
         margin: 0;
         object-fit: cover;
@@ -249,4 +249,21 @@
     .connections-tab-container-message h2 {
         font-size: 1rem;
     }
+}
+
+@media (max-width: 400px) {
+
+
+        .connections-tab-profile-image {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+
+        width: 75px;
+        height: 75px;
+
+        margin: 0;
+        object-fit: cover;
+    }
+
 }
