@@ -103,7 +103,7 @@
 
 .chat-user-box .chat-subline {
   font-size: 10px; /* Smaller than username */
-  color: #666; /* Optional: lighter color for subline */
+  color: #000; /* Optional: lighter color for subline */
   margin-top: 4px;
 }
 
