@@ -1,18 +1,18 @@
+
 import { useEffect, useState, useCallback } from 'react';
 import api from '../api/api';
 import useOptions from './useOptions';
 import { useStomp } from '../components/UiComponents/ConnectionUI/StompProvider';
 
-const findNameById = (list, id) => list?.find(item => item.id === id)?.name || 'Unknown';
+const findNameById = (list, id) =>
+  list?.find(item => item.id === id)?.name || 'Unknown';
 
 const useFriendConnections = (viewerId) => {
   const [connections, setConnections] = useState([]);
   const [unreadCounts, setUnreadCounts] = useState({});
   const [loading, setLoading] = useState(true);
 
-
   const { setRefreshConnectionStatusFn } = useStomp();
-
 
   const {
     purposes,
@@ -26,95 +26,123 @@ const useFriendConnections = (viewerId) => {
   const getPurposeName = (id) => findNameById(purposes, id);
   const getGenderName = (id) => findNameById(genders, id);
   const getNationalityName = (id) => findNameById(nationalities, id);
-  const getInterestNames = (ids) => ids?.map(id => findNameById(interests, id)) || [];
-  const getPersonalityNames = (ids) => ids?.map(id => findNameById(personalities, id)) || [];
+  const getInterestNames = (ids) =>
+    ids?.map(id => findNameById(interests, id)) || [];
+  const getPersonalityNames = (ids) =>
+    ids?.map(id => findNameById(personalities, id)) || [];
 
   const removeChatConnection = (userId) => {
-    console.log("[Hook] removeChatConnection called with userId:", userId);
-    setConnections((prev) => prev.filter((conn) => conn.friendId !== userId));
-    setUnreadCounts((prev) => {
+    setConnections(prev =>
+      prev.filter(conn => conn.friendId !== userId)
+    );
+
+    setUnreadCounts(prev => {
       const updated = { ...prev };
       delete updated[userId];
       return updated;
     });
   };
 
-  const updateConnectionStatus = useCallback((userId, updatedFields) => { //Call back to avoid infinite loops, used when truly necessary.. (profile modal block)
-    // console.log("updating id : ", userId, updatedFields);
+  const updateConnectionStatus = useCallback((userId, updatedFields) => {
     setConnections(prev =>
       prev.map(conn =>
-        conn.friendId === userId ? { ...conn, ...updatedFields } : conn
+        conn.friendId === userId
+          ? { ...conn, ...updatedFields }
+          : conn
       )
     );
-  }, [setConnections]);
+  }, []);
 
-
-  const refreshConnectionStatus = useCallback(async (friendId) => { //(socket)
-    // console.log("pump!:", friendId);
+  const refreshConnectionStatus = useCallback(async (friendId) => {
     try {
-      const updatedConnectionData = await api.fetchConnectionDataByUserId(friendId);
+      const updatedConnectionData =
+        await api.fetchConnectionDataByUserId(friendId);
 
       updateConnectionStatus(friendId, {
         senderStatus: updatedConnectionData.senderStatus,
         receiverStatus: updatedConnectionData.receiverStatus,
+        connectionId: updatedConnectionData.connectionId,
       });
     } catch (err) {
-      console.error("Failed to refresh connection status:", err);
+      console.error('Failed to refresh connection status:', err);
     }
   }, [updateConnectionStatus]);
 
   useEffect(() => {
     setRefreshConnectionStatusFn(() => refreshConnectionStatus);
-  }, [refreshConnectionStatus]);
-
+  }, [refreshConnectionStatus, setRefreshConnectionStatusFn]);
 
   useEffect(() => {
     if (optionsLoading || !viewerId) return;
+
+    let cancelled = false;
 
     const fetchConnections = async () => {
       setLoading(true);
 
       try {
-        const friendIds = await api.fetchUserConnections();
+        // Assumes this endpoint now returns full connection objects,
+        // not just friend IDs.
+        const connectionData = await api.fetchUserConnections();
 
         const enrichedConnections = await Promise.all(
-          friendIds.map(async (conn) => {
-            const friendId = conn;
+          connectionData.map(async (conn) => {
+            const friendId =
+              Number(conn.senderId) === Number(viewerId)
+                ? conn.receiverId
+                : conn.senderId;
 
             try {
-              const [userConnData, userData, userBio, userProfile, matchInfo] = await Promise.all([
-                api.fetchConnectionDataByUserId(friendId),
-                api.fetchUserById(friendId),
-                api.fetchUserBioById(friendId),
-                api.fetchUserProfileById(friendId).catch(err => {
-                  console.error(`Failed to fetch profile for user ${friendId}:`, err);
-                  return null;
-                }),
-                api.fetchUsersMatchingInfoById(friendId),
-              ]);
+              const [userData, userBio, userProfile, matchInfo] =
+                await Promise.all([
+                  api.fetchUserById(friendId),
+                  api.fetchUserBioById(friendId),
+                  api.fetchUserProfileById(friendId).catch(err => {
+                    console.error(
+                      `Failed to fetch profile for user ${friendId}:`,
+                      err
+                    );
+                    return null;
+                  }),
+                  api.fetchUsersMatchingInfoById(friendId),
+                ]);
 
               const bio = userBio.profile;
+              const matchingInfo = matchInfo.matchInfo;
 
               function calculateAge(birthDateStringOrDate) {
                 if (!birthDateStringOrDate) return null;
+
                 const birthDate = new Date(birthDateStringOrDate);
-                if (isNaN(birthDate)) return null;
+                if (Number.isNaN(birthDate.getTime())) return null;
+
                 const today = new Date();
                 let age = today.getFullYear() - birthDate.getFullYear();
+
                 const monthDiff = today.getMonth() - birthDate.getMonth();
                 const dayDiff = today.getDate() - birthDate.getDate();
-                if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) age--;
+
+                if (
+                  monthDiff < 0 ||
+                  (monthDiff === 0 && dayDiff < 0)
+                ) {
+                  age--;
+                }
+
                 return age;
               }
 
-              const matchingInfo = matchInfo.matchInfo;
-
               return {
-                ...userConnData,
                 ...userData.user,
+                ...conn,
+
+                // Keep the user ID and connection ID separate.
+                connectionId: conn.connectionId,
                 friendId,
+
                 profilePicture: userData.user.profileImageName,
                 aboutMe: userProfile?.profile?.userDescription || '',
+
                 bio: {
                   gender: getGenderName(bio.genderId),
                   age: calculateAge(bio.birthDate),
@@ -129,8 +157,15 @@ const useFriendConnections = (viewerId) => {
                 },
               };
             } catch (err) {
-              console.error(`Failed to fetch full data for ID ${friendId}`, err);
+              console.error(
+                `Failed to fetch full data for user ${friendId}`,
+                err
+              );
+
+              // Preserve the connection information even if enrichment fails.
               return {
+                ...conn,
+                connectionId: conn.connectionId,
                 friendId,
                 profilePicture: null,
                 bio: null,
@@ -141,36 +176,71 @@ const useFriendConnections = (viewerId) => {
         );
 
         const unreadCountsTemp = {};
+
         await Promise.all(
           enrichedConnections.map(async (conn) => {
-            try {
-              const history = await api.fetchChatHistory(conn.connectionId, 0, 50);
-              const unread = history.content.filter(
-                (msg) => msg.receiver === viewerId && msg.status === 'SENT'
+            if (!conn.connectionId) {
+              console.warn(
+                `Skipping unread messages for friend ${conn.friendId}: missing connection ID`,
+                conn
               );
-              if (unread.length > 0) unreadCountsTemp[conn.friendId] = unread.length;
+              return;
+            }
+
+            try {
+              const history = await api.fetchChatHistory(
+                conn.connectionId,
+                0,
+                50
+              );
+
+              const unread = history.content.filter(
+                msg =>
+                  Number(msg.receiver) === Number(viewerId) &&
+                  msg.status === 'SENT'
+              );
+
+              if (unread.length > 0) {
+                unreadCountsTemp[conn.friendId] = unread.length;
+              }
             } catch (err) {
-              console.error('Failed to get unread messages: ', err);
+              console.error(
+                `Failed to get unread messages for friend ${conn.friendId}, connection ${conn.connectionId}:`,
+                err
+              );
             }
           })
         );
 
-
-
+        if (cancelled) return;
 
         setConnections(enrichedConnections);
         setUnreadCounts(unreadCountsTemp);
       } catch (err) {
-        console.error('Error loading connections: ', err);
+        if (!cancelled) {
+          console.error('Error loading connections:', err);
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchConnections();
+
+    return () => {
+      cancelled = true;
+    };
   }, [viewerId, optionsLoading]);
 
-  return { connections, unreadCounts, setConnections, setUnreadCounts, loading, removeChatConnection, updateConnectionStatus };
+  return {
+    connections,
+    unreadCounts,
+    setConnections,
+    setUnreadCounts,
+    loading,
+    removeChatConnection,
+    updateConnectionStatus,
+  };
 };
 
 export default useFriendConnections;

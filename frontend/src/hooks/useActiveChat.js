@@ -30,23 +30,42 @@ export const useActiveChat = ({
   };
 
   const refreshUnreadCountFor = async (connection) => {
+    if (!connection?.connectionId) {
+      console.warn(
+        `Skipping unread count refresh for friend ${connection?.friendId}:`,
+        'Missing connection ID',
+        connection
+      );
+      return;
+    }
+
     try {
-      const history = await api.fetchChatHistory(connection.connectionId, 0, 50);
+      const history = await api.fetchChatHistory(
+        connection.connectionId,
+        0,
+        50
+      );
+
       const unreadMessages = history.content.filter(
         msg => msg.status === 'SENT' && msg.receiver === viewerId
       );
 
       setUnreadCounts(prev => {
         const updated = { ...prev };
+
         if (unreadMessages.length > 0) {
           updated[connection.friendId] = unreadMessages.length;
         } else {
           delete updated[connection.friendId];
         }
+
         return updated;
       });
     } catch (err) {
-      console.error("Failed to refresh unread count", err);
+      console.error(
+        `Failed to refresh unread count for friend ${connection.friendId}:`,
+        err
+      );
     }
   };
 
@@ -78,7 +97,7 @@ export const useActiveChat = ({
                   return newCounts;
                 });
 
-                
+
                 await refreshSingleConnectionData(connection.friendId);
                 await refreshUnreadCountFor(connection);
               });

@@ -10,10 +10,29 @@ async function fetchJSON(url) {
             'Authorization': getToken()
         }
     });
+
     if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || error.message || 'Request failed');
+        const body = await response.text();
+
+        console.error('API request failed:', {
+            url,
+            status: response.status,
+            statusText: response.statusText,
+            body
+        });
+
+        let message = 'Request failed';
+
+        try {
+            const error = JSON.parse(body);
+            message = error.error || error.message || message;
+        } catch {
+            message = body || message;
+        }
+
+        throw new Error(message);
     }
+
     return response.json();
 }
 
