@@ -19,7 +19,7 @@ const ChatTab = () => { //Renders usersgrid and chatbox
   const rawToken = localStorage.getItem("Authorization");
   const payload = JSON.parse(atob(rawToken.split('.')[1]));
   const viewerId = payload.id;
-  
+
 
   // -----------------------------------------------------------------------------
 
@@ -33,7 +33,7 @@ const ChatTab = () => { //Renders usersgrid and chatbox
     removeChatConnection,
     updateConnectionStatus,
   } = useFriendConnections(viewerId);
-// console.log("CONNECTIONS FROM useFriendConnections", connections)
+  console.log("CONNECTIONS FROM useFriendConnections", connections)
 
 
 
@@ -72,70 +72,85 @@ const ChatTab = () => { //Renders usersgrid and chatbox
   });
 
   // -----------------------------------------------------------------------------
-  
+
   // to disable chat--------------------------------------
-  const activeConnection = connections.find(conn => conn.friendId === activeChatUser);
+  const activeConnection = connections.find(conn => Number(conn.friendId) === Number(activeChatUser));
 
 
-useEffect(() => {
-  const lastMessage = globalMessages[globalMessages.length - 1];
-  if (!lastMessage) return;
 
-  const senderId = lastMessage.senderId || lastMessage.sender;
-  const receiverId = lastMessage.receiverId || lastMessage.receiver;
+  useEffect(() => {
+    if (!globalMessages?.length) return;
 
-  // Update timestamp regardless of whether it's the active chat
-  const friendId = senderId === viewerId ? receiverId : senderId;
-  const timestamp = lastMessage.timestamp || lastMessage.time || new Date().toISOString();
+    const lastMessage = globalMessages[globalMessages.length - 1];
+    if (!lastMessage) return;
 
-  updateLastMessageTimestamp(friendId, timestamp);
+    // Convert the WebSocket message into the format ChatBox expects
+    const formattedMessage = formatMessages([lastMessage])[0];
 
-  // If this is the active chat, add the message to the chat view
-  if (
-    (senderId === activeChatUser && receiverId === viewerId) ||
-    (senderId === viewerId && receiverId === activeChatUser)
-  ) {
-    setMessages((prev) => {
-      if (prev.some((m) => m.id === lastMessage.id)) return prev;
-      return [
-        ...prev,
-        {
-          sender: senderId,
-          receiver: receiverId,
-          text: lastMessage.content || lastMessage.text || "",
-          timestamp,
-          id: lastMessage.id
+    const senderId = Number(formattedMessage.sender);
+    const receiverId = Number(formattedMessage.receiver);
+    const currentViewerId = Number(viewerId);
+    const currentActiveChatUser = Number(activeChatUser);
+
+    // Update the last-message timestamp for the other user
+    const friendId =
+      senderId === currentViewerId ? receiverId : senderId;
+
+    updateLastMessageTimestamp(
+      friendId,
+      formattedMessage.timestamp.toISOString()
+    );
+
+    // Is this message part of the currently open conversation?
+    const belongsToActiveChat =
+      (senderId === currentViewerId &&
+        receiverId === currentActiveChatUser) ||
+      (senderId === currentActiveChatUser &&
+        receiverId === currentViewerId);
+
+    if (belongsToActiveChat) {
+      setMessages((prev) => {
+        // Prevent duplicate messages
+        if (
+          prev.some(
+            (msg) => msg.messageId === formattedMessage.messageId
+          )
+        ) {
+          return prev;
         }
-      ];
-    });
 
-    // Mark as read if its from someone else
-    if (senderId !== viewerId) {
-      api.setMessagesAsRead(lastMessage.connectionId).then(() => {
-        setUnreadCounts((prev) => {
-          const newCounts = { ...prev };
-          delete newCounts[senderId];
-          return newCounts;
-        });
+        return [...prev, formattedMessage];
       });
-    }
-  } else {
-    if (receiverId === viewerId) {
+
+      // If someone else sent the message, mark it as read
+      if (senderId !== currentViewerId && formattedMessage.connectionId) {
+        api
+          .setMessagesAsRead(formattedMessage.connectionId)
+          .catch((err) =>
+            console.error("Failed to mark message as read:", err)
+          );
+      }
+    } else if (receiverId === currentViewerId) {
+      // Message belongs to another conversation and was sent to us
       setUnreadCounts((prev) => ({
         ...prev,
-        [senderId]: (prev[senderId] || 0) + 1
+        [senderId]: (prev[senderId] || 0) + 1,
       }));
     }
-  }
-}, [globalMessages]);
-
+  }, [
+    globalMessages,
+    viewerId,
+    activeChatUser,
+    setMessages,
+    setUnreadCounts,
+  ]);
   // -----------------------------------------------------------------------------
 
   useEffect(() => {
 
     if (connections && connections.length > 0) {
       if (activeChatUser) {
-        const activeConnection = connections.find(conn => conn.friendId === activeChatUser);
+        const activeConnection = connections.find(conn => Number(conn.friendId) === Number(activeChatUser));
         if (activeConnection) {
           sendOnlineStatusRequest(viewerId, connections.map(c => c.friendId));
         }
@@ -187,14 +202,14 @@ useEffect(() => {
   };
 
   const updateLastMessageTimestamp = (friendId, timestamp) => {
-  setConnections(prev => 
-    prev.map(conn => 
-      conn.friendId === friendId
-        ? { ...conn, lastMessageTimestamp: timestamp }
-        : conn
-    )
-  );
-};
+    setConnections(prev =>
+      prev.map(conn =>
+        conn.friendId === friendId
+          ? { ...conn, lastMessageTimestamp: timestamp }
+          : conn
+      )
+    );
+  };
 
   // Typing timeout handling
   const typingTimeouts = useRef({});
@@ -242,7 +257,7 @@ useEffect(() => {
             onUserClick={openChatWith}
             onlineUsers={onlineUsers}
             onUserRemoved={(id) => {
-            removeChatConnection(id);
+              removeChatConnection(id);
             }}
             updateConnectionStatus={updateConnectionStatus}
           />

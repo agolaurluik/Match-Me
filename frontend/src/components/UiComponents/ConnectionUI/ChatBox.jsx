@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import './ChatBox.css';
 import './aMobile.css';
 
-const ChatBox = ({ messages, onSendMessage, onLoadMore, activeChatUser, viewerId, onTyping, isTyping, connections, activeConnection  }) => {
+const ChatBox = ({ messages, onSendMessage, onLoadMore, activeChatUser, viewerId, onTyping, isTyping, connections, activeConnection }) => {
 
   const [newMessage, setNewMessage] = useState("");
   const typingTimeoutRef = useRef(null);
@@ -28,11 +28,15 @@ const ChatBox = ({ messages, onSendMessage, onLoadMore, activeChatUser, viewerId
     const isAtBottom = Math.abs(e.target.scrollHeight - e.target.scrollTop - e.target.clientHeight) < 5;
     shouldAutoScrollRef.current = isAtBottom;
   };
-  
+
   const getUsernameById = (id) => {
-    if (id === viewerId) return 'You';
-    const user = connections?.find(c => c.friendId === id);
-    return user?.username || `User #${id}`;
+    if (Number(id) === Number(viewerId)) return 'You';
+
+    const user = connections?.find(
+      c => Number(c.friendId) === Number(id)
+    );
+
+    return user?.username ?? `User #${id}`;
   };
 
   // Scroll to bottom when new messages arrive if user was at bottom before
@@ -62,16 +66,16 @@ const ChatBox = ({ messages, onSendMessage, onLoadMore, activeChatUser, viewerId
     });
   };
 
-const handleSend = () => {
-  const trimmed = input.trim();
-  if (!trimmed) return;
-  
-  onSendMessage(trimmed);
+  const handleSend = () => {
+    const trimmed = input.trim();
+    if (!trimmed) return;
 
-  setInput('');
+    onSendMessage(trimmed);
 
-  if (onTyping) onTyping(false);
-};
+    setInput('');
+
+    if (onTyping) onTyping(false);
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -79,11 +83,11 @@ const handleSend = () => {
       handleSend();
     }
   };
-const handleTyping = (e) => {
+  const handleTyping = (e) => {
     const value = e.target.value;
     setInput(value);
 
-    
+
     if (onTyping && !isTyping) {
       onTyping(true);
     }
@@ -97,22 +101,23 @@ const handleTyping = (e) => {
         onScroll={handleScroll}
       >
         {messages.map((msg, i) => (
-          <div key={i} className={`chat-message ${msg.sender === viewerId ? 'user' : 'bot'}`}>
-
-        <div className="chat-meta">
-        {getUsernameById(msg.sender)} — {formatDate(msg.timestamp)}
-      </div>
-
+          <div
+            key={msg.messageId ?? i}
+            className={`chat-message ${Number(msg.sender) === Number(viewerId) ? "user" : "bot"
+              }`}
+          >
+            <div className="chat-meta">
+              {getUsernameById(msg.sender)} — {formatDate(msg.timestamp)}
+            </div>
             <div className="chat-text">{msg.text}</div>
-
           </div>
         ))}
 
         {isTyping && (
-            <div className="typing-indicator">
-              {`User is typing...`}
-            </div>
-          )}
+          <div className="typing-indicator">
+            {`User is typing...`}
+          </div>
+        )}
 
         <div ref={messagesEndRef} />
       </div>
