@@ -12,7 +12,7 @@ export const StompProvider = ({ children }) => {
   const [onlineUsers, setOnlineUsers] = useState({});
   const [typingStatus, setTypingStatus] = useState({});
   const typingTimeouts = useRef({});
-  const [isConnected, setIsConnected] = useState(false); 
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('Authorization');
@@ -43,7 +43,7 @@ export const StompProvider = ({ children }) => {
 
     client.onConnect = () => {
       // console.log('[STOMP] Connected!');
-      setIsConnected(true); 
+      setIsConnected(true);
 
       client.subscribe('/user/queue/messages', (msg) => {
         const body = JSON.parse(msg.body);
@@ -52,8 +52,13 @@ export const StompProvider = ({ children }) => {
 
       client.subscribe('/user/queue/read-receipts', (msg) => {
         const messageId = JSON.parse(msg.body);
+
         setMessages(prev =>
-          prev.map(m => m.id === messageId ? { ...m, status: 'READ' } : m)
+          prev.map(m =>
+            Number(m.messageId) === Number(messageId)
+              ? { ...m, status: 'READ' }
+              : m
+          )
         );
       });
 
@@ -93,12 +98,12 @@ export const StompProvider = ({ children }) => {
         }
       });
 
-    client.subscribe(`/user/queue/connection-status-update`, (message) => {
-      const payload = JSON.parse(message.body);
-      const otherUserId = payload.userId;
-      // console.log("Received update signal from userID: " + otherUserId);
-      refreshConnectionStatusFn?.(otherUserId);
-    });
+      client.subscribe(`/user/queue/connection-status-update`, (message) => {
+        const payload = JSON.parse(message.body);
+        const otherUserId = payload.userId;
+        // console.log("Received update signal from userID: " + otherUserId);
+        refreshConnectionStatusFn?.(otherUserId);
+      });
     };
 
     client.onWebSocketError = (error) => {
@@ -110,12 +115,12 @@ export const StompProvider = ({ children }) => {
     };
 
     client.onWebSocketClose = () => {
-      setIsConnected(false); 
+      setIsConnected(false);
       console.warn('[STOMP] WebSocket closed');
     };
 
     client.onDisconnect = () => {
-      setIsConnected(false); 
+      setIsConnected(false);
       // console.log('[STOMP] Disconnected');
     };
 
@@ -128,7 +133,7 @@ export const StompProvider = ({ children }) => {
     };
   }, [token]);
 
-  
+
   /*
   useEffect(() => {
     if (isConnected && userId && connections.length > 0) {

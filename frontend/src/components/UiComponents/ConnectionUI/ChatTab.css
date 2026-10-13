@@ -88,6 +88,67 @@
 }
 
 
+/* Empty chat area */
+.chat-main-empty {
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+
+    box-shadow:
+        inset 0 0 30px rgba(0, 0, 0, 0.12),
+        0 4px 16px rgba(0, 0, 0, 0.12);
+
+    box-sizing: border-box;
+}
+
+/* Centered placeholder content */
+.chat-empty-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    flex: 1;
+    min-height: 0;
+    padding: 24px;
+
+    text-align: center;
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.chat-empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    font-size: 28px;
+}
+
+.chat-empty-placeholder h2 {
+    margin: 0 0 8px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.chat-empty-placeholder p {
+    max-width: 280px;
+    margin: 0;
+
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.58);
+}
+
+
 /* =========================
    Legacy wrappers
    ========================= */

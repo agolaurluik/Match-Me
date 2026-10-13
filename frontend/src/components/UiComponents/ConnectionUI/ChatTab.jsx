@@ -75,6 +75,9 @@ const ChatTab = () => { //Renders usersgrid and chatbox
 
   // -----------------------------------------------------------------------------
 
+  const activeChatUserRef = useRef(activeChatUser);
+  activeChatUserRef.current = activeChatUser;
+
   // to disable chat--------------------------------------
   const activeConnection = connections.find(conn => Number(conn.friendId) === Number(activeChatUser));
 
@@ -104,7 +107,7 @@ const ChatTab = () => { //Renders usersgrid and chatbox
     const senderId = Number(formattedMessage.sender);
     const receiverId = Number(formattedMessage.receiver);
     const currentViewerId = Number(viewerId);
-    const currentActiveChatUser = Number(activeChatUser);
+    const currentActiveChatUser = Number(activeChatUserRef.current);
 
     // Update the last-message timestamp for the other user
     const friendId =
@@ -154,7 +157,6 @@ const ChatTab = () => { //Renders usersgrid and chatbox
   }, [
     globalMessages,
     viewerId,
-    activeChatUser,
     setMessages,
     setUnreadCounts,
   ]);
@@ -218,7 +220,7 @@ const ChatTab = () => { //Renders usersgrid and chatbox
   const updateLastMessageTimestamp = (friendId, timestamp) => {
     setConnections(prev =>
       prev.map(conn =>
-        conn.friendId === friendId
+        Number(conn.friendId) === Number(friendId)
           ? { ...conn, lastMessageTimestamp: timestamp }
           : conn
       )
@@ -278,9 +280,8 @@ const ChatTab = () => { //Renders usersgrid and chatbox
             updateConnectionStatus={updateConnectionStatus}
           />
         </aside>
-        <main className="chat-main">
-
-          {activeChatUser && (
+        <main className={`chat-main ${activeChatUser == null ? "chat-main-empty" : ""}`}>
+          {activeChatUser != null ? (
             <ChatBox
               messages={messages}
               onSendMessage={sendMessage}
@@ -292,6 +293,12 @@ const ChatTab = () => { //Renders usersgrid and chatbox
               connections={connections}
               activeConnection={activeConnection}
             />
+          ) : (
+            <div className="chat-empty-placeholder">
+              <div className="chat-empty-icon">💬</div>
+              <h2>Your conversations</h2>
+              <p>Select someone from the list to start chatting.</p>
+            </div>
           )}
         </main>
       </div>
