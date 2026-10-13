@@ -1,10 +1,11 @@
-package backend.connection.dto;
+package backend.chat.dto;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Builder
 @Data
-public class ConnectionUpdateNotification {
+public class UserStatusCheck {
     private Long userId;
+    private Long meId;
 }

@@ -50,6 +50,8 @@ public class Connection {
     @Enumerated(EnumType.STRING)
     private ConnectionStatus receiverStatus;
 
+    private boolean receiverHasSeenConnection;
+
     @NotNull
     @DecimalMin("0.0")
     @DecimalMax("100.0")

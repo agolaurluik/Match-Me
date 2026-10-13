@@ -21,4 +21,5 @@ public class ConnectionDetailedDTO {
     private Instant lastMessageTimestamp;
     private ConnectionStatus senderStatus;
     private ConnectionStatus receiverStatus;
+    private boolean receiverHasSeenConnection;
 }

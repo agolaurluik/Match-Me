@@ -1,4 +1,4 @@
-package backend.connection.dto;
+package backend.chat.dto;
 
 import java.util.List;
 
@@ -8,6 +8,5 @@ import lombok.Data;
 @Builder
 @Data
 public class OnlineStatusCheck {
-    private String userId;
     private List<String> friendIds;
 }

@@ -23,6 +23,8 @@ public interface ConnectionRepository extends JpaRepository<Connection, Long> {
 
   List<Connection> findBySenderAndSenderStatus(Long sender, ConnectionStatus status);
 
+  boolean existsByReceiverAndReceiverHasSeenConnectionFalse(Long receiver);
+
   @Query("SELECT c FROM Connection c WHERE (c.sender = :user OR c.receiver = :user)")
   List<Connection> findAllBySenderOrReceiver(@Param("user") User user);
 

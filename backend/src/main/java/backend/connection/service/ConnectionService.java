@@ -43,5 +43,9 @@ public interface ConnectionService {
 
     Connection getConnectionByConnectionId(Long connectionId);
 
+    boolean confirmSeenConnectionStatusUpdates(List<Long> dto);
+
+    boolean userHasUnseenConnections(Long userId);
+
     boolean canView(Long requesterId, Long viewingId);
 }

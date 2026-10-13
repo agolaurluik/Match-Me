@@ -60,6 +60,7 @@ public class ConnectionServiceImpl implements ConnectionService {
 
         connection.setSenderStatus(ConnectionStatus.PENDING);
         connection.setReceiverStatus(ConnectionStatus.PENDING);
+        connection.setReceiverHasSeenConnection(false);
 
         connection.setMatchPercentage(dto.getMatchPercentage());
         connection.setDistance(dto.getDistance());
@@ -194,6 +195,7 @@ public class ConnectionServiceImpl implements ConnectionService {
 
         connection.setSenderStatus(ConnectionStatus.ACCEPTED);
         connection.setReceiverStatus(ConnectionStatus.ACCEPTED);
+        connection.setReceiverHasSeenConnection(true);
         connectionRepository.save(connection);
 
         ConnectionDetailedDTO dto = ConnectionMapper.toDetailedDTO(connection);
@@ -225,6 +227,7 @@ public class ConnectionServiceImpl implements ConnectionService {
                 connection.setSenderStatus(ConnectionStatus.REJECTED);
             }
         }
+        connection.setReceiverHasSeenConnection(true);
         connectionRepository.save(connection);
 
         ConnectionDetailedDTO dto = ConnectionMapper.toDetailedDTO(connection);
@@ -347,6 +350,29 @@ public class ConnectionServiceImpl implements ConnectionService {
     private boolean isUserInConnection(Long userId, Connection connection) {
         return connection.getReceiver().equals(userId) ||
                 connection.getSender().equals(userId);
+    }
+
+    public boolean userHasUnseenConnections(Long userId) {
+        return connectionRepository.existsByReceiverAndReceiverHasSeenConnectionFalse(userId);
+    }
+
+    public boolean confirmSeenConnectionStatusUpdates(List<Long> dto) {
+
+        if (dto == null) {
+            throw new BadRequestException("Connection IDs cannot be null");
+        }
+
+        for (Long connectionId : dto) {
+            if (connectionId == null) {
+                throw new BadRequestException("Null value in dto during hasSeenConnection update");
+            }
+
+            Connection foundConnection = connectionRepository.findById(connectionId)
+                    .orElseThrow(() -> new BadRequestException("Connection not found: " + connectionId));
+            foundConnection.setReceiverHasSeenConnection(true);
+            connectionRepository.save(foundConnection);
+        }
+        return true;
     }
 
     @Override

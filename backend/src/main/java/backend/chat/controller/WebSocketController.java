@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
+
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,15 +21,16 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import backend.chat.dto.ChatMessageDTO;
+import backend.chat.dto.ConnectionReadStatusUpdateDTO;
+import backend.chat.dto.ConnectionUpdateNotification;
+import backend.chat.dto.OnlineStatusCheck;
 import backend.chat.dto.SendMessageDTO;
 import backend.chat.dto.TypingStatus;
+import backend.chat.dto.UserStatusCheck;
 import backend.chat.entity.ChatMessage;
 import backend.chat.mapper.ChatMessageMapper;
 import backend.chat.service.ChatMessageService;
 import backend.connection.dto.ConnectionDetailedDTO;
-import backend.connection.dto.ConnectionUpdateNotification;
-import backend.connection.dto.OnlineStatusCheck;
-import backend.connection.dto.UserStatusCheck;
 import backend.connection.mapper.ConnectionMapper;
 import backend.connection.service.ConnectionService;
 import backend.utilities.exceptions.BadRequestException;
@@ -91,6 +95,21 @@ public class WebSocketController {
             String isOnline = "true";
             onlineUsers.put(userId, isOnline);
             broadcastOnlineUsers();
+            try {
+                Long userIdLong = Long.parseLong(userId);
+
+                boolean hasUnseen = connectionService.userHasUnseenConnections(userIdLong);
+
+                messagingTemplate.convertAndSendToUser(
+                        userId,
+                        "/queue/receiverHasUnseenNotifications",
+                        hasUnseen);
+
+            } catch (NumberFormatException e) {
+                sendError(userId, "Invalid number format in websocket");
+            } catch (Exception e) {
+                sendError(userId, "Unexpected error in websocket");
+            }
         }
 
         @EventListener
@@ -161,6 +180,52 @@ public class WebSocketController {
                 "/queue/connection-status-update",
                 Objects.requireNonNull(update));
 
+    }
+
+    @MessageMapping("/receiverHasReadIncomingConnections")
+    public void handleReceiverHasReadIncomingConnections(
+            @Payload ConnectionReadStatusUpdateDTO dto, Principal principal) {
+
+        List<Long> viewedConnections = dto.getSeenConnectionIds();
+        connectionService.confirmSeenConnectionStatusUpdates(viewedConnections);
+
+        String currentUserId = Objects.requireNonNull(principal.getName());
+        messagingTemplate.convertAndSendToUser(currentUserId, "/queue/receiverHasReadIncomingConnections", true);
+
+    }
+
+    @Scheduled(fixedDelay = 30000)
+    public void checkUnseenConnections() {
+        for (String principalName : onlineUsers.keySet()) {
+            try {
+                Long userId = Long.parseLong(principalName);
+
+                boolean hasUnseen = connectionService.userHasUnseenConnections(userId);
+
+                messagingTemplate.convertAndSendToUser(
+                        principalName,
+                        "/queue/receiverHasUnseenNotifications",
+                        hasUnseen);
+
+            } catch (NumberFormatException e) {
+                messagingTemplate.convertAndSendToUser(
+                        principalName,
+                        "/queue/errors",
+                        e);
+            } catch (Exception e) {
+                messagingTemplate.convertAndSendToUser(
+                        principalName,
+                        "/queue/errors",
+                        e);
+            }
+        }
+    }
+
+    private void sendError(String userId, String message) {
+        messagingTemplate.convertAndSendToUser(
+                userId,
+                "/queue/errors",
+                Map.of("message", message));
     }
 
 }

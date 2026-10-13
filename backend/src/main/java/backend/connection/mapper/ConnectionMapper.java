@@ -1,9 +1,9 @@
 package backend.connection.mapper;
 
+import backend.chat.dto.ConnectionUpdateNotification;
+import backend.chat.dto.UserStatusCheck;
 import backend.connection.dto.ConnectionDTO;
 import backend.connection.dto.ConnectionDetailedDTO;
-import backend.connection.dto.ConnectionUpdateNotification;
-import backend.connection.dto.UserStatusCheck;
 import backend.connection.entity.Connection;
 import backend.matching.dto.UserMatchDetailDTO;
 
@@ -16,6 +16,7 @@ public class ConnectionMapper {
                 .receiverId(connection.getReceiver())
                 .senderStatus(connection.getSenderStatus())
                 .receiverStatus(connection.getReceiverStatus())
+                .receiverHasSeenConnection(connection.isReceiverHasSeenConnection())
                 .lastMessageTimestamp(connection.getLastMessageTimestamp())
                 .numberOfMessages(connection.getNumberOfMessages())
                 .createdAt(connection.getCreatedAt())
@@ -56,6 +57,7 @@ public class ConnectionMapper {
         connection.setLastMessageTimestamp(connectionDTO.getLastMessageTimestamp());
         connection.setSenderStatus((connectionDTO.getSenderStatus()));
         connection.setReceiverStatus((connectionDTO.getReceiverStatus()));
+        connection.setReceiverHasSeenConnection(connectionDTO.isReceiverHasSeenConnection());
         connection.setCreatedAt(connectionDTO.getCreatedAt());
         return connection;
     }
