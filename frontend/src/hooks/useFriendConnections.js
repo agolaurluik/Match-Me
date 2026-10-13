@@ -196,7 +196,7 @@ const useFriendConnections = (viewerId) => {
 
               const unread = history.content.filter(
                 msg =>
-                  Number(msg.receiver) === Number(viewerId) &&
+                  Number(msg.receiverId ?? msg.receiver) === Number(viewerId) &&
                   msg.status === 'SENT'
               );
 

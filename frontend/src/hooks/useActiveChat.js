@@ -47,7 +47,9 @@ export const useActiveChat = ({
       );
 
       const unreadMessages = history.content.filter(
-        msg => msg.status === 'SENT' && msg.receiver === viewerId
+        msg =>
+          Number(msg.receiverId ?? msg.receiver) === Number(viewerId) &&
+          msg.status === 'SENT'
       );
 
       setUnreadCounts(prev => {
@@ -90,16 +92,15 @@ export const useActiveChat = ({
               newestMessage.receiver === viewerId;
 
             if (isUnreadMessage) {
-              api.setMessagesAsRead(connection.connectionId).then(async () => {
-                setUnreadCounts(prev => {
-                  const newCounts = { ...prev };
-                  delete newCounts[connection.friendId];
-                  return newCounts;
-                });
+              // Clear the badge immediately when opening the conversation.
+              setUnreadCounts(prev => {
+                const newCounts = { ...prev };
+                delete newCounts[connection.friendId];
+                return newCounts;
+              });
 
-
-                await refreshSingleConnectionData(connection.friendId);
-                await refreshUnreadCountFor(connection);
+              api.setMessagesAsRead(connection.connectionId).catch(err => {
+                console.error("Failed to mark messages as read:", err);
               });
             }
           })

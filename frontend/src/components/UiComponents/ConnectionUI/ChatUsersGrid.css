@@ -130,11 +130,21 @@
   position: absolute;
   top: 6px;
   right: 10px;
+
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   background: red;
   color: white;
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 600;
   border-radius: 50%;
-  padding: 4px 8px;
 }
 
 .online-indicator {

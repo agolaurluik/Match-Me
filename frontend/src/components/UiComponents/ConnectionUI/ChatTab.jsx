@@ -20,6 +20,8 @@ const ChatTab = () => { //Renders usersgrid and chatbox
   const payload = JSON.parse(atob(rawToken.split('.')[1]));
   const viewerId = payload.id;
 
+  const processedMessageIds = useRef(new Set());
+
 
   // -----------------------------------------------------------------------------
 
@@ -33,7 +35,7 @@ const ChatTab = () => { //Renders usersgrid and chatbox
     removeChatConnection,
     updateConnectionStatus,
   } = useFriendConnections(viewerId);
-  console.log("CONNECTIONS FROM useFriendConnections", connections)
+  // console.log("CONNECTIONS FROM useFriendConnections", connections)
 
 
 
@@ -84,7 +86,19 @@ const ChatTab = () => { //Renders usersgrid and chatbox
     const lastMessage = globalMessages[globalMessages.length - 1];
     if (!lastMessage) return;
 
-    // Convert the WebSocket message into the format ChatBox expects
+    // Identify the message consistently across effect executions.
+    const messageKey = lastMessage.messageId;
+
+    if (messageKey == null) {
+      console.warn("Received message without messageId:", lastMessage);
+      return;
+    }
+
+    // Do not process the same message twice.
+    if (processedMessageIds.current.has(messageKey)) return;
+
+    processedMessageIds.current.add(messageKey);
+
     const formattedMessage = formatMessages([lastMessage])[0];
 
     const senderId = Number(formattedMessage.sender);
@@ -248,7 +262,9 @@ const ChatTab = () => { //Renders usersgrid and chatbox
   return (
     <>
       {showNavLinks && <NavLinksWindow />}
-      <div className="page-grid">
+      <div
+        className={`page-grid ${activeChatUser == null ? "no-chat-open" : "chat-open"}`}
+      >
         <aside className="sidebar">
           <ChatUsersGrid
             connections={connections}
