@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.logging.log4j.util.InternalException;
 import org.springframework.context.event.EventListener;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
@@ -196,7 +197,12 @@ public class WebSocketController {
     @Scheduled(fixedDelay = 30000)
     public void checkUnseenConnections() {
         for (String principalName : onlineUsers.keySet()) {
+            if (principalName.equals(null)) {
+                System.out.println("LOG: PrincipalName is null in onlineUsers keyset");
+                continue;
+            }
             try {
+
                 Long userId = Long.parseLong(principalName);
 
                 boolean hasUnseen = connectionService.userHasUnseenConnections(userId);
@@ -221,13 +227,19 @@ public class WebSocketController {
     }
 
     private void sendError(String userId, String message) {
+        if (userId == null || message == null) {
+            throw new InternalException("Websocket error handling failed");
+        }
         messagingTemplate.convertAndSendToUser(
                 userId,
                 "/queue/errors",
-                Map.of("message", message));
+                Objects.requireNonNull(Map.of("message", message)));
     }
 
     private void sendUnseenNotificationStatus(String principalName) {
+        if (principalName.equals(null)) {
+            System.out.println("LOG: PrincipalName is null in onlineUsers keyset");
+        }
         try {
             Long userIdLong = Long.parseLong(principalName);
 

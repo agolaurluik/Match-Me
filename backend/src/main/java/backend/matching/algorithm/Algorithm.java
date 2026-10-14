@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import backend.connection.service.ConnectionService;
 import backend.genericData.repository.LocationRepository;
 import backend.matching.dto.UserMatchDetailDTO;
 import backend.matching.dto.UserMatchingFilterDTO;
@@ -35,7 +34,6 @@ public class Algorithm {
         private final UserRepository userRepository;
         private final LocationRepository locationRepository;
         private final MatchingFilterRepository matchingFilterRepository;
-        private final ConnectionService connectionService;
         private final UserService userService;
         private final UserMatchingFilterMapperImpl userMatchingFilterMapperImpl;
         private final MatchSigningUtility matchSigningUtility;
@@ -172,26 +170,30 @@ public class Algorithm {
                         Double distanceKm = row[4] == null
                                         ? null
                                         : ((Number) row[4]).doubleValue();
-                        int distance = Math.toIntExact(Math.round(distanceKm));
 
-                        String senderProfileImageName = userService.getUserProfileImageNameByUserId(senderId);
-                        String receiverProfileImageName = userService.getUserProfileImageNameByUserId(receiverId);
-                        Instant now = Instant.now();
+                        if (distanceKm != null) {
+                                int distance = Math.toIntExact(Math.round(distanceKm));
 
-                        UserMatchDetailDTO dto = UserMatchDetailDTO.builder()
-                                        .senderId(senderId)
-                                        .receiverId(receiverId)
-                                        .connectionId(null)
-                                        .matchPercentage(matchPercentage)
-                                        .sharedInterestsSet(sharedInterests)
-                                        .sharedPersonalitiesSet(sharedPersonalities)
-                                        .distance(distance)
-                                        .senderProfileImageName(senderProfileImageName)
-                                        .receiverProfileImageName(receiverProfileImageName)
-                                        .createdAt(now)
-                                        .build();
-                        dto.setSignature(matchSigningUtility.signMatchData(dto));
-                        matches.add(dto);
+                                String senderProfileImageName = userService.getUserProfileImageNameByUserId(senderId);
+                                String receiverProfileImageName = userService
+                                                .getUserProfileImageNameByUserId(receiverId);
+                                Instant now = Instant.now();
+
+                                UserMatchDetailDTO dto = UserMatchDetailDTO.builder()
+                                                .senderId(senderId)
+                                                .receiverId(receiverId)
+                                                .connectionId(null)
+                                                .matchPercentage(matchPercentage)
+                                                .sharedInterestsSet(sharedInterests)
+                                                .sharedPersonalitiesSet(sharedPersonalities)
+                                                .distance(distance)
+                                                .senderProfileImageName(senderProfileImageName)
+                                                .receiverProfileImageName(receiverProfileImageName)
+                                                .createdAt(now)
+                                                .build();
+                                dto.setSignature(matchSigningUtility.signMatchData(dto));
+                                matches.add(dto);
+                        }
                 }
                 matches.sort(Comparator.comparingDouble((UserMatchDetailDTO dto) -> dto.getMatchPercentage())
                                 .reversed());
