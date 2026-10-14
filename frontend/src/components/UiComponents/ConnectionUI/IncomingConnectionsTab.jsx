@@ -3,10 +3,23 @@ import './ConnectionsTab.css';
 import UserGrid from './UsersGrid';
 import { useUserProfiles } from '../../../hooks/useUserProfiles';
 import api from '../../../api/api';
+import { useStomp } from './StompProvider';
 
 const IncomingConnectionsTab = () => {
   const [incomingConnections, setIncomingConnections] = useState(null);
   const [users, setUsers] = useState([]);
+
+  const { markIncomingConnectionsAsSeen } = useStomp();
+
+  useEffect(() => {
+    if (!incomingConnections?.length) return;
+
+    const seenConnectionIds = incomingConnections.map(
+      connection => connection.connectionId
+    );
+
+    markIncomingConnectionsAsSeen(seenConnectionIds);
+  }, [incomingConnections, markIncomingConnectionsAsSeen]);
 
   useEffect(() => {
     async function fetchIncoming() {
@@ -27,7 +40,7 @@ const IncomingConnectionsTab = () => {
     loading,
     error
   } = useUserProfiles({
-    userIds: incomingConnections,
+    userIds: incomingConnections?.map(connection => connection.senderId) ?? [],
     fetchFromRecommendations: false,
     connectionDirection: 'incoming'
   });

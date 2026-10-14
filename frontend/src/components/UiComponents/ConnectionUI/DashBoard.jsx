@@ -7,13 +7,14 @@ import ConnectionsTab from './ConnectionsTab';
 import PendingConnectionsTab from './PendingConnectionsTab';
 import IncomingConnectionsTab from './IncomingConnectionsTab';
 import FilterTab from './FilterTab';
+import { useStomp } from './StompProvider';
 
 const DashBoard = ({
         matchedUsersList = null,
     }
 ) => {
 
-    
+    const { hasUnseenIncomingConnections } = useStomp();
     const [activeTab, setActiveTab] = useState('chat');
 
     const renderContent = () => {
@@ -43,7 +44,7 @@ const DashBoard = ({
 
     return(
         <div className='dashboard-layout'>
-            <SubHeader activeTab={activeTab} onTabChange={setActiveTab} />
+            <SubHeader activeTab={activeTab} onTabChange={setActiveTab} showIncomingAlert={hasUnseenIncomingConnections} />
             <div className="dashboard-body">
             {renderContent()}
             </div>

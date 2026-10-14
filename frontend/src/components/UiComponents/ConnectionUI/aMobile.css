@@ -9,7 +9,7 @@
 
   .sidebar {
     width: 100% !important;
-    max-height: 20vh !important;
+    max-height: 25vh !important;
     overflow-y: auto !important;
     border-bottom: 1px solid #ccc !important;
     background: rgb(0, 0, 0, 0.3) !important;

@@ -14,6 +14,8 @@ export const StompProvider = ({ children }) => {
   const typingTimeouts = useRef({});
   const [isConnected, setIsConnected] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [hasUnseenIncomingConnections, setHasUnseenIncomingConnections] =
+    useState(false);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('Authorization');
@@ -120,6 +122,18 @@ export const StompProvider = ({ children }) => {
         }
       });
 
+
+      client.subscribe('/user/queue/receiverHasUnseenNotifications', (frame) => {
+        try {
+          const hasUnseen = JSON.parse(frame.body);
+
+          console.log('[STOMP] Unseen incoming notifications:', hasUnseen);
+
+          setHasUnseenIncomingConnections(Boolean(hasUnseen));
+        } catch (error) {
+          console.error('Failed to parse unseen notification status:', error);
+        }
+      });
 
     };
 
@@ -233,6 +247,22 @@ export const StompProvider = ({ children }) => {
     });
   };
 
+  const markIncomingConnectionsAsSeen = (seenConnectionIds) => {
+    const client = clientRef.current;
+
+    if (!client?.connected) {
+      console.warn('STOMP client not connected - cannot mark incoming connections as seen');
+      return;
+    }
+
+    if (!seenConnectionIds?.length) return;
+
+    client.publish({
+      destination: '/app/receiverHasReadIncomingConnections',
+      body: JSON.stringify({ seenConnectionIds }),
+    });
+  };
+
   const sendConnectionStatusUpdate = (meId, userId) => {
     const client = clientRef.current;
 
@@ -261,6 +291,8 @@ export const StompProvider = ({ children }) => {
         isConnected,
         errorMessage,
         clearErrorMessage,
+        hasUnseenIncomingConnections,
+        markIncomingConnectionsAsSeen,
       }}
     >
       {children}
