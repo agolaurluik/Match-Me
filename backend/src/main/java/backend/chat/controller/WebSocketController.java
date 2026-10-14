@@ -79,6 +79,7 @@ public class WebSocketController {
 
         @EventListener
         public void handleSessionConnected(SessionConnectedEvent event) {
+            System.out.println("SessionConnectedEvent FIRED");
             if (event == null)
                 return;
             if (event.getUser() == null) {
@@ -95,21 +96,6 @@ public class WebSocketController {
             String isOnline = "true";
             onlineUsers.put(userId, isOnline);
             broadcastOnlineUsers();
-            try {
-                Long userIdLong = Long.parseLong(userId);
-
-                boolean hasUnseen = connectionService.userHasUnseenConnections(userIdLong);
-
-                messagingTemplate.convertAndSendToUser(
-                        userId,
-                        "/queue/receiverHasUnseenNotifications",
-                        hasUnseen);
-
-            } catch (NumberFormatException e) {
-                sendError(userId, "Invalid number format in websocket");
-            } catch (Exception e) {
-                sendError(userId, "Unexpected error in websocket");
-            }
         }
 
         @EventListener
@@ -182,15 +168,28 @@ public class WebSocketController {
 
     }
 
+    @MessageMapping("/requestUnseenNotifications")
+    public void handleUnseenStatusNotificationRequest(Principal principal) {
+
+        if (!principal.equals(null)) {
+            String principalName = principal.getName();
+            sendUnseenNotificationStatus(principalName);
+        } else {
+            throw new BadRequestException("Principal is null during websocket exchange");
+        }
+
+    }
+
     @MessageMapping("/receiverHasReadIncomingConnections")
     public void handleReceiverHasReadIncomingConnections(
             @Payload ConnectionReadStatusUpdateDTO dto, Principal principal) {
+        if (principal.equals(null))
+            throw new BadRequestException("Principal is null in websocket during handle hasReadIncomingConnections");
 
         List<Long> viewedConnections = dto.getSeenConnectionIds();
         connectionService.confirmSeenConnectionStatusUpdates(viewedConnections);
 
-        String currentUserId = Objects.requireNonNull(principal.getName());
-        messagingTemplate.convertAndSendToUser(currentUserId, "/queue/receiverHasReadIncomingConnections", true);
+        sendUnseenNotificationStatus(principal.getName());
 
     }
 
@@ -226,6 +225,23 @@ public class WebSocketController {
                 userId,
                 "/queue/errors",
                 Map.of("message", message));
+    }
+
+    private void sendUnseenNotificationStatus(String principalName) {
+        try {
+            Long userIdLong = Long.parseLong(principalName);
+
+            boolean hasUnseen = connectionService.userHasUnseenConnections(userIdLong);
+            messagingTemplate.convertAndSendToUser(
+                    principalName,
+                    "/queue/receiverHasUnseenNotifications",
+                    hasUnseen);
+
+        } catch (NumberFormatException e) {
+            sendError(principalName, "Invalid number format in websocket");
+        } catch (Exception e) {
+            sendError(principalName, "Unexpected error in websocket");
+        }
     }
 
 }
