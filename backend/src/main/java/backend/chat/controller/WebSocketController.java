@@ -183,12 +183,13 @@ public class WebSocketController {
     @MessageMapping("/receiverHasReadIncomingConnections")
     public void handleReceiverHasReadIncomingConnections(
             @Payload ConnectionReadStatusUpdateDTO dto, Principal principal) {
+        if (principal.equals(null))
+            throw new BadRequestException("Principal is null in websocket during handle hasReadIncomingConnections");
 
         List<Long> viewedConnections = dto.getSeenConnectionIds();
         connectionService.confirmSeenConnectionStatusUpdates(viewedConnections);
 
-        String currentUserId = Objects.requireNonNull(principal.getName());
-        messagingTemplate.convertAndSendToUser(currentUserId, "/queue/receiverHasReadIncomingConnections", true);
+        sendUnseenNotificationStatus(principal.getName());
 
     }
 
