@@ -109,11 +109,11 @@ export const StompProvider = ({ children }) => {
       });
 
       client.subscribe('/user/queue/errors', (frame) => {
-        console.log('[STOMP] Received error:', frame.body);
+        // console.log('[STOMP] Received error:', frame.body);
 
         try {
           const error = JSON.parse(frame.body);
-          console.log('[STOMP] Parsed error:', error);
+          // console.log('[STOMP] Parsed error:', error);
 
           setErrorMessage(error.message || 'Something went wrong.');
         } catch (err) {
@@ -127,12 +127,17 @@ export const StompProvider = ({ children }) => {
         try {
           const hasUnseen = JSON.parse(frame.body);
 
-          console.log('[STOMP] Unseen incoming notifications:', hasUnseen);
+          // console.log('[STOMP] Unseen incoming notifications:', hasUnseen);
 
           setHasUnseenIncomingConnections(Boolean(hasUnseen));
         } catch (error) {
           console.error('Failed to parse unseen notification status:', error);
         }
+      });
+
+      client.publish({
+        destination: '/app/requestUnseenNotifications',
+        body: '{}',
       });
 
     };

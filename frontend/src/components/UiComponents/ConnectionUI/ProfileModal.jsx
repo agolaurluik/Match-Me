@@ -48,7 +48,7 @@ const ProfileModal = ({ user, onClose, classPrefix, modalPrefix, onUserRemoved, 
                 if (!user.matchData?.signature) {
                     throw new Error('Missing recommendation signature');
                 }
-                console.log("Creating reccommended user connection with ", user.matchData);
+                // console.log("Creating reccommended user connection with ", user.matchData);
                 await api.createConnection(user.matchData);
             }
             onUserRemoved?.(user.friendId ?? user.id);
@@ -76,7 +76,7 @@ const ProfileModal = ({ user, onClose, classPrefix, modalPrefix, onUserRemoved, 
                 onUserRemoved?.(user.id);
                 sendConnectionStatusUpdate(user.myId, user.id);
             } else {
-                console.log("Rejecting recommended user connection with ", user);
+                // console.log("Rejecting recommended user connection with ", user);
                 if (!user.matchData?.signature) {
                     throw new Error('Missing recommendation signature');
                 }
