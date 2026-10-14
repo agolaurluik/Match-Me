@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import backend.connection.service.ConnectionService;
 import backend.genericData.repository.LocationRepository;
 import backend.matching.dto.UserMatchDetailDTO;
 import backend.matching.dto.UserMatchingFilterDTO;
@@ -30,10 +31,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class Algorithm {
-
+        // Repository query is in userRepository - the algorithm itself
         private final UserRepository userRepository;
         private final LocationRepository locationRepository;
         private final MatchingFilterRepository matchingFilterRepository;
+        private final ConnectionService connectionService;
         private final UserService userService;
         private final UserMatchingFilterMapperImpl userMatchingFilterMapperImpl;
         private final MatchSigningUtility matchSigningUtility;
@@ -107,16 +109,18 @@ public class Algorithm {
                 String senderProfileImageName = userService.getUserProfileImageNameByUserId(senderId);
                 String receiverProfileImageName = userService.getUserProfileImageNameByUserId(receiverId);
                 Instant now = Instant.now();
-                UserMatchDetailDTO dto = new UserMatchDetailDTO(
-                                senderId,
-                                receiverId,
-                                matchPercentage,
-                                sharedInterests,
-                                sharedPersonalities,
-                                distance,
-                                senderProfileImageName,
-                                receiverProfileImageName,
-                                now, null);
+                UserMatchDetailDTO dto = UserMatchDetailDTO.builder()
+                                .senderId(senderId)
+                                .receiverId(receiverId)
+                                .connectionId(null)
+                                .matchPercentage(matchPercentage)
+                                .sharedInterestsSet(sharedInterests)
+                                .sharedPersonalitiesSet(sharedPersonalities)
+                                .distance(distance)
+                                .senderProfileImageName(senderProfileImageName)
+                                .receiverProfileImageName(receiverProfileImageName)
+                                .createdAt(now)
+                                .build();
                 dto.setSignature(matchSigningUtility.signMatchData(dto));
                 return dto;
         }
@@ -173,16 +177,19 @@ public class Algorithm {
                         String senderProfileImageName = userService.getUserProfileImageNameByUserId(senderId);
                         String receiverProfileImageName = userService.getUserProfileImageNameByUserId(receiverId);
                         Instant now = Instant.now();
-                        UserMatchDetailDTO dto = new UserMatchDetailDTO(
-                                        senderId,
-                                        receiverId,
-                                        matchPercentage,
-                                        sharedInterests,
-                                        sharedPersonalities,
-                                        distance,
-                                        senderProfileImageName,
-                                        receiverProfileImageName,
-                                        now, null);
+
+                        UserMatchDetailDTO dto = UserMatchDetailDTO.builder()
+                                        .senderId(senderId)
+                                        .receiverId(receiverId)
+                                        .connectionId(null)
+                                        .matchPercentage(matchPercentage)
+                                        .sharedInterestsSet(sharedInterests)
+                                        .sharedPersonalitiesSet(sharedPersonalities)
+                                        .distance(distance)
+                                        .senderProfileImageName(senderProfileImageName)
+                                        .receiverProfileImageName(receiverProfileImageName)
+                                        .createdAt(now)
+                                        .build();
                         dto.setSignature(matchSigningUtility.signMatchData(dto));
                         matches.add(dto);
                 }

@@ -139,7 +139,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                             THEN LOWER(g.name) = 'other'
                         WHEN 'lookingforall'
                             THEN LOWER(g.name)
-                                IN ('male', 'female', 'other')
+                                IN ('male', 'female', 'non-binary', 'unspecified')
                         ELSE FALSE
                     END
 
@@ -153,7 +153,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                             THEN LOWER(vc.sender_gender) = 'other'
                         WHEN 'lookingforall'
                             THEN LOWER(vc.sender_gender)
-                                IN ('male', 'female', 'other')
+                                IN ('male', 'female', 'non-binary', 'unspecified')
                         ELSE FALSE
                     END
 

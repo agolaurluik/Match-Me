@@ -88,6 +88,17 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
 
     @Override
+    public Long getConnectionIdBySenderIdAndReceiverId(Long meId, Long userId) {
+        Connection connection = connectionRepository.findBySenderAndReceiver(meId, userId)
+                .or(() -> connectionRepository.findBySenderAndReceiver(userId, meId))
+                .orElseThrow(() -> new NotFoundException(
+                        "Connection does not exist between these users, unable to proceed."));
+
+        ConnectionDetailedDTO dto = ConnectionMapper.toDetailedDTO(connection);
+        return dto.getConnectionId();
+    }
+
+    @Override
     public ArrayList<Long> getAllConnections(Long userId) {
         List<Connection> sent = connectionRepository.findAllBySender(userId);
         List<Connection> received = connectionRepository.findAllByReceiver(userId);
@@ -157,8 +168,12 @@ public class ConnectionServiceImpl implements ConnectionService {
 
             String senderImageName = userService.getUserProfileImageNameByUserId(dto.getSenderId());
             String receiverProfileImageName = userService.getUserProfileImageNameByUserId(dto.getReceiverId());
+            Long connectionId = getConnectionIdBySenderIdAndReceiverId(dto.getSenderId(),
+                    dto.getReceiverId());
+
             dto.setSenderProfileImageName(senderImageName);
             dto.setReceiverProfileImageName(receiverProfileImageName);
+            dto.setConnectionId(connectionId);
 
             incomingConnections.add(dto);
         }
@@ -361,6 +376,8 @@ public class ConnectionServiceImpl implements ConnectionService {
         if (dto == null) {
             throw new BadRequestException("Connection IDs cannot be null");
         }
+        if (dto.isEmpty())
+            return false;
 
         for (Long connectionId : dto) {
             if (connectionId == null) {

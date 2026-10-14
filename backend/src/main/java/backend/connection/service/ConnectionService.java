@@ -21,6 +21,8 @@ public interface ConnectionService {
 
     ConnectionDetailedDTO getConnection(Long meId, Long userId);
 
+    public Long getConnectionIdBySenderIdAndReceiverId(Long meId, Long userId);
+
     List<ConnectionDetailedDTO> getConnectionsByStatus(Long userId, ConnectionStatus status, boolean acceptedView);
 
     Set<UserMatchDetailDTO> getAllIncomingConnections(Long userId);

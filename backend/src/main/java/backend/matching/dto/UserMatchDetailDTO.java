@@ -25,6 +25,8 @@ public class UserMatchDetailDTO {
     @NotNull
     private Long receiverId;
 
+    private Long connectionId;
+
     @DecimalMin("0.0")
     @DecimalMax("100.0")
     private double matchPercentage;
