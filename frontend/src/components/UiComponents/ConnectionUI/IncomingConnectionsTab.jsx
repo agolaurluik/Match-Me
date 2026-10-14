@@ -40,7 +40,7 @@ const IncomingConnectionsTab = () => {
     loading,
     error
   } = useUserProfiles({
-    userIds: incomingConnections?.map(connection => connection.senderId) ?? [],
+    userIds: incomingConnections ?? [],
     fetchFromRecommendations: false,
     connectionDirection: 'incoming'
   });

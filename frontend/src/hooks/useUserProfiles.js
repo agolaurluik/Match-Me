@@ -127,10 +127,7 @@ export function useUserProfiles({
                 id: user.id,
 
                 // Preserve the connection ID separately for future use.
-                connectionId:
-                  profile.senderId != null || profile.receiverId != null
-                    ? profile.id
-                    : profile.connectionId ?? null,
+                connectionId: profile.connectionId ?? profile.id ?? null,
 
                 username: user.username,
 

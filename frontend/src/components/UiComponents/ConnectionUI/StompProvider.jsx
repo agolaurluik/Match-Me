@@ -249,7 +249,7 @@ export const StompProvider = ({ children }) => {
 
   const markIncomingConnectionsAsSeen = (seenConnectionIds) => {
     const client = clientRef.current;
-
+    // console.log('Marking incoming connections as seen:', seenConnectionIds);
     if (!client?.connected) {
       console.warn('STOMP client not connected - cannot mark incoming connections as seen');
       return;
